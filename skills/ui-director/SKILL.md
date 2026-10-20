@@ -23,6 +23,7 @@ you write any code.
 |---|---|
 | A page that sells: landing, launch, product, portfolio, pricing | `references/direction.md`, `references/visuals.md`, `references/words.md` |
 | App UI: dashboard, admin, table, settings, detail page, phone app | `references/app-ui.md`, `references/words.md` |
+| An app's first run, waits, paywall, success and failure moments | `references/moments.md` |
 | A new project, or one with no tokens yet | `references/system.md` |
 | An existing project to audit, clean up or put on tokens | `references/system.md`, `references/tells.md` |
 | A redesign, a polish or a review | `references/tells.md` |
@@ -98,6 +99,7 @@ First screen: <one sentence that couldn't describe any other product>.
 ```
 App: <product>, for <who>, doing <the primary job>, <how often>. They open it asking: <question>.
 Key object: <the invoice, the ticket, the pattern…> and its states.
+Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
 Needs attention: <what must jump out, and the one color it gets>.
 Actions: primary "<label>"; frequent <…>; rare <…>; destructive <…>.
 Density: <calm | standard | dense>, because <…>. Shell: <sidebar | top tabs | queue and detail | canvas>, because <…>.
@@ -113,7 +115,8 @@ First screen: <what the user learns in one glance, in one sentence>.
 ```
 
 Then **turn it up:** push the pick further than feels safe (bigger scale, stronger color, more
-image, a bolder signature), and pull back only what hurts reading or speed.
+image, a bolder signature), and pull back only what hurts reading or speed. Take one or two
+references, not ten: piling on references makes the result less consistent, not better.
 
 The obvious version includes "Model habits" below: if your pick uses two of them, pick again.
 **The signature lives on the first screen,** or is the first thing you scroll into. A bold idea
@@ -222,7 +225,8 @@ generated.
 2. **Keep related things close.** 8px inside a group, 12–16px between related items, 24–32px
    between groups, 64px+ between sections. Reading text under ~65ch. Add columns, don't stretch.
 3. **Differentiate instead of spacing out.** People get faces, categories get chips, numbers get
-   tabular figures, clickable things get the link color.
+   tabular figures, clickable things get the link color. The same thing gets the same mark
+   everywhere it appears, so the eye links them.
 4. **Show, don't tell.** A bar, an avatar or an icon instead of a sentence. Never rescue an
    unclear element with a paragraph or an ⓘ: redesign it.
 5. **Emphasis is a difference.** Quiet the neighbors to make one thing stand out. In app UI,
@@ -276,6 +280,8 @@ Answer each one from what you saw in the browser, not from memory.
       inset, one height scale for controls, nothing resizing between states
       (`references/app-ui.md`).
 - [ ] **States:** hover, focus, active, disabled, empty, loading, error, undo, offline.
+- [ ] **Moments** (apps): the peak, the end and the screen they return to are designed; the
+      first try never dead-ends; waits name their steps (`references/moments.md`).
 - [ ] **Phone (390):** no sideways scroll, 44px targets, 16px inputs, its own image crops.
 - [ ] **Dark mode:** designed, checked in the browser.
 - [ ] **Contrast and keyboard:** 4.5:1 text, every control reachable with visible focus.

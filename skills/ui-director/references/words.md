@@ -38,6 +38,9 @@ supercharge, unlock, robust, leverage, delve, curated, crafted, "in today's fast
 - **Buttons** name the action in 1–3 words: "Order Lumo", "Send invoice", "Delete project".
   Never "Submit", "Click here" or "Learn more" alone.
 - **One label per intent** across the page, nav included.
+- **Don't repeat what's already on screen.** Under a "Votes" heading the list is "Last 10",
+  not "Last 10 votes". The button names what actually happens ("Claim rewards", not "Earn
+  tokens").
 - **Friendly beats formal on marketing pages. Precise beats friendly inside the app.**
 
 ## Casing and decoration

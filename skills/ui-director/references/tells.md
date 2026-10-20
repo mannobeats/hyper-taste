@@ -59,6 +59,8 @@ Clean, correct, and nobody remembers it. On a page that sells, this is a failure
   selling pages.
 - **Proportional digits in tables and stats** → `tabular-nums`.
 - **Orphaned last words** → `text-wrap: balance` on headings, `pretty` on paragraphs.
+- **A centered heading over left-aligned text in the same block** → One alignment per block;
+  left-align anything longer than three lines.
 - **A display face with no reason** → The sans, or a face from the product's world you can
   justify in one line.
 - **A font named in CSS but never shipped** → The files in the project, or a system stack on

@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "hyper-taste",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./",
       "description": "Every Hyper Taste skill in one install: ui-director and agents-md.",
       "homepage": "https://github.com/mannobeats/hyper-taste",
@@ -19,7 +19,7 @@
     },
     {
       "name": "ui-director",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./",
       "description": "Design like a UI director: striking, consistent UI that doesn't look AI-generated, for dashboards, landing pages, app screens and mobile layouts, with a design system and before/after pairs, for any framework.",
       "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/ui-director",
