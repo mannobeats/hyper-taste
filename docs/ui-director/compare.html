@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before and after</title>
+<link rel="stylesheet" href="pairs/tokens.css">
+<style>
+  /* One pair, side by side. shoot.mjs screenshots #compare; ?id=01-edges&theme=dark */
+  body { display: block; padding: 0; background: var(--bg); }
+  #compare { width: 1280px; padding: 40px; }
+  .head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; }
+  .head .n { color: var(--faint); font-size: var(--text-lg); font-weight: var(--w-ui); }
+  .head h1 { font-size: 26px; letter-spacing: -.02em; }
+  .head .rule { margin-left: auto; color: var(--muted); font-size: var(--text-sm); }
+  .panels { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; column-gap: 16px; row-gap: 12px; }
+  .panels.stack { grid-template-columns: 1fr; grid-template-rows: none; row-gap: 28px; }
+  figure { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 12px; }
+  .stack figure { grid-row: auto; grid-template-rows: auto auto; }
+  figcaption { display: grid; gap: 2px; font-size: var(--text-sm); color: var(--muted); max-width: 64ch; }
+  figcaption b { color: var(--ink); font-weight: var(--w-strong); }
+  .frame { border-radius: var(--r-xl); overflow: hidden; box-shadow: 0 0 0 1px var(--line); background: var(--panel); display: grid; place-items: center; }
+  iframe { display: block; width: 100%; border: 0; }
+  .phone .frame { padding: 28px 0; }
+  .phone iframe { width: 390px; height: 760px; border-radius: 44px; box-shadow: 0 0 0 10px var(--strong), 0 30px 60px oklch(0 0 0 / .25); }
+</style>
+</head>
+<body>
+<div id="compare"></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const id = q.get('id'), theme = q.get('theme') === 'dark' ? 'dark' : 'light';
+  if (theme === 'dark') document.documentElement.dataset.theme = 'dark';
+
+  fetch('pairs.json').then(r => r.json()).then(async pairs => {
+    const p = pairs.find(x => x.id === id) ?? pairs[0];
+    const n = p.id.slice(0, 2), root = document.getElementById('compare');
+    root.innerHTML = `
+      <div class="head"><span class="n">${n}</span><h1>${p.title}</h1><span class="rule">${p.rule}</span></div>
+      <div class="panels ${p.layout}">
+        <figure><figcaption><b>Before</b>${p.before}</figcaption><div class="frame"><iframe src="pairs/${p.id}/before.html" title="Before"></iframe></div></figure>
+        <figure><figcaption><b>After</b>${p.after}</figcaption><div class="frame"><iframe src="pairs/${p.id}/after.html?theme=${theme}" title="After"></iframe></div></figure>
+      </div>`;
+    const frames = [...root.querySelectorAll('iframe')];
+    await Promise.all(frames.map(f => new Promise(ok => f.addEventListener('load', ok, { once: true }))));
+    await Promise.all(frames.map(f => f.contentDocument.fonts.ready));
+    if (p.layout !== 'phone') {
+      const h = p.height ?? Math.max(...frames.map(f => f.contentDocument.documentElement.scrollHeight));
+      frames.forEach(f => f.style.height = h + 'px');
+    }
+    document.body.dataset.ready = 'true';
+  });
+</script>
+</body>
+</html>

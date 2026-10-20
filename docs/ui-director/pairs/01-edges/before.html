@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile card</title>
+<style>
+  body { margin: 0; padding: 40px 32px; display: grid; place-items: center; background: #f3f4f6; font: 14px/1.45 Inter, system-ui, sans-serif; color: #111827; }
+  .card { width: 340px; padding: 28px 22px; text-align: center; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+  .avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px; display: grid; place-items: center; background: linear-gradient(135deg, #a78bfa, #f472b6); color: #fff; font-size: 26px; font-weight: 700; }
+  .name { font-size: 17px; font-weight: 700; }
+  .sub { color: #6b7280; margin-top: 4px; font-size: 13px; }
+  .stats { margin: 16px 0; color: #4b5563; font-size: 12px; }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; font-size: 13px; font-weight: 600; }
+  .btn.primary { background: #111827; border-color: #111827; color: #fff; }
+  .btn svg { width: 14px; height: 14px; }
+  .btn { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="avatar">TR</div>
+    <div class="name">Tomás Rivera</div>
+    <div class="sub">Product designer and founder of Lumen Supply.</div>
+    <div class="sub">Lisbon, Portugal · lumen.supply</div>
+    <div class="stats">18,402 followers · 1,209 following · 86 posts · 27 projects</div>
+    <div class="buttons">
+      <span class="btn primary">Hire Tomás</span>
+      <span class="btn">Message</span>
+      <span class="btn">View portfolio</span>
+      <span class="btn">Follow</span>
+      <span class="btn"><i data-lucide="instagram"></i>Instagram</span>
+      <span class="btn">Share</span>
+      <span class="btn">Block</span>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

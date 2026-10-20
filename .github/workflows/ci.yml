@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate skills and manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Check skills, manifests and versions
+        run: node scripts/validate.mjs
+
+      - name: Check shell scripts
+        run: shellcheck skills/*/scripts/*.sh
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Validate the Claude marketplace
+        run: claude plugin validate .
+
+  install:
+    name: Install every plugin
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Install the bundle and each skill from the local marketplace
+        run: |
+          claude plugin marketplace add ./
+          for plugin in $(node -p "require('./.claude-plugin/marketplace.json').plugins.map(p => p.name).join(' ')"); do
+            claude plugin install "$plugin@hyper-taste" --scope user
+          done
+          claude plugin list
+
+      - name: List skills with the skills CLI
+        run: npx -y skills add ./ --list

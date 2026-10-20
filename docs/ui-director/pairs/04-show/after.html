@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expense report</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .report { width: 400px; padding: 14px 16px 12px; }
+  .head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .head h3 { font-size: var(--text-md); }
+  .key { display: flex; gap: 12px; color: var(--muted); font-size: var(--text-xs); margin-top: 2px; }
+  .key span { display: inline-flex; align-items: center; gap: 5px; }
+  .key i { width: 8px; height: 8px; border-radius: 2px; }
+  .chart { position: relative; display: grid; grid-template-columns: 76px 1fr; row-gap: 12px; padding-top: 14px; }
+  .label { font-size: var(--text-sm); color: var(--ink); align-self: center; }
+  .bars { display: grid; gap: 3px; position: relative; z-index: 1; }
+  .bars i { display: block; height: 8px; border-radius: 3px; }
+  .now { background: var(--chart-1); }
+  .avg { background: var(--chart-ref); }
+  .over { background: var(--warn); }
+  .grid { position: absolute; left: 76px; right: 0; top: 14px; bottom: 20px; display: flex; justify-content: space-between; }
+  .grid span { border-left: 1px dashed var(--line); }
+  .axis { grid-column: 2; display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin: 0 -5px; }
+  .tip { position: absolute; z-index: 2; left: 196px; top: 50px; white-space: nowrap; display: grid; gap: 3px; padding: 6px 9px; border-radius: var(--r-md);
+         background: var(--strong); color: var(--on-strong); font-size: var(--text-xs); box-shadow: var(--shadow-lg); }
+  .tip div { display: flex; align-items: center; gap: 6px; }
+  .tip small { opacity: .65; }
+  .tip i { width: 8px; height: 8px; border-radius: 2px; }
+</style>
+</head>
+<body>
+  <div class="card report">
+    <div class="head">
+      <div><h3>Cloud spend this week</h3>
+        <div class="key"><span><i class="now"></i>This week</span><span><i class="avg"></i>12-week average</span></div></div>
+      <span class="btn sm">Weekly <i data-lucide="chevron-down"></i></span>
+    </div>
+    <div class="chart">
+      <div class="grid"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <span class="label">Compute</span><span class="bars"><i class="over" style="width:93%"></i><i class="avg" style="width:65%"></i></span>
+      <span class="label">Storage</span><span class="bars"><i class="now" style="width:36%"></i><i class="avg" style="width:34%"></i></span>
+      <span class="label">Bandwidth</span><span class="bars"><i class="now" style="width:22%"></i><i class="avg" style="width:25%"></i></span>
+      <div class="axis num"><span>0</span><span>2.4K</span><span>4.8K</span><span>7.2K</span><span>9.6K</span><span>12K</span></div>
+      <div class="tip num">
+        <div><i class="now"></i>$4,350 <small>this week</small></div>
+        <div><i class="avg"></i>$4,100 <small>average</small></div>
+      </div>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

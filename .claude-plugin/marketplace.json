@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "hyper-taste",
+  "description": "Agent skills with taste: interfaces that don't look generated, and agent instruction files that stay small.",
+  "owner": {
+    "name": "mannobeats",
+    "url": "https://github.com/mannobeats"
+  },
+  "plugins": [
+    {
+      "name": "hyper-taste",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Every Hyper Taste skill in one install: ui-director and agents-md.",
+      "homepage": "https://github.com/mannobeats/hyper-taste",
+      "license": "MIT",
+      "keywords": ["skills", "agents", "ui", "design", "agents-md", "claude-md"],
+      "commands": ["./commands/ui-director"]
+    },
+    {
+      "name": "ui-director",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Design like a UI director: striking, consistent UI that doesn't look AI-generated, for dashboards, landing pages, app screens and mobile layouts, with a design system and before/after pairs, for any framework.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/ui-director",
+      "license": "MIT",
+      "keywords": ["ui", "ux", "design", "frontend", "dashboard", "landing-page", "mobile", "design-system", "anti-slop"],
+      "skills": ["./skills/ui-director"],
+      "commands": ["./commands/ui-director"]
+    },
+    {
+      "name": "agents-md",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Keep AGENTS.md small and every agent in sync: CLAUDE.md and GEMINI.md become symlinks to AGENTS.md, an audit flags bloat and stale paths, and a clear rule for what belongs in AGENTS.md, docs/ or a skill.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/agents-md",
+      "license": "MIT",
+      "keywords": ["agents-md", "claude-md", "gemini-md", "agent-instructions", "context", "monorepo"],
+      "skills": ["./skills/agents-md"],
+      "commands": []
+    }
+  ]
+}

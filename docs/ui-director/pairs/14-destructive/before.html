@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remove workspace</title>
+<style>
+  body { margin: 0; padding: 40px 32px; display: grid; place-items: center; background: #e5e7eb; font: 14px/1.45 Inter, system-ui, sans-serif; color: #111827; }
+  .dialog { width: 320px; padding: 22px; border-radius: 18px; background: #fff; box-shadow: 0 20px 50px rgba(0,0,0,.18); text-align: center; }
+  .icon { width: 46px; height: 46px; border-radius: 50%; margin: 0 auto 10px; display: grid; place-items: center; background: #ede9fe; color: #6d28d9; }
+  .icon svg { width: 20px; height: 20px; }
+  h3 { margin: 0; font-size: 17px; }
+  p { margin: 6px 0 0; color: #6b7280; font-size: 13.5px; }
+  .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
+  .acts span { height: 38px; border-radius: 10px; display: grid; place-items: center; font-weight: 600; }
+  .no { background: #f3f4f6; color: #374151; }
+  .yes { background: #6d28d9; color: #fff; }
+  .no, .yes { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="dialog">
+    <div class="icon"><i data-lucide="triangle-alert"></i></div>
+    <h3>Remove workspace?</h3>
+    <p>You're about to remove the "Northshore" workspace. Do you want to continue?</p>
+    <div class="acts"><span class="no">No</span><span class="yes">Yes</span></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

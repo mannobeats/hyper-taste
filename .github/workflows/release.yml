@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Check the tag matches every manifest
+        run: node scripts/validate.mjs "$GITHUB_REF_NAME"
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Validate the Claude marketplace
+        run: claude plugin validate .
+
+      - name: Zip the bundle and each skill
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          mkdir dist
+          (cd skills && zip -qr "../dist/hyper-taste-$version.zip" .)
+          for dir in skills/*/; do
+            skill=$(basename "$dir")
+            skill_version=$(node -p "require('./.claude-plugin/marketplace.json').plugins.find(p => p.name === '$skill').version")
+            (cd skills && zip -qr "../dist/$skill-$skill_version.zip" "$skill")
+          done
+          ls -l dist
+
+      - name: Pull this version's notes from CHANGELOG.md
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="## [$version]" 'index($0, v) == 1 {on=1; next} /^## \[/ {on=0} on' CHANGELOG.md > notes.md
+          cat notes.md
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.zip --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag

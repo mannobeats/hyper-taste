@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orders</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  :root { --accent-h: 200; }
+  body { display: block; place-content: normal; padding: 0; background: var(--surface); min-height: 100dvh; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; padding: 56px 16px 8px; }
+  h1 { font-size: 30px; letter-spacing: -.02em; }
+  header .btn { width: 44px; height: 44px; border-radius: 50%; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); margin: 8px 16px 4px; padding: 3px; border-radius: var(--r-md); background: var(--fill); }
+  .seg span { display: grid; place-items: center; height: 32px; border-radius: var(--r-sm); font-size: var(--text-sm); color: var(--muted); font-weight: var(--w-ui); }
+  .seg .on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-xs); }
+  .group { padding: 16px 16px 4px; font-size: var(--text-sm); color: var(--muted); }
+  .it { display: grid; grid-template-columns: 1fr auto; row-gap: 3px; align-content: center; min-height: 64px; margin: 0 16px; border-bottom: 1px solid var(--line); }
+  .it:last-of-type { border-bottom: 0; }
+  .it b { color: var(--ink); font-weight: var(--w-ui); font-size: var(--text-lg); }
+  .it .a { color: var(--ink); font-size: var(--text-lg); text-align: right; font-weight: var(--w-ui); }
+  .it small { color: var(--muted); font-size: var(--text-sm); }
+  .it .chip { justify-self: end; }
+  nav { position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--line); }
+  nav span { display: grid; justify-items: center; gap: 4px; font-size: 11px; line-height: 1; color: var(--muted); font-weight: var(--w-ui); }
+  nav svg.lucide { width: 22px; height: 22px; }
+  nav .on { color: var(--accent-ink); }
+  .seg span { line-height: 1; }
+</style>
+</head>
+<body>
+  <header><h1>Orders</h1><span class="btn strong" aria-label="New order"><i data-lucide="plus"></i></span></header>
+  <div class="seg"><span class="on">Unpaid</span><span>Paid</span><span>Standing</span></div>
+  <div class="group">Payment late</div>
+  <div class="it num"><b>Corner Grocer</b><span class="a">$486</span><small>ORD-2142 · was due Oct 7</small><span class="chip bad">12 days late</span></div>
+  <div class="it num"><b>Elm Street Café</b><span class="a">$212.50</span><small>ORD-2141 · was due Oct 15</small><span class="chip bad">4 days late</span></div>
+  <div class="group">Due this week</div>
+  <div class="it num"><b>Bluebird Deli</b><span class="a">$740</span><small>Due Thursday</small><span class="chip">Sent</span></div>
+  <div class="it num"><b>Harbor Hotel</b><span class="a">$1,180</span><small>Due Friday</small><span class="chip">Viewed</span></div>
+  <nav><span class="on"><i data-lucide="package"></i>Orders</span><span><i data-lucide="store"></i>Customers</span><span><i data-lucide="chart-column"></i>Reports</span><span><i data-lucide="settings"></i>Settings</span></nav>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

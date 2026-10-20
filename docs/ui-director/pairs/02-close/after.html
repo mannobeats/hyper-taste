@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasks</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .tray { width: 480px; background: var(--fill); border-radius: var(--r-lg); }
+  .sheet { padding: 6px 14px; }
+  .task { display: flex; align-items: center; gap: 10px; min-height: 34px; color: var(--ink); font-weight: var(--w-ui); font-size: var(--text-sm); }
+  .t { display: flex; align-items: center; gap: 6px; white-space: nowrap; min-width: 0; }
+  .end { margin-left: auto; color: var(--faint); display: flex; }
+  .end svg.lucide, .chip svg.lucide { width: 12px; height: 12px; }
+  .end > svg.lucide { width: 15px; height: 15px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: var(--muted); font-size: var(--text-sm); }
+  .foot .kbd { margin-right: 8px; background: var(--surface); box-shadow: var(--shadow-xs); }
+  .progress { display: inline-flex; align-items: center; gap: 8px; }
+  .progress b { color: var(--ink); font-weight: var(--w-strong); }
+  .progress circle { fill: none; stroke-width: 3; }
+  .t { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="tray">
+    <div class="card sheet">
+      <div class="task"><input class="checkbox" type="checkbox"><span class="t">Book a venue for the spring retreat</span><span class="end"><i data-lucide="clock"></i></span></div>
+      <div class="task"><input class="checkbox" type="checkbox"><span class="t">Send <span class="link">March receipts</span> to bookkeeping <span class="chip" style="--h:290"><i data-lucide="credit-card"></i>Finance</span></span><span class="end"><i data-lucide="clock"></i></span></div>
+      <div class="task"><input class="checkbox" type="checkbox"><span class="t">File the quarterly VAT return</span><span class="end"><i data-lucide="clock"></i></span></div>
+      <div class="task"><input class="checkbox" type="checkbox"><span class="t">Share the Q1 update with advisors <span class="chip" style="--h:150"><i data-lucide="folder"></i>Advisors</span></span><span class="end"><span class="chip round"><i data-lucide="clock"></i>Tomorrow</span></span></div>
+    </div>
+    <div class="foot"><span><span class="kbd">/</span>Run a shortcut</span><span class="progress num">March close <b>40%</b><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5" stroke="var(--line-strong)"/><circle cx="10" cy="10" r="7.5" stroke="var(--accent)" stroke-dasharray="18.8 47.1" transform="rotate(-90 10 10)"/></svg></span></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

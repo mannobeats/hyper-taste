@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI Director pairs</title>
+<meta name="description" content="Before and after pairs for the UI Director agent skill. Every pair is live HTML.">
+<link rel="stylesheet" href="pairs/tokens.css">
+<style>
+  body { display: block; padding: 0; background: var(--bg); }
+  header { max-width: 1240px; margin: 0 auto; padding: 56px 24px 24px; display: flex; align-items: end; gap: 24px; flex-wrap: wrap; }
+  header h1 { font-size: 40px; letter-spacing: -.03em; }
+  header p { color: var(--ink-2); font-size: var(--text-lg); margin-top: 8px; max-width: 60ch; }
+  header a { color: var(--link); }
+  .theme { margin-left: auto; display: inline-grid; grid-auto-flow: column; padding: 3px; border-radius: var(--r-md); background: var(--fill); }
+  .theme button { height: 30px; padding: 0 12px; border-radius: var(--r-sm); color: var(--muted); font-size: var(--text-sm); font-weight: var(--w-ui); }
+  .theme button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-xs); }
+  main { max-width: 1240px; margin: 0 auto; padding: 0 24px 96px; display: grid; gap: 72px; }
+  section { display: grid; gap: 14px; scroll-margin-top: 24px; }
+  .head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .head .n { color: var(--faint); font-weight: var(--w-ui); }
+  .head h2 { font-size: var(--text-2xl); letter-spacing: -.02em; }
+  .head .rule { margin-left: auto; color: var(--muted); font-size: var(--text-sm); }
+  .head a { color: var(--muted); font-size: var(--text-sm); }
+  .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; color: var(--ink-2); font-size: var(--text-md); }
+  .notes b { color: var(--ink); }
+  .compare { position: relative; border-radius: var(--r-xl); overflow: hidden; box-shadow: 0 0 0 1px var(--line); background: var(--panel); }
+  .compare iframe { display: block; width: 100%; border: 0; }
+  .compare .after { position: absolute; inset: 0; height: 100%; clip-path: inset(0 0 0 var(--cut, 50%)); }
+  .compare.phone { display: grid; place-items: center; padding: 24px 0; }
+  .compare.phone iframe { width: 390px; height: 760px; border-radius: 40px; }
+  .compare.phone .after { inset: 24px auto auto 50%; translate: -50% 0; height: 760px; clip-path: inset(0 0 0 var(--cut, 50%)); }
+  .handle { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 2px; translate: -1px 0; background: var(--strong); pointer-events: none; }
+  .handle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 32px; height: 32px; translate: -50% -50%; border-radius: 50%; background: var(--strong); box-shadow: var(--shadow-lg); }
+  .labels { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; pointer-events: none; }
+  .labels span { padding: 3px 8px; border-radius: var(--r-sm); background: var(--strong); color: var(--on-strong); font-size: var(--text-xs); font-weight: var(--w-ui); }
+  .compare input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+  .compare input:focus-visible ~ .handle::after { box-shadow: var(--focus); }
+  @media (max-width: 720px) { .notes { grid-template-columns: 1fr; } header h1 { font-size: 30px; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>UI Director, before and after</h1>
+    <p>Every pair is live HTML: drag across a page to compare. The skill itself is at <a href="https://github.com/mannobeats/hyper-taste/tree/main/skills/ui-director">skills/ui-director</a>.</p>
+  </div>
+  <div class="theme" role="group" aria-label="Theme for the after pages">
+    <button type="button" data-theme-set="light" aria-pressed="true">Light</button>
+    <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
+  </div>
+</header>
+<main id="pairs"></main>
+<script>
+  const main = document.getElementById('pairs');
+  let theme = 'light', pairs = [];
+
+  function render() {
+    main.innerHTML = pairs.map(p => `
+      <section id="${p.id}">
+        <div class="head"><span class="n">${p.id.slice(0, 2)}</span><h2>${p.title}</h2><span class="rule">${p.rule}</span>
+          <a href="pairs/${p.id}/before.html">before.html</a><a href="pairs/${p.id}/after.html">after.html</a></div>
+        <div class="compare ${p.layout === 'phone' ? 'phone' : ''}" style="--cut:50%;--pos:50%">
+          <iframe class="before" src="pairs/${p.id}/before.html" title="${p.title}, before" loading="lazy"></iframe>
+          <iframe class="after" src="pairs/${p.id}/after.html?theme=${p.dark ? 'dark' : theme}" title="${p.title}, after" loading="lazy"></iframe>
+          <div class="labels"><span>Before</span><span>After</span></div>
+          <input type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+          <span class="handle"></span>
+        </div>
+        <div class="notes"><p><b>Before.</b> ${p.before}</p><p><b>After.</b> ${p.after}</p></div>
+      </section>`).join('');
+    main.querySelectorAll('.compare').forEach((box, i) => {
+      const p = pairs[i], [before, after] = box.querySelectorAll('iframe');
+      box.querySelector('input').addEventListener('input', e => {
+        box.style.setProperty('--pos', e.target.value + '%');
+        // On phone pairs the after frame is 390px wide and centered, so map the handle onto it.
+        const cut = p.layout === 'phone'
+          ? ((e.target.value / 100) * box.clientWidth - (box.clientWidth - 390) / 2) / 390 * 100
+          : e.target.value;
+        box.style.setProperty('--cut', Math.min(100, Math.max(0, cut)) + '%');
+      });
+      if (p.layout !== 'phone') before.addEventListener('load', () => {
+        before.style.height = (p.height ?? before.contentDocument.documentElement.scrollHeight) + 'px';
+      });
+    });
+  }
+
+  document.querySelectorAll('[data-theme-set]').forEach(b => b.addEventListener('click', () => {
+    theme = b.dataset.themeSet;
+    document.documentElement.dataset.theme = theme;
+    document.querySelectorAll('[data-theme-set]').forEach(o => o.setAttribute('aria-pressed', o === b));
+    render();
+  }));
+
+  fetch('pairs.json').then(r => r.json()).then(data => { pairs = data; render(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Action bar</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .bar { display: flex; align-items: center; gap: 2px; padding: 5px; }
+  .count { display: inline-flex; align-items: center; gap: 8px; padding: 0 10px 0 7px; color: var(--ink); font-size: var(--text-sm); font-weight: var(--w-ui); }
+  .sep { width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
+  .bar .btn { color: var(--ink-2); }
+  .bar .btn.icon { color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="card bar">
+    <span class="count num"><input class="checkbox" type="checkbox" checked>4 selected</span>
+    <span class="sep"></span>
+    <span class="btn ghost sm"><i data-lucide="folder-input"></i>Move</span>
+    <span class="btn ghost sm"><i data-lucide="bell"></i>Remind me</span>
+    <span class="btn ghost sm"><i data-lucide="tag"></i>Label</span>
+    <span class="sep"></span>
+    <span class="btn ghost icon sm" data-tip="Delete"><i data-lucide="trash-2"></i></span>
+    <span class="btn ghost icon sm" data-tip="More"><i data-lucide="ellipsis"></i></span>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

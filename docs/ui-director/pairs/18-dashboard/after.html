@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revenue</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { display: block; padding: 32px 24px; background: var(--surface); }
+  .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  h1 { font-size: var(--text-xl); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+  .stats div { display: grid; gap: 2px; padding: 14px 16px 4px; }
+  .stats div:first-child { padding-left: 0; }
+  .stats div + div { border-left: 1px solid var(--line); }
+  .stats small { color: var(--muted); font-size: var(--text-sm); }
+  .stats b { color: var(--ink); font-size: var(--text-2xl); font-weight: var(--w-strong); letter-spacing: -.01em; }
+  .stats em { font-style: normal; color: var(--muted); font-size: var(--text-xs); }
+  .stats .bad b { color: var(--bad-ink); }
+  .stats .bad em { color: var(--bad-ink); }
+</style>
+</head>
+<body>
+  <div class="head"><h1>Revenue</h1><span class="btn strong"><i data-lucide="download"></i>Export</span></div>
+  <div class="stats num">
+    <div><small>Monthly recurring</small><b>$48,900</b><em>+9% on September</em></div>
+    <div><small>Active trials</small><b>312</b><em>41 end this week</em></div>
+    <div class="bad"><small>Failed payments</small><b>$2,140</b><em>17 customers, retrying</em></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

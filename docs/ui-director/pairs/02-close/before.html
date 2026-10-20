@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasks</title>
+<style>
+  body { margin: 0; padding: 40px 32px; background: #f4f4f5; font: 500 13px/1.4 Inter, system-ui, sans-serif; color: #18181b; }
+  .tray { background: #e9e9eb; border-radius: 12px; }
+  .sheet { background: #fff; border-radius: 12px; box-shadow: 0 0 0 1px rgba(0,0,0,.05), 0 2px 6px rgba(0,0,0,.04); padding: 6px 14px; }
+  .task { display: flex; align-items: center; gap: 10px; min-height: 34px; }
+  .cb { width: 15px; height: 15px; border-radius: 4px; box-shadow: inset 0 0 0 1px #d4d4d8; flex: none; }
+  .t { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .end { margin-left: auto; color: #a1a1aa; display: flex; }
+  .end svg { width: 15px; height: 15px; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border-radius: 6px; font-size: 12px; }
+  .chip svg { width: 12px; height: 12px; }
+  .violet { background: #f1ecff; color: #6a43c9; }
+  .green { background: #e7f6ec; color: #2c7a48; }
+  .pill { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 99px; background: #f4f4f5; color: #71717a; font-size: 12px; }
+  .pill svg { width: 12px; height: 12px; }
+  .link { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #71717a; }
+  .kbd { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 5px; background: #dcdcdf; margin-right: 8px; font-size: 11px; color: #3f3f46; }
+  .progress { display: inline-flex; align-items: center; gap: 8px; }
+  .progress b { color: #18181b; font-weight: 600; }
+  .chip, .pill, .kbd { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="tray">
+    <div class="sheet">
+      <div class="task"><span class="cb"></span><span class="t">Book a venue for the spring retreat</span><span class="end"><i data-lucide="clock"></i></span></div>
+      <div class="task"><span class="cb"></span><span class="t">Send <span class="link">March receipts</span> to bookkeeping <span class="chip violet"><i data-lucide="credit-card"></i>Finance</span></span><span class="end"><i data-lucide="clock"></i></span></div>
+      <div class="task"><span class="cb"></span><span class="t">File the quarterly VAT return</span><span class="end"><i data-lucide="clock"></i></span></div>
+      <div class="task"><span class="cb"></span><span class="t">Share the Q1 update with advisors <span class="chip green"><i data-lucide="folder"></i>Advisors</span></span><span class="end"><span class="pill"><i data-lucide="clock"></i>Tomorrow</span></span></div>
+    </div>
+    <div class="foot"><span><span class="kbd">/</span>Run a shortcut</span><span class="progress">March close <b>40%</b><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5" fill="none" stroke="#d4d4d8" stroke-width="3"/><circle cx="10" cy="10" r="7.5" fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="18.8 47.1" transform="rotate(-90 10 10)"/></svg></span></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

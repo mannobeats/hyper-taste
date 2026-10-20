@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pantry</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  /* Basil green on kitchen paper. The product stands in the kitchen it runs.
+     Photo: Nicolas J Leclercq on Unsplash (unsplash.com/photos/KBjDo_QA1lY). */
+  :root { --accent-h: 148; --accent-c: .8; --tint-h: 80; --tint-c: .01; }
+  body { overflow: hidden; text-align: center; }
+  nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 18px 40px; font-size: var(--text-md); text-align: left; }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 650; color: var(--ink); font-size: 18px; letter-spacing: -.02em; }
+  .logo svg { width: 22px; height: 22px; color: var(--accent); }
+  .links { display: flex; gap: 32px; color: var(--ink-2); }
+  .end { justify-self: end; display: flex; gap: 8px; }
+
+  h1 { margin: 40px auto 0; font-size: 84px; line-height: .98; letter-spacing: -.04em; font-weight: 600; max-width: 17ch; }
+  .lead { margin: 20px auto 0; font-size: 19px; line-height: 1.5; color: var(--ink-2); max-width: 46ch; }
+  .cta { display: flex; justify-content: center; align-items: center; gap: 22px; margin-top: 28px; }
+  .cta .btn.accent { height: 50px; padding: 0 24px; font-size: 16px; border-radius: var(--r-lg); background: var(--accent-hover); }
+  .cta .link { color: var(--ink); font-weight: var(--w-ui); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line-strong); }
+  .risk { margin-top: 14px; color: var(--muted); font-size: var(--text-sm); }
+
+  /* The kitchen, full width, with the product standing in it. */
+  .scene { position: relative; margin: 36px 24px 0; height: 420px; border-radius: 22px 22px 0 0; overflow: hidden; }
+  .scene img.photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; filter: saturate(.9) contrast(1.02); }
+  .scene::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, oklch(.2 .02 60 / .35), oklch(.2 .02 60 / .05) 40%); }
+
+  .week { position: absolute; z-index: 1; left: 44%; top: 56px; translate: -50% 0; width: 720px; text-align: left;
+          border-radius: var(--r-xl); background: var(--surface); box-shadow: 0 0 0 1px oklch(0 0 0 / .06), 0 24px 60px oklch(.2 .03 60 / .35); overflow: hidden; }
+  .bar { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 20px; border-bottom: 1px solid var(--line); }
+  .bar h2 { font-size: var(--text-md); }
+  .bar .muted { font-size: var(--text-sm); }
+  .bar .btn { margin-left: auto; }
+  .grid { display: grid; grid-template-columns: 120px 76px 1fr 150px; align-items: center; column-gap: 16px; padding: 0 20px; }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); }
+  .head { height: 34px; color: var(--muted); font-size: var(--text-xs); border-bottom: 1px solid var(--line); }
+  .head .days span:nth-child(5) { color: var(--ink); font-weight: var(--w-ui); }
+  .row { height: 54px; font-size: var(--text-sm); border-bottom: 1px solid var(--line); }
+  .item { color: var(--ink); font-weight: var(--w-ui); }
+  .left { color: var(--ink-2); }
+  .track { position: relative; height: 22px; }
+  .track::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: var(--fill); }
+  .track .stock { position: absolute; left: 0; top: 7px; height: 8px; border-radius: 4px; background: var(--line-strong); }
+  .track .stock.bad { background: var(--bad); }
+  .track .truck { position: absolute; top: 0; translate: -50% 0; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink); }
+  .track .truck svg.lucide { width: 13px; height: 13px; }
+  .note { color: var(--muted); font-size: var(--text-xs); }
+  .note.bad { color: var(--bad-ink); font-weight: var(--w-ui); }
+
+  /* What the chef actually sees at 5pm: one decision, already worked out. */
+  .ping { position: absolute; z-index: 2; right: 36px; top: 96px; width: 280px; padding: 14px 14px 12px; text-align: left; border-radius: 18px;
+          background: oklch(.22 .015 70); color: oklch(.93 .01 80); box-shadow: 0 18px 40px oklch(.15 .02 60 / .45); rotate: 2deg; }
+  .ping header { display: flex; align-items: center; gap: 8px; font-size: var(--text-xs); color: oklch(.72 .01 80); }
+  .ping header svg { width: 18px; height: 18px; padding: 3px; border-radius: 6px; background: var(--accent-500); color: oklch(.99 0 0); }
+  .ping header span:last-child { margin-left: auto; }
+  .ping b { display: block; margin-top: 8px; font-size: var(--text-md); font-weight: var(--w-strong); color: oklch(.98 0 0); }
+  .ping p { margin-top: 2px; font-size: var(--text-sm); line-height: 1.4; color: oklch(.82 .01 80); }
+  .ping .acts { display: flex; gap: 8px; margin-top: 12px; }
+  .ping .btn { flex: 1; height: 34px; border-radius: var(--r-md); box-shadow: none; }
+  .ping .btn.go { background: oklch(.96 .01 80); color: oklch(.2 .02 60); }
+  .ping .btn.later { background: oklch(.3 .015 70); color: oklch(.9 .01 80); }
+</style>
+</head>
+<body class="bleed">
+  <nav>
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="18.5" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Pantry</span>
+    <span class="links"><span>How it works</span><span>Pricing</span><span>Kitchens</span></span>
+    <span class="end"><span class="btn ghost">Sign in</span><span class="btn strong">Try it free</span></span>
+  </nav>
+
+  <h1>Know what runs out before Friday service.</h1>
+  <p class="lead">Pantry reads your sales and your deliveries, then tells you which ingredient runs out first and whether the next truck lands in time.</p>
+  <div class="cta"><span class="btn accent">Try it free</span><span class="link">See a kitchen's week</span></div>
+  <p class="risk">14 days free, no card. Already planning 414 kitchens, from Osteria Sal to Casa Mar.</p>
+
+  <section class="scene" aria-label="Pantry running in a restaurant kitchen">
+    <img class="photo" src="https://images.unsplash.com/photo-1576704546872-8d647cd96f8d?w=2400&q=80" alt="Cooks at the stoves of a busy restaurant kitchen">
+
+    <div class="week">
+      <div class="bar"><h2>This week</h2><span class="muted">Osteria Sal</span><span class="chip bad">2 run out before delivery</span><span class="btn sm">Order now</span></div>
+      <div class="grid head"><span>Ingredient</span><span>On hand</span><span class="days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></span><span></span></div>
+      <div class="grid row num"><span class="item">Basil</span><span class="left">6 bunches</span><span class="track"><i class="stock bad" style="width:9%"></i><i class="truck" style="left:21.4%"><i data-lucide="truck"></i></i></span><span class="note bad">Out tonight, truck Tue</span></div>
+      <div class="grid row num"><span class="item">Burrata</span><span class="left">14</span><span class="track"><i class="stock bad" style="width:52%"></i><i class="truck" style="left:64.3%"><i data-lucide="truck"></i></i></span><span class="note bad">Out Thu, truck Fri</span></div>
+      <div class="grid row num"><span class="item">Olive oil</span><span class="left">9 L</span><span class="track"><i class="stock" style="width:80%"></i><i class="truck" style="left:50%"><i data-lucide="truck"></i></i></span><span class="note">Truck Thu, in time</span></div>
+      <div class="grid row num"><span class="item">San Marzano</span><span class="left">22 tins</span><span class="track"><i class="stock" style="width:96%"></i><i class="truck" style="left:35.7%"><i data-lucide="truck"></i></i></span><span class="note">Truck Wed, in time</span></div>
+    </div>
+
+    <div class="ping" role="status">
+      <header><i data-lucide="leaf"></i><span>Pantry</span><span>5:02 pm</span></header>
+      <b>Basil runs out tonight</b>
+      <p>Order 12 bunches from Verde Farms for the 6am drop? That covers you to Sunday.</p>
+      <div class="acts"><span class="btn go">Order 12</span><span class="btn later">Not now</span></div>
+    </div>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

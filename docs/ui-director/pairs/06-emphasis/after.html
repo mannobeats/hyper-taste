@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backup settings</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .settings { width: 380px; padding: 8px; }
+  .seg { display: flex; background: var(--fill); border-radius: var(--r-md); padding: 3px; }
+  .seg span { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 26px; padding: 0 10px; white-space: nowrap; border-radius: var(--r-sm); color: var(--muted); font-size: var(--text-xs); font-weight: var(--w-ui); }
+  .seg span.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-xs); }
+  .seg svg.lucide { width: 13px; height: 13px; }
+  .opts { padding: 8px 8px 4px 12px; }
+  .opt { display: flex; align-items: center; gap: 9px; height: 34px; white-space: nowrap; color: var(--ink); font-size: var(--text-sm); font-weight: var(--w-ui); }
+  .opt > svg.lucide { width: 15px; height: 15px; color: var(--muted); }
+  .opt .chip { margin-left: auto; }
+  .opt .caret { width: 14px; height: 14px; color: var(--faint); }
+  .toggle { width: 30px; height: 18px; border-radius: var(--r-full); background: var(--line-strong); position: relative; margin-left: 8px; }
+  .toggle::after { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 2px oklch(0 0 0 / .2); }
+  .seg span, .opt { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="card settings">
+    <div class="seg"><span><i data-lucide="circle-off"></i>Off</span><span><i data-lucide="shield"></i>Basic</span><span class="on"><i data-lucide="shield-check"></i>Recommended</span><span><i data-lucide="sliders-vertical"></i>Custom</span></div>
+    <div class="opts">
+      <div class="opt"><i data-lucide="repeat"></i>Back up<span class="chip">Every night</span><i class="caret" data-lucide="chevron-right"></i></div>
+      <div class="opt"><i data-lucide="archive"></i>Keep copies<span class="chip">30 days</span><i class="caret" data-lucide="chevron-right"></i></div>
+      <div class="opt"><i data-lucide="map-pin"></i>Store in<span class="chip accent">Frankfurt</span><i class="caret" data-lucide="chevron-right"></i></div>
+      <div class="opt"><i data-lucide="lock"></i>Encryption<span class="chip">Managed keys</span><i class="caret" data-lucide="chevron-right"></i></div>
+      <div class="opt"><i data-lucide="bell"></i>Notify me<span class="chip">When a backup fails</span><i class="caret" data-lucide="chevron-right"></i></div>
+      <div class="opt"><i data-lucide="battery-low"></i>Pause on low battery<span class="toggle" style="margin-left:auto"></span></div>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

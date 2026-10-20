@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saved reports</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .list { width: 520px; padding: 4px; }
+  .row { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 10px; border-radius: var(--r-md); font-size: var(--text-sm); color: var(--ink); font-weight: var(--w-ui); }
+  .row > svg.lucide { width: 16px; height: 16px; color: var(--muted); }
+  .row .meta { margin-left: auto; color: var(--muted); font-size: var(--text-xs); font-weight: var(--w-body); display: flex; align-items: center; gap: 8px; }
+  .row .meta .avatar { width: 20px; height: 20px; font-size: 8px; }
+  .tools { margin-left: auto; display: none; gap: 2px; }
+  .row.hover { background: var(--panel); }
+  .row.hover .meta { display: none; }
+  .row.hover .tools { display: flex; }
+  .row.hover .btn.icon:first-child { background: var(--hover); color: var(--ink); }
+  /* The tooltip shown open, as it would be on hover. */
+  .row.hover .btn.icon:first-child::after { opacity: 1; scale: 1; translate: -50% 0; }
+  .row, .meta { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="card list">
+    <div class="row"><i data-lucide="chart-line"></i>Weekly churn<span class="meta"><span class="avatar" style="--h:30">MP</span>Edited 3h ago</span></div>
+    <div class="row hover"><i data-lucide="chart-line"></i>Spring campaign results<span class="meta">Edited yesterday</span>
+      <span class="tools"><span class="btn ghost icon sm" data-tip="Copy link"><i data-lucide="link"></i></span><span class="btn ghost icon sm" data-tip="Duplicate"><i data-lucide="copy"></i></span><span class="btn ghost icon sm" data-tip="More"><i data-lucide="ellipsis"></i></span></span></div>
+    <div class="row"><i data-lucide="chart-line"></i>Support backlog<span class="meta"><span class="avatar" style="--h:200">KM</span>Edited Tuesday</span></div>
+    <div class="row"><i data-lucide="chart-line"></i>Board pack, March<span class="meta">Edited Oct 6</span></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

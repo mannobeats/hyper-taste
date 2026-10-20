@@ -1,0 +1,11 @@
+{
+  "name": "ui-director-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "shoot": "node shoot.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.64.1"
+  }
+}

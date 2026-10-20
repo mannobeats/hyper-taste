@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golden Crust Bakery</title>
+<style>
+  body { margin: 0; font: 15px/1.5 Inter, system-ui, sans-serif; color: #3b2f2f; background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%); text-align: center; }
+  svg { width: 18px; height: 18px; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; }
+  .logo { font-weight: 800; font-size: 18px; color: #9a3412; }
+  .links { display: flex; gap: 24px; color: #7c2d12; font-size: 14px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; height: 42px; padding: 0 20px; border-radius: 99px; font-weight: 700; background: #ea580c; color: #fff; box-shadow: 0 8px 20px rgba(234,88,12,.3); }
+  .btn.ghost { background: #fff; color: #9a3412; box-shadow: none; border: 2px solid #fed7aa; }
+  .tag { display: inline-block; margin-top: 48px; padding: 5px 14px; border-radius: 99px; background: #ffedd5; color: #c2410c; font-size: 13px; font-weight: 700; }
+  h1 { margin: 16px auto 0; font-size: 52px; line-height: 1.1; font-weight: 800; color: #431407; max-width: 760px; }
+  .lead { color: #78716c; font-size: 18px; max-width: 600px; margin: 16px auto 0; }
+  .ctas { display: flex; justify-content: center; gap: 12px; margin-top: 28px; }
+  .feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1000px; margin: 56px auto 0; padding: 0 32px 64px; }
+  .feat { background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 8px 24px rgba(154,52,18,.08); }
+  .ic { width: 48px; height: 48px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center; background: #ffedd5; color: #ea580c; }
+  .feat h3 { margin: 0; font-size: 17px; color: #431407; }
+  .feat p { margin: 6px 0 0; color: #78716c; font-size: 14px; }
+  .btn { line-height: 1; }
+</style>
+</head>
+<body>
+  <nav><span class="logo">🥐 Golden Crust</span><span class="links"><span>Home</span><span>Menu</span><span>About Us</span><span>Gallery</span><span>Contact</span></span><span class="btn">Order Online</span></nav>
+  <span class="tag">🍞 Freshly Baked Every Day</span>
+  <h1>Welcome to Golden Crust, Where Every Bite Is Pure Happiness</h1>
+  <p class="lead">We are passionate about creating delicious baked goods using only the finest ingredients. Come experience the warmth and love in every loaf.</p>
+  <div class="ctas"><span class="btn">Explore Our Menu</span><span class="btn ghost">Visit Us Today</span></div>
+  <div class="feats">
+    <div class="feat"><div class="ic"><i data-lucide="wheat"></i></div><h3>Fresh Ingredients</h3><p>Only the highest quality, locally sourced ingredients in everything we bake.</p></div>
+    <div class="feat"><div class="ic"><i data-lucide="heart"></i></div><h3>Made With Love</h3><p>Every item is handcrafted with care by our passionate team of bakers.</p></div>
+    <div class="feat"><div class="ic"><i data-lucide="truck"></i></div><h3>Fast Delivery</h3><p>Get your favorite treats delivered right to your door, fresh and warm.</p></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

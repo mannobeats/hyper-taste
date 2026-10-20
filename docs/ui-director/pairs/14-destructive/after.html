@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remove workspace</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  :root { --accent-h: 290; }
+  body { background: color-mix(in oklch, var(--panel) 70%, var(--ink) 12%); }
+  .dialog { width: 340px; padding: 20px; border-radius: var(--r-xl); background: var(--surface); box-shadow: var(--shadow-lg); }
+  h3 { font-size: var(--text-lg); }
+  p { margin-top: 6px; color: var(--ink-2); font-size: var(--text-sm); }
+  .acts { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+</style>
+</head>
+<body>
+  <div class="dialog" role="alertdialog" aria-labelledby="t">
+    <h3 id="t">Remove "Northshore"?</h3>
+    <p class="num">Its 9 projects and 212 files go with it, and 4 members lose access. This can't be undone.</p>
+    <div class="acts"><span class="btn">Cancel</span><span class="btn danger">Remove workspace</span></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bandwidth</title>
+<style>
+  body { margin: 0; padding: 40px 32px; display: grid; place-items: center; background: #000; font: 500 13px/1.4 Inter, system-ui, sans-serif; color: #fff; }
+  .card { width: 340px; padding: 14px; border-radius: 16px; background: #000; border: 1px solid #111; display: grid; gap: 10px; }
+  .t { font-size: 14px; font-weight: 700; }
+  .row { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: #050505; border: 1px solid #141414; }
+  .bar { height: 6px; border-radius: 3px; background: #111; overflow: hidden; } .bar i { display: block; width: 92%; height: 100%; background: #ff0000; }
+  .btn { height: 36px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; background: #5b3cf6; color: #fff; }
+  .note { color: #fff; font-size: 12px; }
+  .btn { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="t">Bandwidth this month</div>
+    <div class="bar"><i></i></div>
+    <div class="note">1.84 TB of 2 TB used</div>
+    <div class="row"><span>Website</span><span>1.02 TB</span></div>
+    <div class="row"><span>API</span><span>610 GB</span></div>
+    <div class="row"><span>Downloads</span><span>210 GB</span></div>
+    <div class="btn">Raise the limit</div>
+  </div>
+</body>
+</html>

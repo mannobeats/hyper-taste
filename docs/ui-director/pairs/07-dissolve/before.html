@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supplier details</title>
+<style>
+  body { margin: 0; padding: 40px 32px; display: grid; place-items: center; background: #f4f4f5; font: 500 13px/1.4 Inter, system-ui, sans-serif; color: #18181b; }
+  .card { width: 380px; padding: 14px; background: #fff; border: 1px solid #e4e4e7; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+  .hd { display: flex; justify-content: space-between; align-items: center; background: #fafafa; border: 1px solid #ececee; border-radius: 10px; padding: 8px 10px; font-weight: 700; }
+  .btn { height: 24px; padding: 0 10px; border-radius: 6px; border: 1px solid #e4e4e7; background: #fff; font-size: 12px; font-weight: 600; display: inline-grid; place-items: center; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .f { border: 1px solid #ececee; border-radius: 10px; padding: 8px 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .f small { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #a1a1aa; font-weight: 700; }
+  .f b { font-weight: 600; }
+  .inner { margin-top: 10px; border: 1px solid #ececee; border-radius: 12px; padding: 10px; }
+  .inner .hd { margin-bottom: 8px; }
+  .inner .f + .f { margin-top: 6px; }
+  .hd, .btn { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="hd">Supplier Details <span class="btn">Edit</span></div>
+    <div class="fields">
+      <div class="f"><small>Supplier since</small><b>Mar 3, 2023</b></div>
+      <div class="f"><small>Contract</small><b>Trial</b></div>
+      <div class="f"><small>Tier</small><b>Gold</b></div>
+      <div class="f"><small>Region</small><b>Nordics</b></div>
+    </div>
+    <div class="inner">
+      <div class="hd">Activity</div>
+      <div class="f"><small>Last order</small><b>Oct 18, 2026 at 4:10pm</b></div>
+      <div class="f"><small>Account manager</small><b>Inês Duarte</b></div>
+    </div>
+  </div>
+</body>
+</html>

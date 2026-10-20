@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slow Type, Porto 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=block">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  /* A conference about drawing letters, so the first screen is a specimen sheet: the name in a
+     light weight at full width, measured by its own guide lines. Cobalt from Porto's tiles. */
+  :root { --accent-h: 262; --tint-h: 85; --tint-c: .008; --display: "Archivo", var(--font); }
+  body { overflow: hidden; }
+  nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 18px 40px; font-size: var(--text-md); color: var(--ink-2); }
+  nav .name { color: var(--ink); font-weight: 600; }
+  nav .mid { display: flex; gap: 32px; }
+  nav .btn { justify-self: end; }
+
+  .sheet { position: relative; height: 380px; margin-top: -4px; }
+  .guide { position: absolute; left: 0; right: 0; height: 0; font-style: normal; border-top: 1px solid var(--accent-300); }
+  .guide.base { border-top-color: var(--accent); }
+  .guide span { position: absolute; top: -18px; font-size: 11px; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .guide span:first-child { left: 40px; } .guide span:last-child { right: 40px; }
+  h1 { position: absolute; left: 0; right: 0; top: 0; text-align: center; color: var(--ink);
+       font: 250 252px/380px var(--display); font-stretch: 100%; letter-spacing: -.035em; white-space: nowrap; }
+
+  .lead { text-align: center; margin: 14px auto 0; font-size: 21px; line-height: 1.45; color: var(--ink-2); max-width: 40ch; }
+
+  /* The tiles: a band of Porto azulejo, drawn as one repeating SVG. */
+  .band { position: absolute; left: 0; right: 0; bottom: 0; height: 236px; color: oklch(.97 .01 262);
+          background: oklch(.42 .17 262) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' fill='none' stroke='white' stroke-opacity='.17' stroke-width='1.5'%3E%3Ccircle r='48'/%3E%3Ccircle cx='96' r='48'/%3E%3Ccircle cy='96' r='48'/%3E%3Ccircle cx='96' cy='96' r='48'/%3E%3Cpath d='M48 6 90 48 48 90 6 48Z'/%3E%3Ccircle cx='48' cy='48' r='16'/%3E%3Ccircle cx='48' cy='48' r='4' fill='white' fill-opacity='.17'/%3E%3C/svg%3E") 0 0 / 96px; }
+  .cols { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 40px; height: 100%; padding: 36px 40px; }
+  .cols > div { display: flex; flex-direction: column; }
+  .cols b { font: 500 30px/1.1 var(--display); letter-spacing: -.02em; color: oklch(.99 0 0); }
+  .cols p { margin-top: 10px; font-size: var(--text-md); line-height: 1.5; color: oklch(.88 .03 262); }
+  .who { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin-top: 12px; font-size: var(--text-md); }
+  .who span { color: oklch(.99 0 0); }
+  .who small { display: block; font-size: var(--text-sm); color: oklch(.82 .05 262); }
+  .buy { align-items: flex-end; text-align: right; }
+  .buy .btn { margin-top: auto; height: 50px; padding: 0 26px; font-size: 16px; border-radius: var(--r-lg); background: oklch(.98 .01 85); color: oklch(.36 .16 262); box-shadow: none; }
+</style>
+</head>
+<body class="bleed">
+  <nav><span class="name">Slow Type 2027</span><span class="mid"><span>Programme</span><span>Speakers</span><span>Venue</span></span><span class="btn strong">Get a ticket</span></nav>
+
+  <div class="sheet">
+    <i class="guide" style="top:92px"><span>Ascender</span><span>723</span></i>
+    <i class="guide" style="top:142px"><span>x-height</span><span>526</span></i>
+    <i class="guide base" style="top:274px"><span>Baseline</span><span>0</span></i>
+    <i class="guide" style="top:318px"><span>Descender</span><span>−173</span></i>
+    <h1>Slow Type</h1>
+  </div>
+  <p class="lead">Two days on how letters are drawn, spaced and set, with the people who draw them.</p>
+
+  <section class="band">
+    <div class="cols">
+      <div><b class="num">14–15 May 2027<br>Teatro Rivoli, Porto</b><p>One room, no parallel tracks, long lunches.</p></div>
+      <div><b>Speaking</b>
+        <div class="who">
+          <span>Inês Moura<small>Drawing Portuguese signage</small></span>
+          <span>Kenji Watanabe<small>Kana beside Latin</small></span>
+          <span>Amara Okoye<small>Spacing by eye</small></span>
+          <span>Liesel Brandt<small>Revivals that aren't copies</small></span>
+        </div>
+      </div>
+      <div class="buy"><b>€240, lunch included</b><p class="num">180 seats, 64 left.</p><span class="btn">Get a ticket</span></div>
+    </div>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

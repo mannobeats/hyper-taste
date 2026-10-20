@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library</title>
+<style>
+  body { margin: 0; padding: 40px 32px; display: grid; place-items: center; background: #f4f4f5; font: 500 13px/1.4 Inter, system-ui, sans-serif; color: #111827; }
+  .files { width: 360px; padding: 16px; border-radius: 20px; display: grid; gap: 12px; background: linear-gradient(160deg, #ffe39a, #ffb86b); }
+  h5 { margin: 0; font-size: 13px; color: #3a2a00; }
+  .panel { background: #fffbe9; border-radius: 14px; padding: 12px; display: grid; gap: 8px; }
+  .n { font-size: 20px; font-weight: 700; } .n small { font-size: 12px; color: #6b7280; font-weight: 500; }
+  .bar { display: flex; gap: 3px; height: 6px; } .bar i { border-radius: 3px; }
+  .keys { display: flex; gap: 10px; font-size: 11px; color: #6b7280; } .keys span { display: inline-flex; align-items: center; gap: 4px; } .keys i { width: 6px; height: 6px; border-radius: 50%; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fc { border-radius: 14px; padding: 10px; display: grid; gap: 14px; color: #fff; font-size: 12px; }
+  .fc small { display: block; font-size: 11px; opacity: .8; margin-top: 2px; }
+  .ico { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; background: #fff; }
+  .ico svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+  <div class="files">
+    <div class="panel"><h5>Storage</h5><div class="n">1.7 TB <small>of 2 TB used</small></div>
+      <div class="bar"><i style="flex:3;background:#8b5cf6"></i><i style="flex:2;background:#ec4899"></i><i style="flex:2;background:#84cc16"></i><i style="flex:1;background:#111"></i></div>
+      <div class="keys"><span><i style="background:#8b5cf6"></i>Photos</span><span><i style="background:#ec4899"></i>Video</span><span><i style="background:#84cc16"></i>Documents</span></div></div>
+    <h5>Recently opened</h5>
+    <div class="grid">
+      <div class="fc" style="background:#38bdf8"><span class="ico" style="color:#38bdf8"><i data-lucide="folder"></i></span><div>Wedding, RAW selects<small>8.2 GB · Folder</small></div></div>
+      <div class="fc" style="background:#22c55e"><span class="ico" style="color:#22c55e"><i data-lucide="sheet"></i></span><div>Kitchen quote, final<small>640 KB · Sheet</small></div></div>
+      <div class="fc" style="background:#ef4444"><span class="ico" style="color:#ef4444"><i data-lucide="file"></i></span><div>Tax return 2026<small>1.9 MB · PDF</small></div></div>
+      <div class="fc" style="background:#f97316"><span class="ico" style="color:#f97316"><i data-lucide="pen-tool"></i></span><div>Logo explorations<small>96 MB · Figma</small></div></div>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

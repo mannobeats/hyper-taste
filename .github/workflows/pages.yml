@@ -1,0 +1,44 @@
+name: Pages
+
+# Publishes the live before/after pairs: https://mannobeats.github.io/hyper-taste/
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**', 'skills/*/fonts/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+
+      # The pair pages load the fonts from skills/, so the site keeps the repo's folder layout.
+      - name: Assemble the site
+        run: |
+          mkdir -p _site/skills/ui-director
+          cp -r docs _site/
+          cp -r skills/ui-director/fonts _site/skills/ui-director/
+          rm -rf _site/docs/*/node_modules
+          echo '<meta http-equiv="refresh" content="0; url=docs/ui-director/">' > _site/index.html
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

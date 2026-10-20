@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forno Alto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&display=block">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  /* One loaf, lit like a still life: the bread is the product, so it gets the stage.
+     Bodoni from the shop's hand-painted window lettering. Photo: Robert Stump on Unsplash (unsplash.com/photos/DNqwLdfo0b8). */
+  :root { --accent-h: 70; --tint-h: 60; --tint-c: .012; --cream: oklch(.95 .025 85); --display: "Bodoni Moda", serif; }
+  body { overflow: hidden; background: oklch(.13 .006 60); color: var(--cream); }
+  .stage { position: relative; height: 760px; overflow: hidden; }
+  .stage img { position: absolute; left: 50%; bottom: -20px; translate: -50% 0; width: 930px; max-width: none; height: 470px; object-fit: cover; object-position: 50% 30%;
+               -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 28%);
+               -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 28%); mask-composite: intersect; }
+
+  nav { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 20px 40px; font-size: var(--text-md); }
+  .logo { font: 500 26px/1 var(--display); letter-spacing: -.01em; }
+  nav .links { display: flex; gap: 32px; color: oklch(.86 .02 80); }
+  nav .btn { justify-self: end; height: 38px; padding: 0 16px; background: none; color: var(--cream); box-shadow: inset 0 0 0 1px oklch(.95 .02 85 / .35); }
+
+  .words { position: relative; z-index: 1; text-align: center; margin-top: 40px; }
+  h1 { color: var(--cream); font: 400 108px/.98 var(--display); font-variation-settings: "opsz" 96; letter-spacing: -.015em; }
+  /* The story and the action stand either side of the loaf, on the dark. */
+  .side { position: absolute; z-index: 1; bottom: 108px; width: 250px; }
+  .side.l { left: 40px; font-size: var(--text-md); line-height: 1.55; color: oklch(.84 .02 80); }
+  .side.r { right: 40px; display: grid; justify-items: end; gap: 12px; text-align: right; }
+  .side .btn { height: 50px; padding: 0 26px; font-size: 16px; border-radius: var(--r-full); background: var(--cream); color: oklch(.18 .01 60); box-shadow: none; }
+  .side small { font-size: var(--text-sm); color: oklch(.76 .02 80); }
+
+  /* What's on the shelf right now, like the chalkboard by the till. */
+  .shelf { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 36px; height: 60px; padding: 0 40px;
+           border-top: 1px solid oklch(1 0 0 / .14); background: oklch(.1 .005 60 / .72); font-size: var(--text-sm); color: oklch(.9 .02 80); }
+  .shelf .when { color: oklch(.74 .02 80); }
+  .shelf b { font-weight: var(--w-ui); color: var(--cream); margin-right: 6px; }
+  .shelf .gone { color: oklch(.66 .02 80); text-decoration: line-through; }
+  .shelf .gone b { color: inherit; }
+  .shelf .where { margin-left: auto; color: oklch(.8 .02 80); }
+</style>
+</head>
+<body class="bleed">
+  <section class="stage">
+    <img src="https://images.unsplash.com/photo-1714735655425-3ba510c2f8f7?w=2400&q=80" alt="A loaf of sourdough cut open on a floured wooden board">
+    <nav><span class="logo">Forno Alto</span><span class="links"><span>Today's bake</span><span>Wholesale</span><span>Visit</span></span><span class="btn">Reserve a loaf</span></nav>
+    <div class="words">
+      <h1>Baked at four,<br>gone by noon.</h1>
+    </div>
+    <p class="side l">Three bakers, one wood oven and a starter we've fed since 1998. Reserve before ten and your loaf waits at the counter.</p>
+    <div class="side r"><span class="btn">Reserve a loaf</span><small>Pay when you collect.</small></div>
+    <div class="shelf num">
+      <span class="when">On the shelf at 10:40</span>
+      <span><b>Country sourdough</b>14 left</span>
+      <span><b>Rye with caraway</b>6 left</span>
+      <span class="gone"><b>Pastel de nata</b>sold out</span>
+      <span class="where">Rua do Almada 112, Porto. Tuesday to Sunday from 7am</span>
+    </div>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saved reports</title>
+<style>
+  body { margin: 0; padding: 40px 32px; display: grid; place-items: center; background: #f4f4f5; font: 500 13px/1.4 Inter, system-ui, sans-serif; color: #18181b; }
+  .list { width: 520px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .row { display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 14px; }
+  .row + .row { border-top: 1px solid #f0f0f1; }
+  .end { margin-left: auto; display: flex; gap: 5px; }
+  .mini { height: 26px; padding: 0 9px; border-radius: 7px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #e4e4e7; background: #fff; color: #3f3f46; }
+  .mini svg { width: 12px; height: 12px; }
+  .mini.del { color: #dc2626; border-color: #fecaca; }
+  .row, .mini { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="list">
+    <div class="row">Weekly churn<span class="end"><span class="mini"><i data-lucide="pencil"></i>Edit</span><span class="mini">Duplicate</span><span class="mini">Share</span><span class="mini del">Delete</span></span></div>
+    <div class="row">Spring campaign results<span class="end"><span class="mini"><i data-lucide="pencil"></i>Edit</span><span class="mini">Duplicate</span><span class="mini">Share</span><span class="mini del">Delete</span></span></div>
+    <div class="row">Support backlog<span class="end"><span class="mini"><i data-lucide="pencil"></i>Edit</span><span class="mini">Duplicate</span><span class="mini">Share</span><span class="mini del">Delete</span></span></div>
+    <div class="row">Board pack, March<span class="end"><span class="mini"><i data-lucide="pencil"></i>Edit</span><span class="mini">Duplicate</span><span class="mini">Share</span><span class="mini del">Delete</span></span></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

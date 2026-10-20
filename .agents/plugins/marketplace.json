@@ -1,0 +1,22 @@
+{
+  "name": "hyper-taste",
+  "interface": {
+    "displayName": "Hyper Taste"
+  },
+  "plugins": [
+    {
+      "name": "hyper-taste",
+      "version": "1.0.0",
+      "description": "Every Hyper Taste skill in one install: ui-director and agents-md.",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

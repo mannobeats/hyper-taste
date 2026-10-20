@@ -1,0 +1,161 @@
+[
+  {
+    "id": "01-edges",
+    "title": "Lock every element to an edge",
+    "rule": "SKILL.md, craft rule 1",
+    "before": "Everything centered. Seven buttons wrap into a loose cloud, and no line runs from one block to the next.",
+    "after": "The banner gives the card a new top edge, the avatar and the actions sit on one line, and each block meets two edges.",
+    "layout": "split"
+  },
+  {
+    "id": "02-close",
+    "title": "Keep related things close",
+    "rule": "SKILL.md, craft rule 2",
+    "before": "The same list stretched across the whole screen. Every task sits a long way from its due date.",
+    "after": "At its natural width, each task and its date read as one row.",
+    "layout": "stack"
+  },
+  {
+    "id": "03-differentiate",
+    "title": "Differentiate instead of spacing out",
+    "rule": "SKILL.md, craft rule 3",
+    "before": "Six sentences at the same weight. Adding padding would only make the block taller.",
+    "after": "Grouped by due date, with faces for people, chips for categories and the link color for links. You find any task in a second.",
+    "layout": "split"
+  },
+  {
+    "id": "04-show",
+    "title": "Show, don't tell",
+    "rule": "SKILL.md, craft rule 4",
+    "before": "An info icon, a paragraph about how to read the report, one sentence per number, and a note explaining the note.",
+    "after": "Bars you compare at a glance, with the one far over its average in amber. Exact values are one hover away.",
+    "layout": "split"
+  },
+  {
+    "id": "05-icons",
+    "title": "Icon-only is for universal icons",
+    "rule": "references/app-ui.md",
+    "before": "Eight icons with no labels. You can't tell what any of them does until its tooltip shows up.",
+    "after": "A count, three actions with labels, and icons only where everyone knows them: delete and more.",
+    "layout": "split"
+  },
+  {
+    "id": "06-emphasis",
+    "title": "Emphasis is a difference",
+    "rule": "SKILL.md, craft rule 5",
+    "before": "Every value is a blue chip, and every one is the default, so the color tells you nothing.",
+    "after": "The defaults are quiet, so the one setting someone changed is the first thing you see.",
+    "layout": "split"
+  },
+  {
+    "id": "07-dissolve",
+    "title": "Dissolve the cards",
+    "rule": "SKILL.md, craft rule 6",
+    "before": "A box around a header box, four field boxes and a box of boxes: three radii and borders stacked on borders.",
+    "after": "One column edge, sections split by thin lines, and color only on the value that's unusual.",
+    "layout": "split"
+  },
+  {
+    "id": "08-landing-product",
+    "title": "Landing page: headline on top, the product in the kitchen",
+    "rule": "references/direction.md, references/words.md",
+    "before": "A badge, gradient text, a paragraph of buzzwords, three buttons and three icon cards. It could be selling anything.",
+    "after": "A centered claim only this product can make and one action, then the week planner standing in a real kitchen, with the reorder it suggests at 5pm crossing its edge.",
+    "layout": "stack",
+    "height": 760
+  },
+  {
+    "id": "09-landing-type",
+    "title": "Landing page: type as big as the idea",
+    "rule": "references/direction.md, SKILL.md step 4",
+    "before": "A tracked-out label, half the headline in a gradient, a ticking countdown and a row of big numbers.",
+    "after": "A specimen sheet: the name in a light weight across the full width, measured by guide lines on the font's real metrics, over a band of Porto's cobalt tiles with the facts and speakers.",
+    "layout": "stack",
+    "height": 800
+  },
+  {
+    "id": "10-landing-photo",
+    "title": "Landing page: the product as a still life",
+    "rule": "references/visuals.md, references/words.md",
+    "before": "A pastel gradient, emoji in the logo, a welcome headline, a paragraph about passion and three icon cards.",
+    "after": "One loaf lit like a still life under a serif headline, the story and the action on the dark either side, and what's on the shelf right now along the bottom.",
+    "layout": "stack",
+    "height": 760,
+    "dark": true
+  },
+  {
+    "id": "11-landing-dark",
+    "title": "Landing page: dark, the output as the object",
+    "rule": "references/direction.md, references/tells.md",
+    "before": "A purple glow, a glowing pill, gradient text, glass cards and claims anyone could make.",
+    "after": "Dark because it lives next to a terminal. A centered headline with a real stake, then Seam's own report: real write traffic, replayed, with the 38-second hole the migration would punch in it.",
+    "layout": "stack",
+    "height": 760,
+    "dark": true
+  },
+  {
+    "id": "12-color",
+    "title": "Color is for meaning",
+    "rule": "SKILL.md, the numbers: color",
+    "before": "A gradient background, a loud color on every card, and white text that's hard to read on them.",
+    "after": "Neutral surfaces hold the structure, and color is saved for the data: storage by type.",
+    "layout": "split"
+  },
+  {
+    "id": "13-dark",
+    "title": "Dark mode is built, not inverted",
+    "rule": "references/system.md",
+    "before": "The light theme flipped: pure black, pure white text, borders you can't see, and an accent that buzzes.",
+    "after": "Surfaces get lighter as they rise, text steps down from white, and the accent takes a lighter step of its ramp.",
+    "layout": "split",
+    "dark": true
+  },
+  {
+    "id": "14-destructive",
+    "title": "Destructive means red, and says what it does",
+    "rule": "SKILL.md, craft rule 8",
+    "before": "The brand color on \"Yes\" makes removing things look like the normal path, and \"Yes / No\" sends you back to reread the question.",
+    "after": "Red for the action you can't undo, a button that names it, and what you'll lose in one sentence.",
+    "layout": "split"
+  },
+  {
+    "id": "15-table",
+    "title": "Let the data decide the form",
+    "rule": "SKILL.md, craft rule 7",
+    "before": "Every column is left-aligned plain text at the same weight.",
+    "after": "Departments become chips, numbers line up on the right in tabular figures, long emails truncate, the inactive row fades, and only the unusual status gets color.",
+    "layout": "stack"
+  },
+  {
+    "id": "16-timeline",
+    "title": "Events over time want a timeline",
+    "rule": "SKILL.md, craft rule 7",
+    "before": "A table of timestamps you have to read cell by cell.",
+    "after": "Order, who and what at a glance: faces, markers whose color means something, and dates the way people say them.",
+    "layout": "split"
+  },
+  {
+    "id": "17-disclosure",
+    "title": "Show the right things, reveal the rest",
+    "rule": "SKILL.md, craft rule 8",
+    "before": "Every row carries every action, so the list is mostly buttons, and Delete is always one click away.",
+    "after": "Rows show the data. Frequent actions appear on hover with tooltips, and rare ones live in the menu.",
+    "layout": "split"
+  },
+  {
+    "id": "18-dashboard",
+    "title": "The generated dashboard, and what it becomes",
+    "rule": "SKILL.md, model habits",
+    "before": "A greeting with an emoji, a sentence about the page, tracked capitals, icons in circles and a green pill on every number.",
+    "after": "The page title, the numbers, and red on the one number that needs attention.",
+    "layout": "split"
+  },
+  {
+    "id": "19-phone",
+    "title": "On a phone, rows stop being a table",
+    "rule": "references/app-ui.md",
+    "before": "The desktop table at 390 wide: tiny text, cut-off columns and a sideways scroll.",
+    "after": "Two lines per row: who and how much, then the details and the status. Grouped by what needs attention, and easy to tap.",
+    "layout": "phone"
+  }
+]

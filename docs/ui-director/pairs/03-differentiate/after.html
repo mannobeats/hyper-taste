@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasks</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .sheet { width: 440px; padding: 6px 16px 10px; }
+  .group { font-size: var(--text-xs); color: var(--muted); padding: 12px 0 4px; }
+  .group:first-child { padding-top: 6px; }
+  .task { display: flex; align-items: center; gap: 10px; min-height: 34px; color: var(--ink); font-weight: var(--w-ui); font-size: var(--text-sm); }
+  .t { display: flex; align-items: center; gap: 6px; white-space: nowrap; min-width: 0; }
+  .end { margin-left: auto; }
+  .chip svg.lucide { width: 12px; height: 12px; }
+  .person { display: inline-flex; align-items: center; gap: 5px; }
+  .person .avatar { width: 18px; height: 18px; font-size: 8px; }
+  .t { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="card sheet">
+    <div class="group">Tomorrow</div>
+    <div class="task"><input class="checkbox" type="checkbox"><span class="t">Confirm the caterer</span><span class="end chip round num"><i data-lucide="clock"></i>10am</span></div>
+    <div class="task"><input class="checkbox" type="checkbox"><span class="t">Hand <span class="link">March receipts</span> to <span class="person"><span class="avatar" style="--h:200">OH</span>Omar</span><span class="chip" style="--h:290"><i data-lucide="credit-card"></i>Finance</span></span><span class="end chip round num"><i data-lucide="clock"></i>2pm</span></div>
+    <div class="group">Next week</div>
+    <div class="task"><input class="checkbox" type="checkbox"><span class="t">File the <span class="link">VAT return</span></span><span class="end chip round"><i data-lucide="clock"></i>In 4 days</span></div>
+    <div class="task"><input class="checkbox" type="checkbox"><span class="t">Roadmap review with <span class="person"><span class="avatar" style="--h:60">LB</span>Lena</span></span><span class="end chip round"><i data-lucide="clock"></i>In 6 days</span></div>
+    <div class="task"><input class="checkbox" type="checkbox"><span class="t">Q1 update to advisors <span class="chip" style="--h:150"><i data-lucide="folder"></i>Advisors</span></span><span class="end chip round"><i data-lucide="clock"></i>Thu</span></div>
+    <div class="task"><input class="checkbox" type="checkbox"><span class="t">New-hire details to People <span class="chip" style="--h:340"><i data-lucide="receipt"></i>Payroll</span></span><span class="end chip round"><i data-lucide="clock"></i>Fri</span></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

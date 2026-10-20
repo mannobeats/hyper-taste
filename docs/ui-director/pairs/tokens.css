@@ -1,0 +1,243 @@
+/* tokens.css: the token system behind every "after" page in docs/ui-director/pairs/.
+   The "before" pages don't use it, on purpose. The skill itself ships no CSS: projects write
+   these tokens in their own format from skills/ui-director/references/system.md.
+
+   Sections: 1 knobs · 2 light tokens · 3 dark tokens · 4 base · 5 primitives · 6 demo stage */
+
+@font-face { font-family: "Geist"; src: url("../../../skills/ui-director/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+@font-face { font-family: "Geist Mono"; src: url("../../../skills/ui-director/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+
+/* ---------- 1. Knobs: the only values a brand should change. Pages override them inline. ---------- */
+:root {
+  --accent-h: 255;        /* accent hue (OKLCH, 0–360), chosen from the product */
+  --accent-c: 1;          /* accent chroma: 1 = normal, 0.6 calmer, 1.2 louder */
+  --tint-h: 255;          /* neutral tint hue. Keep = accent hue for a coherent theme */
+  --tint-c: .004;         /* 0 = pure gray. 0.006 = barely tinted. 0.02 = themed (also drop --tint-l) */
+  --tint-l: 0;            /* 0.03 together with --tint-c: .02 gives a fully themed palette */
+  --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ---------- 2. Light ---------- */
+:root {
+  color-scheme: light;
+  /* neutrals: 3 surfaces, 3 fills, 2 lines, 4 text levels. Small steps (~0.015 L) in light mode. */
+  --bg:          oklch(calc(.985 - var(--tint-l)) var(--tint-c) var(--tint-h)); /* page / main canvas */
+  --panel:       oklch(calc(.970 - var(--tint-l)) var(--tint-c) var(--tint-h)); /* app frame: sidebar, tray, well */
+  --surface:     oklch(1 0 0);                                                    /* raised: card, popover, input, dissolved main area */
+  --fill:        oklch(calc(.955 - var(--tint-l)) var(--tint-c) var(--tint-h)); /* neutral chip, secondary button, checkbox */
+  --hover:       oklch(calc(.935 - var(--tint-l)) var(--tint-c) var(--tint-h));
+  --press:       oklch(calc(.905 - var(--tint-l)) var(--tint-c) var(--tint-h));
+  --line:        oklch(calc(.920 - var(--tint-l)) var(--tint-c) var(--tint-h)); /* every divider and border */
+  --line-strong: oklch(calc(.860 - var(--tint-l)) var(--tint-c) var(--tint-h)); /* inputs, focusable edges */
+  --ink:         oklch(.21 calc(var(--tint-c) * .5) var(--tint-h));  /* headings, key numbers (never pure black) */
+  --ink-2:       oklch(.33 calc(var(--tint-c) * .5) var(--tint-h));  /* body text */
+  --muted:       oklch(.53 calc(var(--tint-c) * .5) var(--tint-h));  /* labels, meta, secondary */
+  --faint:       oklch(.70 calc(var(--tint-c) * .5) var(--tint-h));  /* placeholders, axes, disabled text */
+  --on-strong:   oklch(.99 0 0);                                     /* text on dark or accent fills */
+  --strong:      oklch(.22 calc(var(--tint-c) * .5) var(--tint-h));  /* primary neutral button: importance = darkness */
+  --strong-hover: oklch(.30 calc(var(--tint-c) * .5) var(--tint-h));
+
+  /* accent: one hue as a ramp. Use 600 as the color, 700 hover, 50/100 as tints. */
+  --accent-50:  oklch(.970 calc(.018 * var(--accent-c)) var(--accent-h));
+  --accent-100: oklch(.940 calc(.040 * var(--accent-c)) var(--accent-h));
+  --accent-200: oklch(.890 calc(.075 * var(--accent-c)) var(--accent-h));
+  --accent-300: oklch(.810 calc(.115 * var(--accent-c)) var(--accent-h));
+  --accent-400: oklch(.715 calc(.160 * var(--accent-c)) var(--accent-h));
+  --accent-500: oklch(.625 calc(.190 * var(--accent-c)) var(--accent-h));
+  --accent-600: oklch(.550 calc(.200 * var(--accent-c)) var(--accent-h));
+  --accent-700: oklch(.480 calc(.180 * var(--accent-c)) var(--accent-h));
+  --accent-800: oklch(.400 calc(.150 * var(--accent-c)) var(--accent-h));
+  --accent-900: oklch(.330 calc(.110 * var(--accent-c)) var(--accent-h));
+  --accent-950: oklch(.250 calc(.080 * var(--accent-c)) var(--accent-h));
+  --accent:       var(--accent-600);
+  --accent-hover: var(--accent-700);
+  --accent-press: var(--accent-800);
+  --accent-soft:  var(--accent-50);    /* tinted background for selected/changed values */
+  --accent-ink:   var(--accent-700);   /* text on accent-soft */
+  --link:         var(--accent-600);
+
+  /* semantic: breaks the palette on purpose. Red is always destructive, whatever the brand. */
+  --ok:   oklch(.56 .15 150);  --ok-soft:   oklch(.96 .035 150); --ok-ink:   oklch(.45 .12 150);
+  --warn: oklch(.72 .16 70);   --warn-soft: oklch(.97 .045 80);  --warn-ink: oklch(.50 .12 60);
+  --bad:  oklch(.58 .21 27);   --bad-soft:  oklch(.965 .025 20); --bad-ink:  oklch(.50 .19 27);
+  --bad-hover: oklch(.52 .20 27);
+
+  /* charts: same perceived lightness, hue stepped by 30. Use the first N you need. */
+  --chart-1: oklch(.66 .16 var(--accent-h));
+  --chart-2: oklch(.66 .16 calc(var(--accent-h) - 30));
+  --chart-3: oklch(.66 .16 calc(var(--accent-h) + 30));
+  --chart-4: oklch(.66 .16 calc(var(--accent-h) - 60));
+  --chart-5: oklch(.66 .16 calc(var(--accent-h) + 60));
+  --chart-6: oklch(.66 .16 calc(var(--accent-h) - 90));
+  --chart-ref: oklch(.88 .04 var(--accent-h));  /* comparison series: tint of the same hue */
+
+  /* category chips: set --h on the element (e.g. style="--h:300") */
+  --chip-bg-l: .955; --chip-bg-c: .04; --chip-fg-l: .47; --chip-fg-c: .14;
+
+  /* depth: a hairline ring does the edge, soft layers do the lift. Never a black border. */
+  --shadow-xs: 0 0 0 1px oklch(0 0 0 / .08), 0 1px 2px oklch(0 0 0 / .06);
+  --shadow-sm: 0 0 0 1px oklch(0 0 0 / .05), 0 2px 4px oklch(0 0 0 / .03), 0 12px 24px oklch(0 0 0 / .04);
+  --shadow-lg: 0 0 0 1px oklch(0 0 0 / .06), 0 8px 16px oklch(0 0 0 / .06), 0 24px 48px oklch(0 0 0 / .10);
+  --focus: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent-400);
+
+  /* type */
+  --text-xs: 12px; --text-sm: 13px; --text-md: 14px; --text-lg: 16px; --text-xl: 20px; --text-2xl: 24px;
+  --text-display: clamp(2.5rem, 1.6rem + 3.2vw, 4.25rem);  /* a floor for app screens; pages that sell size headlines from the direction */
+  --w-body: 450; --w-ui: 500; --w-strong: 600;
+
+  /* space (4px grid) and shape */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px; --s-24: 96px;
+  --r-xs: 4px; --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-full: 999px;
+  --control-h: 32px; --control-h-sm: 28px; --touch: 44px;
+
+  /* motion */
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --t-fast: 140ms; --t-base: 220ms; --t-slow: 420ms;
+}
+
+/* ---------- 3. Dark: built for dark, not inverted. Double the steps, dim the text, brighten the lines. ---------- */
+:root[data-theme="dark"], [data-theme="dark"], .dark {   /* .dark is what Tailwind, shadcn and next-themes toggle. Works on any element: a dark island in a light page */
+  color-scheme: dark;
+  --bg:          oklch(calc(.170 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h));
+  --panel:       oklch(calc(.150 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h));
+  --surface:     oklch(calc(.210 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h)); /* elevation = lighter */
+  --fill:        oklch(calc(.245 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h));
+  --hover:       oklch(calc(.280 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h));
+  --press:       oklch(calc(.320 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h));
+  --line:        oklch(calc(.290 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h));
+  --line-strong: oklch(calc(.370 - var(--tint-l) * .5) calc(var(--tint-c) * 1.2) var(--tint-h));
+  --ink:   oklch(.95 calc(var(--tint-c) * .5) var(--tint-h));
+  --ink-2: oklch(.84 calc(var(--tint-c) * .5) var(--tint-h));
+  --muted: oklch(.66 calc(var(--tint-c) * .5) var(--tint-h));
+  --faint: oklch(.50 calc(var(--tint-c) * .5) var(--tint-h));
+  --on-strong: oklch(.17 0 0);
+  --strong: oklch(.96 0 0);
+  --strong-hover: oklch(.88 0 0);
+  --accent:       var(--accent-400);
+  --accent-hover: var(--accent-300);
+  --accent-press: var(--accent-500);
+  --accent-soft:  oklch(.30 calc(.07 * var(--accent-c)) var(--accent-h));
+  --accent-ink:   var(--accent-200);
+  --link:         var(--accent-300);
+  --ok:   oklch(.72 .15 150);  --ok-soft:   oklch(.29 .05 150); --ok-ink:   oklch(.82 .12 150);
+  --warn: oklch(.80 .14 75);   --warn-soft: oklch(.31 .05 75);  --warn-ink: oklch(.86 .11 80);
+  --bad:  oklch(.66 .19 25);   --bad-soft:  oklch(.30 .07 25);  --bad-ink:  oklch(.80 .12 25);
+  --bad-hover: oklch(.70 .19 25);
+  --chart-1: oklch(.72 .14 var(--accent-h));
+  --chart-2: oklch(.72 .14 calc(var(--accent-h) - 30));
+  --chart-3: oklch(.72 .14 calc(var(--accent-h) + 30));
+  --chart-4: oklch(.72 .14 calc(var(--accent-h) - 60));
+  --chart-5: oklch(.72 .14 calc(var(--accent-h) + 60));
+  --chart-6: oklch(.72 .14 calc(var(--accent-h) - 90));
+  --chart-ref: oklch(.40 .05 var(--accent-h));
+  --chip-bg-l: .30; --chip-bg-c: .055; --chip-fg-l: .84; --chip-fg-c: .10;
+  --shadow-xs: 0 0 0 1px var(--line);
+  --shadow-sm: 0 0 0 1px var(--line), 0 8px 24px oklch(0 0 0 / .35);
+  --shadow-lg: 0 0 0 1px var(--line-strong), 0 16px 48px oklch(0 0 0 / .55);
+}
+
+/* ---------- 4. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body { font: var(--w-body) var(--text-md)/1.45 var(--font); color: var(--ink-2); background: var(--bg);
+       -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4 { color: var(--ink); font-weight: var(--w-strong); line-height: 1.15; text-wrap: balance; }
+p { text-wrap: pretty; }
+img, svg, video { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: none; box-shadow: var(--focus); }
+::selection { background: var(--accent-200); color: var(--ink); }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); font-size: .92em; }
+.muted { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ---------- 5. Primitives ---------- */
+/* Buttons: the more important, the darker. ghost < default < strong < accent. One primary per view. */
+/* Single-line controls get line-height 1: an inherited 1.45 makes a fractional line box that snaps the label above center. */
+.btn, .chip, .avatar { line-height: 1; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: var(--control-h); text-decoration: none;
+       padding: 0 12px; border-radius: var(--r-md); font-size: var(--text-sm); font-weight: var(--w-ui); white-space: nowrap;
+       color: var(--ink); background: var(--surface); box-shadow: var(--shadow-xs);
+       transition: background-color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast); }
+.btn:hover { background: var(--panel); }
+.btn:active { background: var(--hover); transform: translateY(.5px); }
+.btn.ghost { background: none; box-shadow: none; color: var(--ink-2); }
+.btn.ghost:hover { background: var(--hover); }
+.btn.soft { background: var(--fill); box-shadow: none; }
+.btn.soft:hover { background: var(--hover); }
+.btn.strong { background: var(--strong); color: var(--on-strong); box-shadow: 0 1px 2px oklch(0 0 0 / .2); }
+.btn.strong:hover { background: var(--strong-hover); }
+.btn.accent { background: var(--accent); color: var(--on-strong); box-shadow: 0 1px 2px oklch(0 0 0 / .15); }
+.btn.accent:hover { background: var(--accent-hover); }
+.btn.accent:active { background: var(--accent-press); }
+.btn.danger { background: var(--bad); color: var(--on-strong); box-shadow: none; }
+.btn.danger:hover { background: var(--bad-hover); }
+.btn:disabled, .btn[aria-disabled="true"] { background: var(--fill); color: var(--faint); box-shadow: none; cursor: not-allowed; transform: none; }
+.btn.sm { height: var(--control-h-sm); padding: 0 10px; font-size: var(--text-xs); border-radius: var(--r-sm); }
+.btn.lg { height: 40px; padding: 0 18px; font-size: var(--text-md); border-radius: var(--r-md); }
+.btn.icon { width: var(--control-h); padding: 0; color: var(--muted); }
+.btn.icon.sm { width: var(--control-h-sm); }
+
+/* Chips carry categories (with --h) or states. Neutral chip = default value, no color. */
+.chip { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: var(--r-sm);
+        font-size: var(--text-xs); font-weight: var(--w-ui); white-space: nowrap; background: var(--fill); color: var(--muted); }
+.chip[style*="--h"] { background: oklch(var(--chip-bg-l) var(--chip-bg-c) var(--h)); color: oklch(var(--chip-fg-l) var(--chip-fg-c) var(--h)); }
+.chip.accent { background: var(--accent-soft); color: var(--accent-ink); }
+.chip.ok { background: var(--ok-soft); color: var(--ok-ink); }
+.chip.warn { background: var(--warn-soft); color: var(--warn-ink); }
+.chip.bad { background: var(--bad-soft); color: var(--bad-ink); }
+.chip.round { border-radius: var(--r-full); }
+.chip svg { width: 12px; height: 12px; }
+.chip.outline { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); color: var(--ink-2); }
+/* .dot is only for timeline markers and chart legends. Never put it inside a chip, pill or badge. */
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+
+/* Inputs: 16px text on touch screens (stops iOS zoom), label above, error below. */
+.field { display: grid; gap: 6px; }
+.field label { font-size: var(--text-sm); color: var(--ink); font-weight: var(--w-ui); }
+.field .hint { font-size: var(--text-xs); color: var(--muted); }
+.field .error { font-size: var(--text-xs); color: var(--bad-ink); }
+.input { height: var(--control-h); width: 100%; padding: 0 10px; border-radius: var(--r-md); background: var(--surface);
+         border: 1px solid var(--line-strong); color: var(--ink); font-size: var(--text-sm); transition: box-shadow var(--t-fast); }
+.input::placeholder { color: var(--faint); }
+.input:focus { outline: none; border-color: var(--accent-400); box-shadow: 0 0 0 3px var(--accent-100); }
+.input[aria-invalid="true"] { border-color: var(--bad); }
+@media (pointer: coarse) { .input { font-size: 16px; height: var(--touch); } .btn { min-height: var(--touch); } .btn.icon { min-width: var(--touch); } }
+
+.checkbox { appearance: none; width: 15px; height: 15px; border-radius: var(--r-xs); background: var(--surface);
+            box-shadow: inset 0 0 0 1px var(--line-strong); display: inline-grid; place-content: center; flex: none; cursor: pointer; }
+.checkbox:checked { background: var(--accent); box-shadow: none; }
+.checkbox:checked::after { content: ""; width: 8px; height: 5px; border: solid var(--on-strong); border-width: 0 0 2px 2px; transform: translateY(-1px) rotate(-45deg); }
+
+.avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: none; background: var(--fill);
+          display: inline-grid; place-items: center; font-size: 10px; font-weight: var(--w-strong); color: var(--muted); }
+.kbd { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: var(--r-xs);
+       background: var(--fill); color: var(--muted); font: var(--w-ui) 11px/1 var(--font); }
+.card { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); }
+.divider { height: 1px; background: var(--line); border: 0; }
+
+/* Tooltip: pure CSS, for icon buttons and truncated values. Content lives in data-tip. */
+[data-tip] { position: relative; }
+[data-tip]::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 4px;
+  padding: 4px 8px; border-radius: var(--r-sm); background: var(--strong); color: var(--on-strong); font-size: var(--text-xs);
+  font-weight: var(--w-ui); white-space: nowrap; pointer-events: none; opacity: 0; scale: 0; /* scale 0 so hidden tips never widen the page */
+  transition: opacity var(--t-fast), translate var(--t-fast) var(--ease); z-index: 30; }
+[data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; scale: 1; translate: -50% 0; transition-delay: 350ms; }
+
+/* Initials avatar: set --h from the person (style="--h:40"). Real products use photos when they have them. */
+.avatar[style*="--h"] { background: oklch(var(--chip-bg-l) calc(var(--chip-bg-c) * 1.6) var(--h)); color: oklch(var(--chip-fg-l) var(--chip-fg-c) var(--h)); }
+.link { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; text-decoration-color: color-mix(in oklch, currentColor 40%, transparent); }
+svg.lucide { width: 16px; height: 16px; stroke-width: 1.75; flex: none; }
+
+/* ---------- 6. Demo stage: how the pair pages sit in the gallery, not part of any pattern ---------- */
+body { background: var(--panel); padding: 40px 32px; display: grid; place-content: center; }
+body.bleed { padding: 0; display: block; place-content: normal; background: var(--bg); }

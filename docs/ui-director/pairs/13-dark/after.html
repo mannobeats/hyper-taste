@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bandwidth</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  :root { --accent-h: 275; }
+  body { background: var(--bg); }
+  .storage { width: 340px; padding: 14px; display: grid; gap: 10px; }
+  .t { font-size: var(--text-md); color: var(--ink); font-weight: var(--w-ui); }
+  .bar { height: 6px; border-radius: 3px; background: var(--fill); overflow: hidden; }
+  .bar i { display: block; width: 92%; height: 100%; background: var(--warn); }
+  .note { display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--muted); }
+  .note b { color: var(--warn-ink); font-weight: var(--w-ui); }
+  .rows { border-radius: var(--r-md); background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); }
+  .row { display: flex; justify-content: space-between; padding: 10px 12px; font-size: var(--text-sm); }
+  .row + .row { border-top: 1px solid var(--line); }
+  .row span:first-child { color: var(--ink-2); }
+  .row span:last-child { color: var(--muted); }
+  .storage .btn { width: 100%; height: 36px; }
+</style>
+</head>
+<body>
+  <div class="card storage">
+    <div class="t">Bandwidth this month</div>
+    <div class="bar"><i></i></div>
+    <div class="note num"><span>1.84 TB of 2 TB used</span><b>160 GB left</b></div>
+    <div class="rows num">
+      <div class="row"><span>Website</span><span>1.02 TB</span></div>
+      <div class="row"><span>API</span><span>610 GB</span></div>
+      <div class="row"><span>Downloads</span><span>210 GB</span></div>
+    </div>
+    <span class="btn accent">Raise the limit</span>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

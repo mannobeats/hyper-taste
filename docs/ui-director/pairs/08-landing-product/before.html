@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KitchenIQ AI</title>
+<style>
+  body { margin: 0; font: 14px/1.5 Inter, system-ui, sans-serif; color: #111827; background: radial-gradient(60% 70% at 50% 0%, #ede9fe 0%, #fff 70%); text-align: center; }
+  svg { width: 16px; height: 16px; }
+  nav { display: flex; align-items: center; padding: 18px 32px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 15px; }
+  .logo i { width: 26px; height: 26px; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #db2777); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 13px; }
+  .links { display: flex; gap: 22px; margin: 0 auto; color: #4b5563; font-size: 13px; }
+  .end { display: flex; gap: 8px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 16px; border-radius: 10px; font-weight: 600; font-size: 14px; border: 1px solid #e5e7eb; background: #fff; }
+  .btn.dark { background: #111827; color: #fff; border-color: #111827; }
+  .btn.ghost { border-color: transparent; background: none; }
+  .btn.grad { border: 0; color: #fff; background: linear-gradient(90deg, #7c3aed, #db2777); box-shadow: 0 8px 24px rgba(124,58,237,.35); }
+  .badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 40px; padding: 5px 14px; border-radius: 99px; background: #f3e8ff; color: #7c3aed; font-size: 12.5px; font-weight: 600; }
+  .badge b { width: 7px; height: 7px; border-radius: 50%; background: #7c3aed; }
+  h1 { font-size: 56px; line-height: 1.08; font-weight: 800; letter-spacing: -.02em; max-width: 920px; margin: 20px auto 0;
+       background: linear-gradient(90deg, #6d28d9, #db2777); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { color: #6b7280; font-size: 18px; max-width: 680px; margin: 18px auto 0; }
+  .ctas { display: flex; justify-content: center; gap: 12px; margin-top: 30px; }
+  .ctas .btn { height: 46px; padding: 0 22px; font-size: 15px; }
+  .feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1080px; margin: 64px auto 0; padding: 0 32px 64px; text-align: left; }
+  .feat { border: 1px solid #ede9fe; border-radius: 18px; padding: 22px; background: #fff; box-shadow: 0 6px 20px rgba(124,58,237,.07); }
+  .ic { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #ede9fe; color: #7c3aed; margin-bottom: 14px; }
+  .feat h3 { margin: 0; font-size: 16px; }
+  .feat p { margin: 6px 0 0; color: #6b7280; font-size: 14px; }
+  .logo, .btn, .badge { line-height: 1; }
+</style>
+</head>
+<body>
+  <nav>
+    <span class="logo"><i>K</i>KitchenIQ AI</span>
+    <span class="links"><span>Platform</span><span>Solutions</span><span>Integrations</span><span>Pricing</span><span>Resources</span><span>About</span><span>Contact</span></span>
+    <span class="end"><span class="btn ghost">Log in</span><span class="btn dark">Get started</span></span>
+  </nav>
+  <span class="badge"><b></b>New: AI-Powered Forecasting</span>
+  <h1>Supercharge Your Restaurant Operations With Intelligent AI</h1>
+  <p class="lead">KitchenIQ AI is the all-in-one smart platform that helps forward-thinking restaurants optimize inventory, reduce waste and unlock new levels of efficiency with powerful automation.</p>
+  <div class="ctas"><span class="btn grad">Start Your Free Trial <i data-lucide="arrow-right"></i></span><span class="btn">Schedule a Demo</span><span class="btn ghost"><i data-lucide="play"></i>See How It Works</span></div>
+  <div class="feats">
+    <div class="feat"><div class="ic"><i data-lucide="sparkles"></i></div><h3>Smart Forecasting</h3><p>Our advanced AI predicts what you need so you can make data-driven decisions with confidence.</p></div>
+    <div class="feat"><div class="ic"><i data-lucide="zap"></i></div><h3>Real-Time Sync</h3><p>Stay connected across every location with instant updates and seamless workflows.</p></div>
+    <div class="feat"><div class="ic"><i data-lucide="shield-check"></i></div><h3>Enterprise-Grade Security</h3><p>Your data is protected with industry-leading encryption and compliance standards.</p></div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

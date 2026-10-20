@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finance</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { display: block; }
+  .wrap { overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  th { text-align: left; font-weight: var(--w-ui); color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 0 14px; height: 44px; border-bottom: 1px solid var(--line); color: var(--ink); white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  .r { text-align: right; }
+  .id { color: var(--muted); }
+  .who { display: flex; align-items: center; gap: 8px; font-weight: var(--w-ui); }
+  .email { max-width: 200px; overflow: hidden; text-overflow: ellipsis; color: var(--ink-2); }
+  tr.off td, tr.off .email { color: var(--muted); }
+  tr.off .avatar { opacity: .6; }
+  .who { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="card wrap"><table>
+    <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Email</th><th>Status</th><th class="r">Years</th><th class="r">Salary</th></tr></thead>
+    <tbody>
+      <tr><td class="mono id">ST-104</td><td><span class="who"><span class="avatar" style="--h:40">MP</span>Mira Patel</span></td><td><span class="chip">Operations</span></td><td class="email" data-tip="mira.patel@brightwater-freight.com">mira.patel@brightwater-freight.com</td><td>Active</td><td class="r num">4</td><td class="r num">$72,400</td></tr>
+      <tr><td class="mono id">ST-117</td><td><span class="who"><span class="avatar" style="--h:200">JW</span>Jonah Weiss</span></td><td><span class="chip">Finance</span></td><td class="email">jonah.weiss@brightwater-freight.com</td><td>Active</td><td class="r num">9</td><td class="r num">$98,000</td></tr>
+      <tr class="off"><td class="mono id">ST-121</td><td><span class="who"><span class="avatar" style="--h:320">ES</span>Elena Sokolova</span></td><td><span class="chip">Support</span></td><td class="email">elena.sokolova@brightwater-freight.com</td><td>Inactive</td><td class="r num">1</td><td class="r num">$54,800</td></tr>
+      <tr><td class="mono id">ST-130</td><td><span class="who"><span class="avatar" style="--h:120">KM</span>Kwame Mensah</span></td><td><span class="chip">Engineering</span></td><td class="email">kwame.mensah@brightwater-freight.com</td><td>Active</td><td class="r num">11</td><td class="r num">$141,500</td></tr>
+      <tr><td class="mono id">ST-142</td><td><span class="who"><span class="avatar" style="--h:260">HI</span>Hana Ito</span></td><td><span class="chip">Engineering</span></td><td class="email">hana.ito@brightwater-freight.com</td><td><span class="chip warn">On leave</span></td><td class="r num">7</td><td class="r num">$118,250</td></tr>
+    </tbody>
+  </table></div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

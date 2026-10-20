@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supplier details</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { padding: 0; display: flex; justify-content: flex-end; background: var(--bg); }
+  .column { width: 380px; min-height: 100vh; background: var(--surface); border-left: 1px solid var(--line); }
+  .sec { padding: 14px 20px; }
+  .sec + .sec { border-top: 1px solid var(--line); }
+  .sec h4 { display: flex; justify-content: space-between; align-items: center; font-size: var(--text-md); margin-bottom: 6px; }
+  .sec h4 svg.lucide { width: 15px; height: 15px; color: var(--muted); }
+  .sec.closed h4 { margin: 0; }
+  .sec.closed h4 svg.lucide { transform: rotate(-90deg); }
+  .kv { display: grid; grid-template-columns: 112px 1fr; align-items: center; min-height: 30px; font-size: var(--text-sm); }
+  .kv dt { color: var(--muted); }
+  .kv dd { display: flex; align-items: center; gap: 7px; color: var(--ink); font-weight: var(--w-ui); }
+  .kv dd > svg.lucide { width: 14px; height: 14px; color: var(--muted); }
+  .kv .avatar { width: 18px; height: 18px; font-size: 8px; }
+</style>
+</head>
+<body>
+  <aside class="column">
+    <section class="sec">
+      <h4>Supplier details <i data-lucide="chevron-down"></i></h4>
+      <dl>
+        <div class="kv"><dt>Supplier since</dt><dd class="num">Mar 3, 2023</dd></div>
+        <div class="kv"><dt>Contract</dt><dd><span class="chip warn">Trial</span></dd></div>
+        <div class="kv"><dt>Tier</dt><dd>Gold</dd></div>
+        <div class="kv"><dt>Region</dt><dd>Nordics</dd></div>
+        <div class="kv"><dt>Category</dt><dd>Packaging</dd></div>
+      </dl>
+    </section>
+    <section class="sec">
+      <h4>Activity <i data-lucide="chevron-down"></i></h4>
+      <dl>
+        <div class="kv"><dt>Last order</dt><dd class="num">Yesterday, 4:10pm</dd></div>
+        <div class="kv"><dt>Account manager</dt><dd><span class="avatar" style="--h:200">ID</span>Inês Duarte</dd></div>
+      </dl>
+    </section>
+    <section class="sec closed"><h4>Documents <i data-lucide="chevron-down"></i></h4></section>
+  </aside>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>
