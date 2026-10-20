@@ -98,12 +98,12 @@ const sign = d => d == null ? '–' : (d > 0 ? '+' : d < 0 ? '−' : '±') + Mat
 const tone = d => d > 0 ? 'up' : d < 0 ? 'down' : '';
 const VIEWS = [['start', 'Start'], ['without', 'Without skill'], ['with', 'With skill'], ['after', 'Reference after'], ['compare', 'Side by side']];
 const q = new URLSearchParams(location.search);
-let runs = [], data, cases, current, view = q.get('view') || 'compare', filter = 'all', theme = q.get('theme') || 'light';
+const pick = (v, ok, d) => ok.includes(v) ? v : d;
+let runs = [], data, cases, current, view = pick(q.get('view'), VIEWS.map(v => v[0]), 'compare'), filter = 'all', theme = pick(q.get('theme'), ['light', 'dark'], 'light');
 
 async function load() {
   runs = await fetch('results/runs.json').then(r => r.ok ? r.json() : []).catch(() => []);
-  let run = q.get('run') || runs[0];
-  if (run && !/^[\w-]+$/.test(run)) run = runs[0];
+  const run = pick(q.get('run'), runs, runs[0]);
   if (!run) return empty('No eval run yet', 'Run the suite, then <code>node evals/ui-director/collect.mjs</code>.');
   data = await fetch(`results/${run}/viewer.json`).then(r => r.ok ? r.json() : null).catch(() => null);
   if (!data) return empty('Run not found', `There is no <code>results/${esc(run)}/viewer.json</code>. Run <code>node evals/ui-director/collect.mjs</code>.`);
