@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Today</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  /* A sailing club's app. The key object is the day's wind, drawn hour by hour, with the window
+     you can sail lit in the club's sea blue. */
+  :root { --accent-h: 228; --tint-h: 228; --tab-h: 50px; --safe-b: max(env(safe-area-inset-bottom), 20px); }
+  body { display: block; place-content: normal; padding: 0 0 calc(var(--tab-h) + var(--safe-b) + 24px); background: var(--surface); min-height: 100dvh; }
+
+  header { display: flex; align-items: flex-end; justify-content: space-between; padding: 58px 16px 0; }
+  header small { display: block; font-size: var(--text-sm); color: var(--muted); font-weight: var(--w-ui); line-height: 1; margin-bottom: 8px; }
+  h1 { font-size: 34px; font-weight: 700; letter-spacing: -.025em; line-height: 1; }
+  .me { width: 36px; height: 36px; font-size: 13px; }
+
+  .wind { padding: 24px 16px 0; }
+  h2 { font-size: 22px; letter-spacing: -.015em; }
+  .wind p { margin-top: 6px; font-size: 15px; line-height: 1.4; color: var(--muted); }
+  .wind p b { color: var(--ink-2); font-weight: var(--w-ui); }
+
+  /* The strip: one column per hour. Bar = wind, tick = gust, arrow = where it blows. 4px per knot. */
+  .strip { position: relative; display: grid; grid-template-columns: repeat(10, 1fr); margin-top: 36px; }
+  .window { position: absolute; top: 0; bottom: 42px; left: 30%; width: 40%; border-radius: var(--r-lg); background: var(--accent-soft); }
+  .h { position: relative; display: grid; justify-items: center; gap: 8px; color: var(--line-strong); }
+  .bars { position: relative; width: 16px; height: 116px; }
+  .bars i { position: absolute; inset: auto 0 0; height: calc(var(--w) * 4px); border-radius: 5px; background: currentColor; }
+  .bars u { position: absolute; inset: auto 0 calc(var(--g) * 4px); height: 2px; border-radius: 1px; background: currentColor; opacity: .45; }
+  .h svg.lucide { width: 14px; height: 14px; color: var(--muted); rotate: calc(var(--d) * 1deg + 180deg); }
+  .h span { font-size: var(--text-xs); line-height: 1; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .h.go { color: var(--accent); }
+  .h.go span { color: var(--accent-ink); font-weight: var(--w-ui); }
+  .h.hard { color: var(--warn); }
+  .now { position: absolute; top: -4px; bottom: 42px; left: 21.7%; width: 1px; background: color-mix(in oklch, var(--ink) 35%, transparent); }
+  .now::before { content: "Now"; position: absolute; bottom: 100%; left: 50%; translate: -50% -4px; font-size: 11px; line-height: 1; color: var(--muted); }
+  .note { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: var(--text-sm); line-height: 1; color: var(--warn-ink); }
+  .note svg.lucide { width: 14px; height: 14px; }
+
+  .book { display: flex; align-items: center; justify-content: center; width: calc(100% - 32px); height: 50px; margin: 24px 16px 0;
+          border-radius: var(--r-full); background: var(--strong); color: var(--on-strong); font-size: var(--text-lg); font-weight: var(--w-strong); line-height: 1; text-decoration: none; }
+  .book:active { transform: scale(.98); }
+
+  .group { display: flex; justify-content: space-between; align-items: baseline; padding: 28px 16px 4px; font-size: var(--text-sm); line-height: 1; color: var(--muted); }
+  .group a { color: var(--link); text-decoration: none; font-weight: var(--w-ui); }
+  .row { display: grid; grid-template-columns: 1fr auto 16px; align-items: center; column-gap: 8px; min-height: 64px; margin: 0 16px; border-bottom: 1px solid var(--line); text-decoration: none; }
+  .row:last-of-type { border-bottom: 0; }
+  .row b { display: block; color: var(--ink); font-weight: var(--w-ui); font-size: var(--text-lg); line-height: 1.2; }
+  .row small { display: block; margin-top: 3px; color: var(--muted); font-size: var(--text-sm); }
+  .row .t { color: var(--muted); font-size: var(--text-md); font-variant-numeric: tabular-nums; }
+  .row svg.lucide { color: var(--faint); }
+
+  /* Tab bar: over the content, which pads by its height, outline icons at rest, filled when active. */
+  nav { position: fixed; inset: auto 0 0; display: grid; grid-template-columns: repeat(4, 1fr); height: calc(var(--tab-h) + var(--safe-b));
+        padding: 6px 8px var(--safe-b); background: var(--surface); box-shadow: 0 -1px 0 var(--line); }
+  nav a { display: grid; justify-items: center; align-content: start; gap: 4px; font-size: 11px; line-height: 1; font-weight: var(--w-ui); color: var(--muted); text-decoration: none; }
+  nav svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  nav [aria-current] { color: var(--accent); }
+  nav [aria-current] svg .fill { fill: currentColor; }
+</style>
+</head>
+<body>
+  <header>
+    <div><small>Saturday 24 October</small><h1>Today</h1></div>
+    <span class="avatar me" style="--h:30" aria-label="Your account">JM</span>
+  </header>
+
+  <section class="wind">
+    <h2>Good sailing from 11 to 3</h2>
+    <p><b>14 knots southwest</b>, gusts to 19. High tide 1:42pm.</p>
+    <div class="strip" aria-label="Wind by hour">
+      <div class="window"></div>
+      <div class="h" style="--w:5;--g:7;--d:200"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>8</span></div>
+      <div class="h" style="--w:7;--g:10;--d:210"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>9</span></div>
+      <div class="h" style="--w:10;--g:14;--d:220"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>10</span></div>
+      <div class="h go" style="--w:13;--g:17;--d:225"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>11</span></div>
+      <div class="h go" style="--w:14;--g:19;--d:225"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>12</span></div>
+      <div class="h go" style="--w:15;--g:19;--d:230"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>1</span></div>
+      <div class="h go" style="--w:14;--g:18;--d:230"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>2</span></div>
+      <div class="h" style="--w:13;--g:17;--d:235"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>3</span></div>
+      <div class="h hard" style="--w:19;--g:25;--d:240"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>4</span></div>
+      <div class="h hard" style="--w:22;--g:28;--d:245"><div class="bars"><i></i><u></u></div><i data-lucide="arrow-up"></i><span>5</span></div>
+      <div class="now" aria-label="Now, 9:40"></div>
+    </div>
+    <div class="note"><i data-lucide="triangle-alert"></i>Over 18 knots from 4pm: dinghies stay ashore</div>
+  </section>
+
+  <a class="book" href="#">Book a boat for 11am</a>
+
+  <div class="group"><span>Free at 11am</span><a href="#">All boats</a></div>
+  <a class="row"><div><b>Petrel</b><small>Laser, sail alone</small></div><span class="t">All day</span><i data-lucide="chevron-right"></i></a>
+  <a class="row"><div><b>Kittiwake</b><small>RS Quest, two crew</small></div><span class="t">Until 2pm</span><i data-lucide="chevron-right"></i></a>
+  <a class="row"><div><b>Merlin</b><small>Wayfarer, up to four</small></div><span class="t">Until 1pm</span><i data-lucide="chevron-right"></i></a>
+
+  <nav>
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24"><path class="fill" d="M11 3v12H4.5z"/><path class="fill" d="M13.5 6.5v8.5H18z"/><path class="fill" d="M3 18h18l-2.2 3H5.2z"/></svg>Today</a>
+    <a href="#"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>Bookings</a>
+    <a href="#"><svg viewBox="0 0 24 24"><path d="M5 19V5.5A2.5 2.5 0 0 1 7.5 3H19v14H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12v-4"/><path d="M9 7.5h6"/></svg>Logbook</a>
+    <a href="#"><svg viewBox="0 0 24 24"><path d="M5.5 21V3"/><path d="M5.5 4.5 19 9l-13.5 4.5z"/></svg>Club</a>
+  </nav>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

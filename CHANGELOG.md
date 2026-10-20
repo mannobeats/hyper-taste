@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0] - 2026-10-20
+
+ui-director 1.2.0. agents-md is unchanged at 1.0.0.
+
+- **ui-director:** a new `references/scroll.md` for pages that sell: pick a page grammar and keep
+  its bans, write the feeling curve with one peak, build the hero from planes that move at
+  different rates, vary what the scroll does from section to section, and check every
+  in-between frame. Landing directions now name the grammar, the curve, the peak and the hero
+  layers.
+- **ui-director:** clearer routing. Each job lists the files to read whole, a fix or "it feels
+  off" opens `tells.md`, and onboarding opens `moments.md` and `app-ui.md`.
+- **ui-director:** contradictions resolved: the split hero, signature and peak, one scene per
+  screen, count-up and reveal timings, kinetic type, arrows in the page check, status chips,
+  pointer effects, touch targets and truncation on phones.
+- **Evals:** four new phone cases (home, failed payment, paywall, onboarding) with before and
+  after pairs, an Opus judge, and `viewer.html` with `collect.mjs` to compare each run with and
+  without the skill.
+
 ## [1.1.0] - 2026-10-20
 
 ui-director 1.1.0. agents-md is unchanged at 1.0.0.

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your window</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  /* A plant care app. Instead of slides of claims, onboarding asks the one thing that changes the
+     first screen: how much light the plants get. Each answer is drawn as the window it describes. */
+  :root { --accent-h: 152; --tint-h: 152; --sun: oklch(.80 .15 75); }
+  body { display: flex; flex-direction: column; place-content: normal; padding: 0 16px max(env(safe-area-inset-bottom), 24px);
+         background: var(--surface); min-height: 100dvh; }
+
+  .top { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; column-gap: 12px; height: 44px; margin-top: 50px; }
+  .top a { display: grid; place-items: center; height: 44px; color: var(--ink-2); line-height: 1; text-decoration: none; }
+  .top a:first-child { justify-items: start; }
+  .top a svg.lucide { width: 24px; height: 24px; }
+  .top .skip { justify-items: end; color: var(--muted); font-size: var(--text-md); font-weight: var(--w-ui); }
+  .bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .bar i { height: 4px; border-radius: 2px; background: var(--fill); }
+  .bar i.on { background: var(--accent); }
+
+  h1 { margin-top: 28px; font-size: 28px; letter-spacing: -.025em; line-height: 1.12; }
+  .why { margin-top: 8px; font-size: 15px; line-height: 1.4; color: var(--muted); }
+
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+  .opt { position: relative; display: grid; gap: 12px; padding: 14px; border-radius: var(--r-xl); background: var(--panel);
+         box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow var(--t-fast), background-color var(--t-fast); }
+  .opt:active { scale: .98; }
+  .opt b { display: block; color: var(--ink); font-size: var(--text-lg); font-weight: var(--w-strong); line-height: 1.2; }
+  .opt small { display: block; margin-top: 2px; color: var(--muted); font-size: var(--text-sm); }
+  .opt[aria-checked="true"] { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); }
+  .opt[aria-checked="true"] small { color: var(--accent-ink); }
+  .tick { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--on-strong); }
+  .tick svg.lucide { width: 13px; height: 13px; stroke-width: 3; }
+
+  /* The window: its frame, the sun where it sits, and the patch of light it throws on the sill */
+  .win { width: 84px; height: 70px; margin-left: -16px; }
+  .win .glass { fill: var(--sun); }
+  .win .frame { fill: none; stroke: var(--ink-2); stroke-width: 1.75; stroke-linecap: round; }
+  .win .sun { fill: var(--sun); }
+
+  .unsure { display: inline-flex; align-items: center; gap: 8px; height: 44px; margin-top: 8px; color: var(--link); font-size: var(--text-md); font-weight: var(--w-ui); line-height: 1; text-decoration: none; }
+  .unsure svg.lucide { width: 18px; height: 18px; }
+
+  .go { display: flex; align-items: center; justify-content: center; height: 52px; margin-top: auto; border-radius: var(--r-full);
+        background: var(--strong); color: var(--on-strong); font-size: var(--text-lg); font-weight: var(--w-strong); line-height: 1; text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <a href="#" aria-label="Back"><i data-lucide="chevron-left"></i></a>
+    <div class="bar" role="progressbar" aria-valuenow="2" aria-valuemin="1" aria-valuemax="4" aria-label="Step 2 of 4"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+    <a class="skip" href="#">Skip</a>
+  </div>
+
+  <h1>Which way does your brightest window face?</h1>
+  <p class="why">It decides which plants we suggest, and how often to water them.</p>
+
+  <div class="opts" role="radiogroup">
+    <div class="opt" role="radio" aria-checked="false">
+      <svg class="win" viewBox="0 0 72 60" aria-hidden="true"><rect class="glass" x="23" y="4" width="26" height="30" rx="2" opacity="0.12"/><rect class="frame" x="23" y="4" width="26" height="30" rx="2"/><path class="frame" d="M23 19h26M14 34.5h44"/></svg>
+      <div><b>North</b><small>Soft light all day</small></div>
+    </div>
+    <div class="opt" role="radio" aria-checked="true">
+      <span class="tick"><i data-lucide="check"></i></span>
+      <svg class="win" viewBox="0 0 72 60" aria-hidden="true"><path class="glass" d="M23 35h26l14 20H37z" opacity=".3"/><rect class="glass" x="23" y="4" width="26" height="30" rx="2" opacity="0.35"/><circle class="sun" cx="30" cy="11.5" r="3.5"/><rect class="frame" x="23" y="4" width="26" height="30" rx="2"/><path class="frame" d="M23 19h26M14 34.5h44"/></svg>
+      <div><b>East</b><small>Sun in the morning</small></div>
+    </div>
+    <div class="opt" role="radio" aria-checked="false">
+      <svg class="win" viewBox="0 0 72 60" aria-hidden="true"><path class="glass" d="M23 35h26l5 13H18z" opacity=".3"/><rect class="glass" x="23" y="4" width="26" height="30" rx="2" opacity="0.6"/><circle class="sun" cx="36" cy="11.5" r="4.5"/><rect class="frame" x="23" y="4" width="26" height="30" rx="2"/><path class="frame" d="M23 19h26M14 34.5h44"/></svg>
+      <div><b>South</b><small>Sun most of the day</small></div>
+    </div>
+    <div class="opt" role="radio" aria-checked="false">
+      <svg class="win" viewBox="0 0 72 60" aria-hidden="true"><path class="glass" d="M23 35h26L35 55H9z" opacity=".3"/><rect class="glass" x="23" y="4" width="26" height="30" rx="2" opacity="0.35"/><circle class="sun" cx="42" cy="11.5" r="3.5"/><rect class="frame" x="23" y="4" width="26" height="30" rx="2"/><path class="frame" d="M23 19h26M14 34.5h44"/></svg>
+      <div><b>West</b><small>Sun in the afternoon</small></div>
+    </div>
+  </div>
+  <a class="unsure" href="#"><i data-lucide="compass"></i>Not sure? Hold your phone to the window</a>
+
+  <a class="go" href="#">Continue</a>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

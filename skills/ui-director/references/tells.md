@@ -32,7 +32,8 @@ Clean, correct, and nobody remembers it. On a page that sells, this is a failure
   choose weight and width on purpose.
 - **White page, gray text, one blue button** → The palette from the direction.
 - **Images small, boxed and centered** → Full-bleed, bleeding off an edge, overlapping sections.
-- **The only motion is fade-ups** → One choreographed signature moment.
+- **The only motion is fade-ups** (on a page that sells) → A scroll-linked scene: layered hero,
+  a pin whose content advances, a sideways rail, a big wipe (`scroll.md`).
 - **The signature is a chart or a list** → Something only this product can show: a scene, a
   transformation, a thing to try.
 
@@ -42,6 +43,8 @@ Clean, correct, and nobody remembers it. On a page that sells, this is a failure
   competition.
 - **Gradient page backgrounds, glows, neon, violet by default** → A base from the product's world,
   color with a reason.
+- **Categories in a chart or stacked bar as shades of one color** → Different hues at the same
+  lightness; shades only for an ordered scale.
 - **Every card and icon in a different color, every stat in a colored circle** → Neutral by
   default; color only for meaning and for what changed.
 - **Pure black text, `#fff` on black, thin dark borders** → Gray text levels, dark surfaces at
@@ -88,8 +91,13 @@ Clean, correct, and nobody remembers it. On a page that sells, this is a failure
   or a link.
 - **A pricing tier highlighted by height or glow** → Same size, darker button.
 - **A modal for everything** → Popovers, drawers, inline editing.
+- **A centered destructive dialog that says "Are you sure?"** → Left-aligned, naming what will
+  be lost, with a red button that names the action.
 - **Missing tooltips, empty, loading and error states** → Design them all (`app-ui.md`).
 - **A component library's default look, untouched** → Map the tokens: radius, colors, shadows, type.
+- **A live countdown** ticking days, hours, minutes and seconds → State the date (and the time
+  and place when they matter). A ticking clock is urgency nobody believes, and it never stops
+  moving.
 - **The stat card grid** (icon circle, uppercase label, huge number, green pill, "View details
   →") → A stats row with dividers, a muted label, a 600-weight value, a context line.
 
@@ -98,11 +106,13 @@ Clean, correct, and nobody remembers it. On a page that sells, this is a failure
 - **Everything fades up on scroll, infinite loops, bouncy hovers** → Motion only where it
   explains or leads the eye, once, eased out, off under reduced motion.
 - **A hover lift on everything** → Feedback on controls only.
+- **App screens that fade in, cards that arrive one after another** → App screens appear at
+  once; entrances belong to pages that sell.
 - **Parallax on text, scroll-jacking, a smooth-scroll library** → Parallax on images only, native
   scrolling.
 - **Slow reveals that hide the first screen** → Readable within about 300ms.
-- **Cursor followers, tilt on every card, magnetic buttons** → At most one thing that follows the
-  pointer.
+- **Cursor followers, tilt on every card, magnetic buttons** → At most one pointer effect per
+  screen (`scroll.md`).
 - **Nothing responds** → Feedback on every control, one entrance, reveals that act out the content.
 - **Animated command menus, context menus and tab switches** → Instant; motion for what people
   do once, not a thousand times a day.

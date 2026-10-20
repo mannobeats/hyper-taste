@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout</title>
+<style>
+  body { margin: 0; padding: 52px 18px 0; background: #fff; font: 14px/1.45 Inter, system-ui, sans-serif; color: #0f172a; min-height: 100vh; }
+  h1 { margin: 0 0 16px; font-size: 22px; font-weight: 800; }
+  .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
+  .row span:first-child { color: #64748b; }
+  .pay { margin-top: 24px; padding: 14px; border-radius: 12px; text-align: center; color: #fff; font-weight: 700; background: linear-gradient(135deg, #a855f7, #ec4899); }
+  .dim { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; }
+  .alert { width: 270px; padding: 22px 18px 0; border-radius: 14px; background: #fff; text-align: center; }
+  .alert .ic { width: 52px; height: 52px; margin: 0 auto 10px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: grid; place-items: center; }
+  .alert h2 { margin: 0 0 6px; font-size: 18px; color: #dc2626; }
+  .alert p { margin: 0 0 18px; font-size: 12px; color: #64748b; }
+  .alert code { font-size: 11px; background: #f1f5f9; padding: 1px 4px; border-radius: 4px; }
+  .alert .ok { margin: 0 -18px; padding: 12px; border-top: 1px solid #e2e8f0; color: #2563eb; font-weight: 600; }
+</style>
+</head>
+<body>
+  <h1>Checkout</h1>
+  <div class="row"><span>Restaurant</span><span>Sable</span></div>
+  <div class="row"><span>Date</span><span>2026-10-30T20:00</span></div>
+  <div class="row"><span>Guests</span><span>2</span></div>
+  <div class="row"><span>Deposit</span><span>£40.00</span></div>
+  <div class="pay">Pay Now 🚀</div>
+  <div class="dim">
+    <div class="alert">
+      <div class="ic"><i data-lucide="circle-x"></i></div>
+      <h2>Error!</h2>
+      <p>Something went wrong. Transaction failed with code <code>402: card_declined</code>. Please try again later.</p>
+      <div class="ok">OK</div>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

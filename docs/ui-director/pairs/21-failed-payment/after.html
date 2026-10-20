@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Card declined</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  /* A restaurant booking that needs a deposit. The decline arrives as a sheet over the booking,
+     so the person never loses their place: what happened, what's safe, what to do. */
+  :root { --accent-h: 320; --tint-h: 320; }
+  body { display: block; place-content: normal; padding: 0; background: var(--bg); min-height: 100dvh; overflow: hidden; }
+
+  /* The booking underneath, dimmed */
+  .under { padding: 58px 16px 0; }
+  .back { display: inline-flex; align-items: center; gap: 2px; height: 44px; margin-left: -8px; color: var(--link); font-size: var(--text-lg); line-height: 1; }
+  .back svg.lucide { width: 22px; height: 22px; }
+  .under h1 { margin-top: 4px; font-size: 28px; letter-spacing: -.02em; }
+  .under dl { display: grid; grid-template-columns: auto 1fr; margin-top: 16px; font-size: var(--text-lg); }
+  .under dt, .under dd { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .under dt { color: var(--muted); }
+  .under dd { text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .scrim { position: fixed; inset: 0; background: oklch(0 0 0 / .4); }
+
+  /* The sheet, at its medium detent */
+  .sheet { position: fixed; inset: auto 0 0; padding: 0 20px max(env(safe-area-inset-bottom), 28px); border-radius: 28px 28px 0 0;
+           background: var(--surface); box-shadow: 0 -8px 40px oklch(0 0 0 / .18); }
+  .grab { width: 36px; height: 5px; margin: 6px auto 0; border-radius: 3px; background: var(--line-strong); }
+  .top { display: flex; justify-content: space-between; align-items: center; height: 44px; margin-top: 6px; }
+  .state { display: inline-flex; align-items: center; gap: 6px; color: var(--bad-ink); font-size: var(--text-md); font-weight: var(--w-ui); line-height: 1; }
+  .state svg.lucide { width: 18px; height: 18px; }
+  .x { display: grid; place-items: center; width: 30px; height: 30px; margin-right: -2px; border-radius: 50%; background: var(--fill); color: var(--muted); }
+  .x svg.lucide { width: 16px; height: 16px; stroke-width: 2.25; }
+  h2 { margin-top: 8px; font-size: 26px; letter-spacing: -.02em; }
+  .what { margin-top: 10px; font-size: var(--text-lg); line-height: 1.45; color: var(--ink-2); }
+  .what b { color: var(--ink); font-weight: var(--w-strong); }
+
+  .held { display: grid; grid-template-columns: 44px 1fr; align-items: center; column-gap: 14px; margin-top: 20px; padding: 16px 0; border-block: 1px solid var(--line); }
+  .ring { position: relative; display: grid; place-items: center; width: 44px; height: 44px; color: var(--ok); }
+  .ring svg { position: absolute; inset: 0; rotate: -90deg; }
+  .ring span { font-size: var(--text-md); font-weight: var(--w-strong); color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+  .held b { display: block; color: var(--ink); font-size: var(--text-lg); font-weight: var(--w-ui); }
+  .held small { display: block; margin-top: 2px; color: var(--muted); font-size: var(--text-sm); }
+
+  .acts { display: grid; gap: 10px; margin-top: 20px; }
+  .acts a { display: flex; align-items: center; justify-content: center; gap: 8px; height: 50px; border-radius: var(--r-full);
+            font-size: var(--text-lg); font-weight: var(--w-strong); line-height: 1; text-decoration: none; }
+  .acts .go { background: var(--strong); color: var(--on-strong); }
+  .acts .again { background: var(--fill); color: var(--ink); }
+  .acts .call { height: 44px; color: var(--link); font-weight: var(--w-ui); }
+  .acts .call svg.lucide { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+  <div class="under" aria-hidden="true">
+    <span class="back"><i data-lucide="chevron-left"></i>Sable</span>
+    <h1>Confirm your table</h1>
+    <dl><dt>When</dt><dd>Fri 30 Oct, 8:00pm</dd><dt>Guests</dt><dd>2</dd><dt>Menu</dt><dd>Tasting, seven courses</dd><dt>Deposit</dt><dd>£40</dd></dl>
+  </div>
+  <div class="scrim"></div>
+
+  <section class="sheet" role="dialog" aria-labelledby="t">
+    <div class="grab"></div>
+    <div class="top"><span class="state"><i data-lucide="circle-alert"></i>Payment didn't go through</span><span class="x" aria-label="Close"><i data-lucide="x"></i></span></div>
+    <h2 id="t">Your card was declined</h2>
+    <p class="what"><b>Nothing was charged.</b> Your bank turned down the £40 deposit on the card ending 4417. Only the bank can say why.</p>
+    <div class="held">
+      <div class="ring" aria-hidden="true">
+        <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="var(--line)" stroke-width="3"/><circle cx="22" cy="22" r="19" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="8"/></svg>
+        <span>14</span>
+      </div>
+      <div><b>Your table is held for 14 minutes</b><small>Until 7:40pm, then it goes back on sale</small></div>
+    </div>
+    <div class="acts">
+      <a class="go" href="#">Use another card</a>
+      <a class="again" href="#">Try this card again</a>
+      <a class="call" href="#"><i data-lucide="phone"></i>Call Sable</a>
+    </div>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
+</body>
+</html>

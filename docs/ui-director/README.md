@@ -9,7 +9,7 @@ landing pages, consistent everywhere.
   <img src="gallery/18-dashboard.png" alt="Before and after: a generated dashboard and the same screen cleaned up" width="100%">
 </picture>
 
-**[See all 19 pairs live](https://mannobeats.github.io/hyper-taste/docs/ui-director/)**: every pair is real HTML, with a slider to compare.
+**[See all 23 pairs live](https://mannobeats.github.io/hyper-taste/docs/ui-director/)**: every pair is real HTML, with a slider to compare.
 
 AI agents fail at UI in two ways: they add too much (explanations, colors, cards, badges, all-caps
 labels, gradients, motion), or they play it safe and ship the house style every model shares,
@@ -36,7 +36,7 @@ skills/ui-director/
 │   ├── direction.md      the idea, the first screen, page order, conversion, flavor, type
 │   ├── visuals.md        image generation, layers and transparency, parallax, scenes, real 3D
 │   ├── system.md         token recipe, stack adapters, auditing a project, DESIGN.md
-│   ├── app-ui.md         dashboards, tables, states, phones and responsive layouts
+│   ├── app-ui.md         dashboards, tables, states, phones, native apps and responsive layouts
 │   ├── words.md          headlines that sell, plain copy, real content
 │   ├── motion.md         what to animate, timings, recipes, reduced motion
 │   ├── tells.md          what reads as generated, and the redesign order
@@ -94,6 +94,7 @@ installed the bundle):
 |---|---|
 | ![Before and after: a landing page with the product standing in a kitchen](gallery/08-landing-product.png) | ![Before and after: a landing page with the bread as a still life](gallery/10-landing-photo.png) |
 | ![Before and after: dissolving nested cards](gallery/07-dissolve.png) | ![Before and after: a table on a phone](gallery/19-phone.png) |
+| ![Before and after: a sailing club's home screen with the day's wind drawn hour by hour](gallery/20-home.png) | ![Before and after: a paywall with one plan and a timeline of the trial](gallery/22-paywall.png) |
 
 ## The pairs
 

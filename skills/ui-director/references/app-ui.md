@@ -45,23 +45,28 @@ Whatever the shell:
   tooltips on the right, the one primary action ("New invoice") as the darkest button on the page.
 - **One primary per view.** The top bar holds navigation, search and the account; the page's
   primary action sits once, in the page header or the toolbar, never in both.
-- **Natural widths:** a settings panel is 360–560px, not 1200px. On wide screens add a column.
+- **Natural widths:** a list, a settings panel or a form is 360–600px, not 1200px. On wide screens
+  add a column.
 
 ## Let the data decide the form
 
 **Tables:**
 
-- Values from a fixed set become chips: a neutral chip for categories, a tinted chip with words
-  or an icon for states. Never a dot inside a chip.
+- Values from a fixed set become chips: a neutral chip for categories. States are words: plain
+  text for the ordinary ones (Paid, Sent), a tinted chip only for the one that needs action
+  (Overdue, Failed). Never a dot inside a chip.
 - Numbers align right with `tabular-nums`. Text aligns left. IDs in mono, muted.
-- Long text truncates with the full value in a tooltip. Inactive rows fade to `ink-3`.
+- Long text truncates with the full value in a tooltip. Inactive rows fade to `ink-3`. On touch
+  there's no tooltip, so names and labels wrap to a second line instead.
 - People get a face (an avatar). Headers are quiet: 12px, `ink-3`, sentence case. The first and
   last columns sit flush with the section edges.
 
 **Time:** events over time are a timeline or a chart, not a table sorted by date. Group the dates
 (Today, This week). A timeline fits in a right column or a drawer.
 
-**Charts:** the current series solid, the comparison a tint of the same hue; few solid gridlines;
+**Charts:** categories (photos, video, documents) get different hues at the same lightness, the
+chart tokens; shades of one hue are only for an ordered scale. The current series solid, the
+comparison a tint of the same hue; few solid gridlines;
 about 3 labels on the y-axis; a hover tooltip with exact values instead of a legend block.
 
 **Stats:** a label (muted, 13px), a value (600, tabular), a context line. No icon circles, no
@@ -73,7 +78,9 @@ the chart's tabs.
 Place each control by how often it's used and how important it is:
 
 1. an always-visible labeled button for the page's one primary action
-2. an always-visible icon with a tooltip for frequent tools
+2. an always-visible icon with a tooltip for frequent tools, but icon-only only for icons everyone
+   knows (delete, more, close, search, share). Anything else gets a word or goes in the menu; a bar
+   shows 3–4 labeled actions plus More
 3. on hover or focus for row actions (swipe or long-press on touch)
 4. in a popover for share, filters, date pickers
 5. in the `…` menu for rare actions, destructive ones at the bottom
@@ -125,16 +132,17 @@ light and dark.
 - **Descenders:** no fixed height or `overflow: hidden` that cuts off g, y and p. Line height
   at least 1.2 on anything that clips, and equal padding top and bottom.
 - **One height scale:** three or four control heights for the whole product, as tokens (for
-  example 24 tags, 32 small buttons, 40 chips, 44 fields and main buttons). Every pill, badge
-  and button uses one. A status on the right of a list row is plain text, not a pill.
+  example 24 tags, 32 small buttons, 40 chips, 44 fields and main buttons). On touch screens
+  anything tappable is 44 or more. Every pill, badge and button uses one.
 - **Sizes don't move between states.** A button whose label changes (Follow, Following) keeps
   its width, set from the longest label. Icons sit centered in a square box
   (`place-items: center`), one size for the whole set.
 - **Floating bars never cover content.** The scroll area pads by the bar's height plus the
   safe area. Labels and timestamps stay clear of side panels.
 - **No browser defaults left:** sliders, checkboxes, radios and selects styled with the tokens.
-- **Only what the person knows:** no hashes, internal IDs, enum names or raw timestamps on
-  consumer screens. Each person and business gets its own picture, never one photo on two
+- **Only what the person knows:** no hashes, internal IDs, error codes, enum names or raw
+  timestamps on consumer screens, not even as a "reference". A support reference, if needed, is a
+  short human number. Each person and business gets its own picture, never one photo on two
   accounts. Use the words of the apps they already use; coin a word only for what's new.
 
 ## Density and dark
@@ -152,8 +160,8 @@ light and dark.
 - Design at 1440, check 1024, 768 and 390. Test 390 every time, not at the end.
 - Below about 720px every multi-column layout becomes one column, declared in the same component.
 - The page never scrolls sideways.
-- Tables become two-line rows: who and how much, then date and status. Drop the columns nobody
-  needs on a phone.
+- Tables become two-line rows: who and how much, then date and status as plain text, colored
+  only when it needs action. Drop the columns nobody needs on a phone.
 - The sidebar becomes a drawer over a scrim. Nothing important is hover-only.
 - Body at least 16px, inputs 16px (or iOS zooms), the right `type` and `inputmode` on inputs.
 - `min-height: 100dvh`, never `100vh`. Side padding 16px on phones, 24px on tablets.
@@ -177,6 +185,30 @@ light and dark.
   bottom bar.
 - **One platform language per app:** iOS (tab bar, sheets, large titles) or Android (top app bar,
   bottom nav, FAB). Native apps use the platform's own components, styled with the tokens.
+
+**Native feel** (SwiftUI, Compose, React Native):
+
+- **System pieces first:** `TabView`, `NavigationStack`, `.sheet`, `List` and SF Symbols; Material 3
+  `NavigationBar`, `ModalBottomSheet` and Material Symbols. Restyle them with the tokens instead of
+  rebuilding them: they bring Dynamic Type, VoiceOver, back gestures and the right physics.
+- **Springs, no bounce in UI:** SwiftUI `.smooth`, `.snappy` for controls; Compose
+  `spring(dampingRatio = 1f)`. A little bounce (`.bouncy`) only on the app's own moment. A drag
+  hands its velocity to the spring, so a flicked sheet keeps moving.
+- **Sheets with detents:** medium for a decision or a quick task, large for editing
+  (`.presentationDetents([.medium, .large])`). The screen behind stays visible, so people keep
+  their place. Confirmations, pickers and failures go in a sheet; an alert only for a destructive
+  yes or no.
+- **Haptics confirm, never decorate:** success when a payment or booking lands, an error when it
+  fails, a selection tick on pickers and toggles, nothing on scroll or ordinary taps (SwiftUI
+  `.sensoryFeedback`, Compose `HapticFeedbackType.Confirm`).
+- **Safe areas:** backgrounds run under the status bar and home indicator, content and controls
+  never do. A bottom bar goes in `.safeAreaInset(edge: .bottom)` or a `Scaffold` slot, so the list
+  pads itself.
+- **Symbols:** one weight across the app, matched to the text beside it; the `.fill` variant only
+  for the selected tab.
+- **Dynamic Type:** check the largest size. Rows grow, nothing with text has a fixed height.
+- **Paywalls and onboarding:** `references/moments.md`. A paywall shows the product working;
+  onboarding asks the one question that changes the first screen, never slides of claims.
 
 If text feels small, the screen isn't finished: cut content or split it across screens instead
 of shrinking the text.

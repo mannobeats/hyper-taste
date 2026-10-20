@@ -56,12 +56,14 @@ Then decide where the words sit and how big the visual is:
 - running the full width, with the product breaking into it or standing in front of it
 - after the visual: it fills the first screen and the words arrive as you scroll
 - a narrow column of words against a huge visual that bleeds off the edge
-- on the right, when the visual reads best from the left
 
 Three layouts are what everyone reaches for first: words on one side and the picture on the
-other, a centered headline over a big product view, and a huge headline top-left with a small
-paragraph and buttons beside it and the product framed below. Use one only when you can say why
-it beats the others for this product.
+other (a hard ban in `SKILL.md`), a centered headline over a big product view, and a huge
+headline top-left with a small paragraph and buttons beside it and the product framed below. Use
+one of the last two only when you can say why it beats the others for this product.
+
+For places, food and physical products, the first screen shows the photograph (or its labeled
+slot) large; a first screen of type alone is for ideas, events and manifestos.
 
 On a 1280×720 laptop the first screen shows the headline, the line under it, the button and
 part of the visual. Check it at that size.
@@ -93,6 +95,8 @@ ones they don't ask:
 - a café leads with today's menu and the map
 - a camera or drone shows what it sees first, then the object, then the specs one line at a time
 - a portfolio shows the work before it talks about the studio
+- an event answers when, where, who and how much: exact dates, the venue, the price or seats
+  left, and the speakers or programme (placeholder names marked as invented)
 
 Give each section its own form: a full-bleed image, a live piece of UI, a list, one huge number,
 a big quote, a table, a map, a quiet pause. Never the same composition three times in a row. With

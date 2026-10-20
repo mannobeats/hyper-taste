@@ -36,6 +36,7 @@ premium by the evidence they collect there.
   in front of them from those answers.
 - **The first try never dead-ends.** A test too short to count still produces something: a sample
   result, a preview of what they'll get.
+- **Each step shows where they are** (2 of 4, or a bar) and has a Back link after the first.
 - **Teach with cues, not tours:** a grabber, a card peeking from the edge, a hint of motion.
 
 ## Waits
@@ -50,8 +51,8 @@ premium by the evidence they collect there.
 - **Say exactly what happens to their money:** when they're charged, how much, how to cancel. A
   trial shows its timeline (today full access, day 5 a reminder, day 7 the charge) and says
   "Nothing to pay today" in plain words.
-- **Two or three plans,** the recommended one first and selected. No side options (credit packs,
-  add-ons) that turn one choice into a comparison.
+- **One plan, two at most,** the recommended one first and selected, with a close button you can
+  see and Restore. No side options (credit packs, add-ons) that turn one choice into a comparison.
 - **Their language and currency.** Never blur the person's own content as bait.
 
 ## Progress and rewards

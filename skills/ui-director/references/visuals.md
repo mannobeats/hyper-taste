@@ -53,7 +53,7 @@ detail, one portrait. Never the same framing twice. Generate each image on its o
 will be used; never crop tiles out of one image of several views.
 
 ```
-[subject doing something specific], [setting], for [a full-bleed hero | the right half of a split |
+[subject doing something specific], [setting], for [a full-bleed hero | a section image beside text |
 a tight detail], [light], [lens], palette [#hex #hex], [treatment], calm empty area in the
 [left third | lower 40%] for text, no text, no logos, no watermark, [16:9 | 4:5 | 1:1 | 21:9]
 ```
@@ -139,7 +139,8 @@ changes. Kinds:
 
 ## Scenes: the menu
 
-Name the technique you're using. "Make it dynamic" produces a gradient; a named technique
+The grammar, the hero's layer contract and the scroll techniques with their rules are in
+`scroll.md`; this is the short menu. Name the technique you're using. "Make it dynamic" produces a gradient; a named technique
 produces that technique.
 
 - **Layered parallax:** plate, subject and foreground move at different speeds. The headline can
@@ -148,13 +149,13 @@ produces that technique.
   from an image sequence, a turntable video or a 3D model.
 - **A camera move:** the scroll slowly pushes into a photograph (scale 1 to 1.15) while the
   words change beside it.
-- **Scroll text reveal:** one statement arrives word by word. One per page.
+- **Kinetic type:** a statement assembles line by line from behind a mask (`scroll.md`).
 - **Hover cutaway:** the inside shows through a circle that follows the pointer.
 - **Stacking sections:** each section slides over the last one. Good for a sequence.
 - **Hands-on:** drag to turn, presets ("Front", "Side", "Top"), a zoom into a detail, a control
   that works like the real one.
 
-Keep them honest: one moving thing per screen; every effect makes the visitor understand or want
+Keep them honest: one scene per screen; every effect makes the visitor understand or want
 the product more; the buying section stays calm; every scene has a still version under
 `prefers-reduced-motion`; the first frame is an image, so the first screen loads fast.
 

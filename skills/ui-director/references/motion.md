@@ -10,7 +10,8 @@ feels alive in the hand and calm to look at.
 - **Every animation has a job:** confirm an action, show where something came from or went, show
   a change in the data, or lead the eye to the next thing. "It looked static" is not a job.
 - **Fast for responses, slower for arrivals.** State changes take 140–220ms (`--t-fast`,
-  `--t-base`). Entrances take 400–700ms. Nothing in the UI takes over 800ms.
+  `--t-base`). Entrances take 400–700ms. Nothing in app UI takes over 800ms; on a page
+  that sells, a number counting up or a scroll scene may run longer (`scroll.md`).
 - **Ease out** (`--ease`) for things arriving, leaving and responding; ease in-out for something
   already on screen moving to a new place. Never ease-in in UI: it feels slow even at the same
   duration. Linear only for progress and loops. Native apps use springs.
@@ -25,7 +26,8 @@ feels alive in the hand and calm to look at.
 - **Move a little in UI and reveals.** Rise 8–16px, scale from .96–.98, blur 4–8px at most. Big
   travel on every element looks cheap. The signature moment is the exception: go big there.
   Scroll-driven scenes (`visuals.md`) follow the scroll, so they can travel further.
-- **One moving thing at a time.** Each effect owns its section and never competes with another.
+- **One scene at a time.** Each effect owns its section and never competes with another. A
+  hero's planes moving together are one scene.
 - **Animate `transform` and `opacity`** (plus colors and `filter`). Never width, height, top,
   left or margin.
 - **Once.** Entrances and reveals play one time. Loops are only for loading states and one
@@ -38,8 +40,8 @@ feels alive in the hand and calm to look at.
 1. **Feedback on every control.** Buttons, links, tabs, rows and inputs transition their color
    and background over `--t-fast`. Buttons get a pressed state (`scale(.98)` or a darker fill).
    Focus rings appear without delay. This is the minimum. A page without it feels broken.
-2. **One entrance for the first screen.** The hero's parts arrive in reading order: headline,
-   line, actions, visual. Each rises 12px and fades in over 500–700ms, 60–90ms apart. The
+2. **One entrance for the first screen of a page that sells.** The hero's parts arrive in
+   reading order: headline, line, actions, visual. Each rises 12px and fades in over 600ms, about 70ms apart. The
    headline enters as one piece.
 3. **Reveals that act out the content,** when a section scrolls into view. Bars grow from the
    baseline, a line draws itself, a number counts up to its value, a list fills in one row at a
@@ -60,6 +62,11 @@ feels alive in the hand and calm to look at.
 Knowing what stays still matters as much. Animation teaches something the first time; by the
 hundredth it only makes people wait.
 
+- **No entrance on app screens people open often.** Dashboards, lists, tables, settings,
+  inboxes, profile cards and a phone app's home screen are on screen the moment they load: no
+  fade or rise on load, no cards staged 100ms apart, no numbers counting up. Their motion is
+  feedback on controls (≤220ms) and layers that open from their trigger. Entrances are for
+  pages that sell and moments people see once (onboarding, a success).
 - **Instant** for anything people do many times a day or start from the keyboard: command
   menus, context menus, switching tabs and sidebar sections, opening folders. They already know
   what will happen.
@@ -104,7 +111,7 @@ document.querySelectorAll('.reveal, [data-reveal]').forEach(el => io.observe(el)
 
 // count up once, and skip it when the visitor asked for less motion
 const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-function countUp(el, to, ms = 900) {
+function countUp(el, to, ms = 1500) {
   if (calm) return (el.textContent = to.toLocaleString());
   const t0 = performance.now();
   const tick = t => { const p = Math.min(1, (t - t0) / ms), k = 1 - (1 - p) ** 3;

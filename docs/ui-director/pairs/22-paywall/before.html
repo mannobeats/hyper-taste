@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Premium</title>
+<style>
+  body { margin: 0; padding: 44px 18px 16px; min-height: 100vh; box-sizing: border-box; font: 14px/1.4 Inter, system-ui, sans-serif; color: #fff;
+         background: linear-gradient(160deg, #4c1d95, #7c3aed 45%, #db2777); }
+  .x { position: absolute; top: 46px; left: 16px; font-size: 12px; color: rgba(255,255,255,.3); }
+  h1 { margin: 22px 0 4px; text-align: center; font-size: 26px; font-weight: 800; }
+  .sub { text-align: center; font-size: 13px; opacity: .85; margin: 0 0 14px; }
+  ul { list-style: none; padding: 0; margin: 0 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: 12px; }
+  li::before { content: "✅ "; }
+  .plans { display: grid; gap: 10px; }
+  .plan { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 14px; border-radius: 14px;
+          background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.2); }
+  .plan.on { border-color: #fde047; background: rgba(255,255,255,.2); }
+  .plan s { opacity: .6; font-size: 12px; margin-right: 6px; }
+  .badge { position: absolute; top: -10px; right: 12px; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 800; letter-spacing: .08em;
+           background: #fde047; color: #4c1d95; }
+  .cta { margin-top: 16px; padding: 16px; border-radius: 99px; text-align: center; font-weight: 800; font-size: 16px; color: #4c1d95;
+         background: linear-gradient(90deg, #fde047, #f9a8d4); box-shadow: 0 0 30px rgba(253,224,71,.6); }
+  .fine { margin-top: 10px; font-size: 9px; line-height: 1.3; opacity: .55; text-align: center; }
+</style>
+</head>
+<body>
+  <span class="x">✕</span>
+  <h1>Unlock PREMIUM 👑</h1>
+  <p class="sub">Supercharge your birding journey with powerful AI features!</p>
+  <ul>
+    <li>Unlimited IDs</li><li>Offline mode</li><li>AI-powered insights</li><li>Ad-free</li><li>Smart maps</li><li>Priority support</li><li>Exclusive badges</li><li>And much more!</li>
+  </ul>
+  <div class="plans">
+    <div class="plan"><b>Weekly</b><span>£4.99/wk</span></div>
+    <div class="plan on"><span class="badge">BEST VALUE</span><b>Yearly</b><span><s>£99.99</s>£49.99/yr</span></div>
+    <div class="plan"><span class="badge" style="background:#f9a8d4">POPULAR</span><b>Monthly</b><span>£9.99/mo</span></div>
+  </div>
+  <div class="cta">Continue 🚀</div>
+  <p class="fine">3-day free trial, then £49.99/year. Subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current period. Payment will be charged to your account at confirmation of purchase.</p>
+</body>
+</html>

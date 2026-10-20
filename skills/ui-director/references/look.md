@@ -84,7 +84,11 @@ and headlines written as two clipped fragments.
   if (photo) out.add(`contrast: ${photo} text elements sit on an image or gradient; check them on the pixels`);
   const labels = [...document.querySelectorAll('h1, h2')].map(h => { const p = h.previousElementSibling; return p && p.innerText && p.innerText.length < 80 && parseFloat(css(p, 'fontSize')) < parseFloat(css(h, 'fontSize')) * .5 ? p : null; }).filter(Boolean);
   if (labels.length > 1) say('labels above headlines', `${labels.length} of them; keep one at most`, labels[0]);
-  for (const e of document.querySelectorAll('a, button')) if (/[→↗↘↓➜›»]\s*$/.test(e.innerText || '')) say('arrow', 'no arrows on buttons and links', e);
+  const arrowed = [...document.querySelectorAll('a, button, [role=button]')].filter(e => /[→↗↘↓➜›»]\s*$/.test(e.innerText || ''));
+  const isButton = e => e.tagName !== 'A' || rgba(css(e, 'backgroundColor'))[3] > .1 || parseFloat(css(e, 'borderTopWidth')) > 0;
+  for (const e of arrowed.filter(isButton)) say('arrow', 'no arrows on buttons', e);
+  const linkArrows = arrowed.filter(e => !isButton(e) && !/↗\s*$/.test(e.innerText));
+  if (linkArrows.length > 2) say('arrow', `${linkArrows.length} text links end in an arrow; two at most, ↗ only for other sites`, linkArrows[2]);
   if (W < 500) for (const e of document.querySelectorAll('a, button, input, select, [role=button]')) { const r = e.getBoundingClientRect(), min = e.tagName === 'A' && css(e, 'display') === 'inline' ? 24 : 40; if (r.width && r.height < min) say('tap target', `${Math.round(r.height)}px tall`, e); }
   const frag = [...document.querySelectorAll('h1, h2, h3, p, blockquote')].filter(e => { const t = (e.innerText || '').trim(), parts = t.split(/(?<=[.!?])\s+/);
     return t.length < 90 && parts.length === 2 && parts.every(x => /[.!?]$/.test(x) && x.split(/\s+/).length <= 6); });

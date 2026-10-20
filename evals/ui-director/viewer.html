@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ui-director evals</title>
+<link rel="stylesheet" href="../../docs/ui-director/pairs/tokens.css">
+<style>
+  /* Reads results/<run>/viewer.json (written by collect.mjs) and shows, per case, the scores,
+     each grader's verdict and the pages: where the agent started, without the skill, with it,
+     and the reference "after". Serve the repo root: python3 -m http.server 4321 */
+  html, body { height: 100%; }
+  body { display: grid; grid-template-columns: 320px 1fr; padding: 0; place-content: normal; background: var(--bg); }
+  button { font: inherit; }
+  .btn, .seg button, .filters button, .case { line-height: 1; }
+
+  aside { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line); background: var(--panel); }
+  .run { padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
+  .run h1 { font-size: var(--text-md); }
+  .run p { margin-top: 4px; font-size: var(--text-xs); color: var(--muted); }
+  .runs { margin-top: 8px; width: 100%; height: 32px; padding: 0 30px 0 10px; line-height: 1; border-radius: var(--r-md); border: 1px solid var(--line-strong); background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23888' stroke-width='1.6'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E") no-repeat right 10px center / 16px; appearance: none; font-size: var(--text-xs); color: var(--ink); }
+  .totals { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 12px; }
+  .totals div { display: grid; gap: 4px; }
+  .totals span { font-size: var(--text-xs); color: var(--muted); }
+  .totals b { font-size: 18px; font-weight: 600; color: var(--ink); }
+  .filters { display: flex; gap: 4px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .filters button { height: 28px; padding: 0 10px; border-radius: var(--r-sm); color: var(--muted); font-size: var(--text-xs); font-weight: var(--w-ui); }
+  .filters button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-xs); }
+  .filters button span { margin-left: 4px; color: var(--faint); }
+  nav { flex: 1; overflow: auto; padding: 6px; }
+  .case { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 10px; width: 100%; padding: 10px; border-radius: var(--r-md); text-align: left; cursor: pointer; }
+  .case:hover { background: var(--hover); }
+  .case[aria-current="true"] { background: var(--surface); box-shadow: var(--shadow-xs); }
+  .case .id { font-size: var(--text-sm); font-weight: var(--w-ui); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .case .sub { grid-column: 1; font-size: var(--text-xs); color: var(--muted); }
+  .case .delta { grid-row: 1 / 3; grid-column: 2; }
+  .delta { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: var(--r-sm); font-size: var(--text-xs); font-weight: 600; font-variant-numeric: tabular-nums; background: var(--fill); color: var(--muted); }
+  .delta.up { background: var(--ok-soft); color: var(--ok-ink); }
+  .delta.down { background: var(--bad-soft); color: var(--bad-ink); }
+
+  main { display: grid; grid-template-rows: auto auto 1fr; min-width: 0; min-height: 0; }
+  header { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; padding: 18px 24px 14px; border-bottom: 1px solid var(--line); background: var(--surface); }
+  header .what { flex: 1 1 320px; min-width: 0; }
+  header h2 { font-size: 20px; }
+  header .rule { margin-top: 4px; font-size: var(--text-sm); color: var(--muted); }
+  header details { margin-top: 10px; font-size: var(--text-sm); }
+  header summary { cursor: pointer; color: var(--link); width: fit-content; }
+  header details p { margin-top: 8px; max-width: 80ch; color: var(--ink-2); white-space: pre-wrap; }
+  .scores { display: flex; gap: 28px; }
+  .scores div { display: grid; gap: 4px; text-align: right; }
+  .scores span { font-size: var(--text-xs); color: var(--muted); white-space: nowrap; }
+  .scores b { font-size: 24px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .scores .delta { height: 30px; font-size: var(--text-md); justify-self: end; }
+
+  .grades { border-bottom: 1px solid var(--line); background: var(--surface); max-height: 30vh; overflow: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  th { position: sticky; top: 0; background: var(--surface); text-align: left; font-weight: var(--w-ui); font-size: var(--text-xs); color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+  th:first-child, td:first-child { padding-left: 24px; } th:last-child, td:last-child { padding-right: 24px; }
+  td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td .why { color: var(--muted); font-size: var(--text-xs); margin-top: 2px; }
+  .pass { color: var(--ok-ink); font-weight: var(--w-ui); } .fail { color: var(--bad-ink); font-weight: var(--w-ui); }
+
+  .stage { display: grid; grid-template-rows: auto 1fr; min-height: 0; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 10px 24px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  .seg { display: flex; padding: 3px; border-radius: var(--r-md); background: var(--fill); }
+  .seg button { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; height: 28px; padding: 0 12px; border-radius: var(--r-sm); color: var(--muted); font-size: var(--text-sm); font-weight: var(--w-ui); white-space: nowrap; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-xs); }
+  .seg button:disabled { color: var(--faint); cursor: not-allowed; }
+  .bar .open { margin-left: auto; display: flex; gap: 14px; font-size: var(--text-sm); }
+  .bar .open a { color: var(--link); text-decoration: none; }
+  .bar .open a:hover { text-decoration: underline; }
+  .bar .keys { font-size: var(--text-xs); color: var(--faint); white-space: nowrap; }
+  @media (max-width: 1180px) { .bar .keys { display: none; } }
+  @media (max-width: 980px) { body { grid-template-columns: 260px 1fr; } .frames.two { grid-template-columns: 1fr; } }
+  .frames { display: grid; gap: 16px; padding: 16px 24px 24px; min-height: 0; overflow: auto; }
+  .frames.two { grid-template-columns: 1fr 1fr; }
+  .frame { display: grid; grid-template-rows: auto 1fr; gap: 8px; min-height: 0; }
+  .frame > span { font-size: var(--text-xs); font-weight: var(--w-ui); color: var(--muted); }
+  /* Desktop pages render at 1280 wide and scale down to fit, so a landing page looks like a landing page. */
+  .box { position: relative; height: 100%; min-height: 560px; overflow: hidden; border-radius: var(--r-lg); background: #fff; box-shadow: var(--shadow-sm); }
+  .box iframe { position: absolute; left: 0; top: 0; width: 100%; height: 100%; border: 0; transform-origin: 0 0; }
+  .frames.phone .frame { justify-items: center; }
+  .frames.phone .box { width: 390px; height: 760px; min-height: 0; flex: none; border-radius: 36px; box-shadow: 0 0 0 8px var(--strong), var(--shadow-sm); }
+  .frames.phone .box iframe { width: 390px; height: 760px; }
+  .missing { display: grid; place-content: center; min-height: 360px; border-radius: var(--r-lg); border: 1px dashed var(--line-strong); color: var(--muted); font-size: var(--text-sm); text-align: center; padding: 24px; }
+  .empty { display: grid; place-content: center; height: 100%; padding: 40px; text-align: center; color: var(--muted); grid-column: 1 / -1; }
+  .empty h1 { color: var(--ink); font-size: 20px; margin-bottom: 8px; }
+  .empty code { font-family: var(--font-mono); font-size: .92em; color: var(--ink); }
+</style>
+</head>
+<body>
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const fmt = n => n == null ? '–' : n.toFixed(2);
+const sign = d => d == null ? '–' : (d > 0 ? '+' : d < 0 ? '−' : '±') + Math.abs(d).toFixed(2);
+const tone = d => d > 0 ? 'up' : d < 0 ? 'down' : '';
+const VIEWS = [['start', 'Start'], ['without', 'Without skill'], ['with', 'With skill'], ['after', 'Reference after'], ['compare', 'Side by side']];
+const q = new URLSearchParams(location.search);
+let runs = [], data, cases, current, view = q.get('view') || 'compare', filter = 'all', theme = q.get('theme') || 'light';
+
+async function load() {
+  runs = await fetch('results/runs.json').then(r => r.ok ? r.json() : []).catch(() => []);
+  let run = q.get('run') || runs[0];
+  if (!run) return empty('No eval run yet', 'Run the suite, then <code>node evals/ui-director/collect.mjs</code>.');
+  data = await fetch(`results/${run}/viewer.json`).then(r => r.ok ? r.json() : null).catch(() => null);
+  if (!data) return empty('Run not found', `There is no <code>results/${esc(run)}/viewer.json</code>. Run <code>node evals/ui-director/collect.mjs</code>.`);
+  data.base = `results/${run}/`;
+  cases = data.cases;
+  render();
+  select(cases.find(c => c.id === q.get('case')) || cases[0]);
+}
+
+function empty(title, body) { document.body.innerHTML = `<div class="empty"><div><h1>${title}</h1><p>${body}</p></div></div>`; }
+
+function shown() {
+  return cases.filter(c => filter === 'all' || (filter === 'flat' && !(c.delta > 0)) || (filter === 'unfired' && !c.with?.fired));
+}
+
+function render() {
+  const avg = k => { const v = cases.map(c => c[k]?.score).filter(x => x != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const w = avg('with'), wo = avg('without');
+  const counts = { all: cases.length, flat: cases.filter(c => !(c.delta > 0)).length, unfired: cases.filter(c => !c.with?.fired).length };
+  document.body.innerHTML = `
+    <aside>
+      <div class="run"><h1>ui-director evals</h1>${runs.length > 1 ? `<select class="runs num" aria-label="Run">${runs.map(r => `<option ${r === data.run ? 'selected' : ''}>${esc(r)}</option>`).join('')}</select>` : ''}<p class="num">${esc(data.run)}${data.cost != null ? ` · $${data.cost.toFixed(2)}` : ''}</p>
+        <div class="totals num"><div><span>With skill</span><b>${fmt(w)}</b></div><div><span>Without</span><b>${fmt(wo)}</b></div><div><span>Δ</span><b>${sign(w != null && wo != null ? w - wo : null)}</b></div></div></div>
+      <div class="filters">${[['all', 'All'], ['flat', 'No gain'], ['unfired', 'Skill not used']].map(([k, l]) => `<button data-f="${k}" aria-pressed="${filter === k}">${l}<span>${counts[k]}</span></button>`).join('')}</div>
+      <nav>${shown().map(c => `<button class="case" data-id="${esc(c.id)}"><span class="id">${esc(c.id)}</span><span class="sub num">${fmt(c.with?.score)} with · ${fmt(c.without?.score)} without${c.with?.fired ? '' : ' · skill not used'}</span><span class="delta ${tone(c.delta)}">${sign(c.delta)}</span></button>`).join('') || '<p class="empty">Nothing here.</p>'}</nav>
+    </aside>
+    <main id="main"></main>`;
+  $('.runs')?.addEventListener('change', e => { location.search = `?run=${encodeURIComponent(e.target.value)}${current ? `&case=${current.id}` : ''}`; });
+  document.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filter = b.dataset.f; render(); select(shown().includes(current) ? current : shown()[0]); });
+  document.querySelectorAll('.case').forEach(b => b.onclick = () => select(cases.find(c => c.id === b.dataset.id)));
+}
+
+function url(c, k) {
+  const p = c.pages?.[k];
+  return p ? (k === 'after' || k === 'start' ? p : data.base + p) : null;
+}
+
+function select(c) {
+  if (!c) return;
+  current = c;
+  document.querySelectorAll('.case').forEach(b => b.setAttribute('aria-current', b.dataset.id === c.id));
+  history.replaceState(null, '', `?${new URLSearchParams({ ...(q.get('run') && { run: q.get('run') }), case: c.id, view, theme })}`);
+  const rows = [...new Set([...(c.with?.graders ?? []), ...(c.without?.graders ?? [])].map(g => g.name))].map(name => {
+    const a = c.with?.graders?.find(g => g.name === name), b = c.without?.graders?.find(g => g.name === name);
+    const cell = g => !g ? '<td class="n">–</td>' : `<td><span class="${g.pass ? 'pass' : 'fail'}">${g.pass ? 'Pass' : 'Fail'}</span>${g.reason ? `<div class="why">${esc(g.reason)}</div>` : ''}</td>`;
+    return `<tr><td>${esc(name)}${a?.indicator ? ' <span class="muted">(reported, not scored)</span>' : ''}</td>${cell(a)}${cell(b)}</tr>`;
+  }).join('');
+  $('#main').innerHTML = `
+    <header>
+      <div class="what"><h2>${esc(c.title || c.id)}</h2><p class="rule">${esc(c.id)}${c.rule ? ` · ${esc(c.rule)}` : ''}${c.with?.fired ? ' · the skill was used' : ' · the skill was not used'}</p>
+        ${c.prompt ? `<details><summary>What the agent was asked</summary><p>${esc(c.prompt)}</p></details>` : ''}</div>
+      <div class="scores num"><div><span>With skill</span><b>${fmt(c.with?.score)}</b></div><div><span>Without</span><b>${fmt(c.without?.score)}</b></div><div><span>Skill adds</span><span class="delta ${tone(c.delta)}">${sign(c.delta)}</span></div></div>
+    </header>
+    <div class="grades"><table><thead><tr><th>Grader</th><th>With skill</th><th>Without skill</th></tr></thead><tbody>${rows || '<tr><td colspan="3">No grader results.</td></tr>'}</tbody></table></div>
+    <section class="stage">
+      <div class="bar">
+        <div class="seg" role="group" aria-label="Page">${VIEWS.map(([k, l], i) => `<button data-v="${k}" aria-pressed="${view === k}" ${k !== 'compare' && !url(c, k) ? 'disabled' : ''} title="Key ${i + 1}">${l}</button>`).join('')}</div>
+        <div class="seg" role="group" aria-label="Color scheme">${['light', 'dark'].map(t => `<button data-t="${t}" aria-pressed="${theme === t}">${t === 'light' ? 'Light' : 'Dark'}</button>`).join('')}</div>
+        <span class="keys">1–5 switch · J K next case</span>
+        <span class="open"><span class="muted">Open</span>${VIEWS.slice(0, 4).filter(([k]) => url(c, k)).map(([k, l]) => `<a href="${url(c, k)}" target="_blank" rel="noopener">${l}</a>`).join('')}</span>
+      </div>
+      <div id="frames"></div>
+    </section>`;
+  document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { view = b.dataset.v; select(c); });
+  document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { theme = b.dataset.t; select(c); });
+  const frame = k => `<div class="frame"><span>${VIEWS.find(v => v[0] === k)[1]}</span>${url(c, k) ? `<div class="box"><iframe src="${url(c, k)}" title="${k}" style="color-scheme: ${theme}"></iframe></div>` : `<div class="missing">No page for this arm.<br>The agent may not have written page.html.</div>`}</div>`;
+  $('#frames').className = `frames${view === 'compare' ? ' two' : ''}${c.layout === 'phone' ? ' phone' : ''}`;
+  $('#frames').innerHTML = view === 'compare' ? frame('without') + frame('with') : frame(view);
+  fit();
+}
+
+// Full pages (layout "stack") render at 1280 and scale down; small components keep their real size.
+function fit() {
+  if (current?.layout !== 'stack') return;
+  document.querySelectorAll('.box').forEach(box => {
+    const f = box.querySelector('iframe'), s = Math.min(1, box.clientWidth / 1280);
+    f.style.width = '1280px'; f.style.transform = `scale(${s})`; f.style.height = box.clientHeight / s + 'px';
+  });
+}
+addEventListener('resize', fit);
+
+addEventListener('keydown', e => {
+  if (!current || e.metaKey || e.ctrlKey || e.target.closest('input, textarea')) return;
+  const i = '12345'.indexOf(e.key);
+  if (i >= 0) { const k = VIEWS[i][0]; if (k === 'compare' || url(current, k)) { view = k; select(current); } }
+  const list = shown(), at = list.indexOf(current);
+  if (e.key === 'j' || e.key === 'ArrowDown') select(list[Math.min(at + 1, list.length - 1)]);
+  if (e.key === 'k' || e.key === 'ArrowUp') select(list[Math.max(at - 1, 0)]);
+});
+load();
+</script>
+</body>
+</html>

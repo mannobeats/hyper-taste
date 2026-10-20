@@ -3,5 +3,7 @@ type: llm
 focus: { source: file, path: page.html }
 ---
 
-PASS if rows show the report name and meta (such as edited time) by default, frequent actions appear only on hover or focus (icons with tooltips or labels), rare actions move to a menu, and Delete is no longer a visible button on every row.
+PASS if rows show the report name and its existing details by default, frequent actions appear only on hover or focus (icons with tooltips or labels), rare actions move to a menu, and Delete is no longer a visible button on every row.
 FAIL if every row still shows Edit, Duplicate, Share and Delete buttons at all times.
+Also FAIL if the screen animates in on load (an entrance keyframe, a staged fade or slide of the screen's own content when the page opens; a menu, popover, toast, sheet or dialog that rises from its edge or trigger when it appears is fine), if any hover or press transition lasts longer than 220ms, or if a fixed-height chip, pill, tab or element styled as a button does not center its label (a native <button> centers its text by itself and passes; anything else needs flex or grid centering), or if any label is clipped or touches its edge.
+Also FAIL if a status pill or chip has a dot inside it, a label is uppercase with letter-spacing, or numbers in stats, tables or aligned columns lack tabular-nums.
