@@ -103,6 +103,7 @@ let runs = [], data, cases, current, view = q.get('view') || 'compare', filter =
 async function load() {
   runs = await fetch('results/runs.json').then(r => r.ok ? r.json() : []).catch(() => []);
   let run = q.get('run') || runs[0];
+  if (run && !/^[\w-]+$/.test(run)) run = runs[0];
   if (!run) return empty('No eval run yet', 'Run the suite, then <code>node evals/ui-director/collect.mjs</code>.');
   data = await fetch(`results/${run}/viewer.json`).then(r => r.ok ? r.json() : null).catch(() => null);
   if (!data) return empty('Run not found', `There is no <code>results/${esc(run)}/viewer.json</code>. Run <code>node evals/ui-director/collect.mjs</code>.`);
@@ -130,14 +131,16 @@ function render() {
       <nav>${shown().map(c => `<button class="case" data-id="${esc(c.id)}"><span class="id">${esc(c.id)}</span><span class="sub num">${fmt(c.with?.score)} with · ${fmt(c.without?.score)} without${c.with?.fired ? '' : ' · skill not used'}</span><span class="delta ${tone(c.delta)}">${sign(c.delta)}</span></button>`).join('') || '<p class="empty">Nothing here.</p>'}</nav>
     </aside>
     <main id="main"></main>`;
-  $('.runs')?.addEventListener('change', e => { location.search = `?run=${encodeURIComponent(e.target.value)}${current ? `&case=${current.id}` : ''}`; });
+  $('.runs')?.addEventListener('change', e => { location.search = `?run=${encodeURIComponent(e.target.value)}${current ? `&case=${encodeURIComponent(current.id)}` : ''}`; });
   document.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filter = b.dataset.f; render(); select(shown().includes(current) ? current : shown()[0]); });
   document.querySelectorAll('.case').forEach(b => b.onclick = () => select(cases.find(c => c.id === b.dataset.id)));
 }
 
+// Only relative paths, escaped: every caller puts the result in an HTML attribute.
 function url(c, k) {
   const p = c.pages?.[k];
-  return p ? (k === 'after' || k === 'start' ? p : data.base + p) : null;
+  if (!p || /^[a-z][\w+.-]*:|^\/\//i.test(p)) return null;
+  return esc(k === 'after' || k === 'start' ? p : data.base + p);
 }
 
 function select(c) {
