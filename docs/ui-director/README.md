@@ -31,17 +31,18 @@ installs its own.
 
 ```
 skills/ui-director/
-├── SKILL.md              the procedure, hard bans, model habits, craft rules and audit
+├── SKILL.md              the job router, the loop, craft numbers, layout, "Never" and the obvious version
 ├── references/           opened for the job at hand
-│   ├── direction.md      the idea, the first screen, page order, conversion, flavor, type
-│   ├── visuals.md        image generation, layers and transparency, parallax, scenes, real 3D
+│   ├── landing.md        pages that sell: the direction (with a blueprint), grammar, first screen, order, conversion
+│   ├── craft.md          the finish: type, chip, buttons, hairlines, the product window, the film, lit plates, the close
+│   ├── visuals.md        photographs, image generation, layers, scroll scenes, real 3D
+│   ├── app-ui.md         dashboards, tables, states, controls, phones, native, and the moments people remember
 │   ├── system.md         token recipe, stack adapters, auditing a project, DESIGN.md
-│   ├── app-ui.md         dashboards, tables, states, phones, native apps and responsive layouts
-│   ├── words.md          headlines that sell, plain copy, real content
-│   ├── motion.md         what to animate, timings, recipes, reduced motion
-│   ├── tells.md          what reads as generated, and the redesign order
-│   └── look.md           which browser to use, what to check, a page check to run
-└── fonts/                Geist and Geist Mono (OFL), so the default font works offline
+│   ├── words.md          headlines, captions, plain copy, one sample world
+│   ├── motion.md         every timing, what to animate, recipes, reduced motion
+│   ├── tells.md          reviewing and redesigning
+│   └── look.md           which browser, what to check, the page check
+└── fonts/                Geist and Geist Mono (OFL), the fallback when a product has no face
 commands/ui-director/     setup, audit and match slash commands for Claude Code
 docs/ui-director/         before/after pairs for humans: live HTML, screenshots and evals source
 ```
@@ -66,16 +67,17 @@ premium", "clean up this settings screen"). You can also ask for it by name: *"u
 
 What the agent does:
 
-1. Writes a direction into `DESIGN.md` before any code: the obvious version (the house style of
-   today's models included), three directions from the product's world, the pick, a signature
-   that lives on the first screen, the palette, the type and every image's job. Dashboards and
-   app screens get their own direction: the key object, what needs attention, the density and
-   the shell.
-2. Opens the references for the job.
+1. Picks the job (a page that sells, app UI, a redesign, an audit, a design system) and opens
+   only the files for it.
+2. Writes a direction into `DESIGN.md` before any code: the obvious version, one blueprint at
+   the bar it's aiming for, three directions from the product's world, the pick, a signature on
+   the first screen, palette, type, images and one sample world. App screens name the key
+   object, the moments, what needs attention and the shell.
 3. Writes the tokens in the project's own format (CSS variables, Tailwind, shadcn, Bootstrap,
    MUI, native), or audits an existing project and puts it on tokens.
-4. Builds the whole page with real content, then spends its time on the signature: generated
-   images, layered parallax, scroll scenes, real 3D where it sells.
+4. Builds the whole page with real content, then spends its time on the signature and the
+   finish: for software, the product rebuilt in code and playing its job as a film; for
+   physical things, photographs, layered scenes and 3D.
 5. Looks at the result with the browser its harness provides, at desktop and phone widths, in
    light and dark, runs the page check, and fixes what it sees, two passes at least.
 
@@ -92,7 +94,7 @@ installed the bundle):
 
 | | |
 |---|---|
-| ![Before and after: a landing page with the product standing in a kitchen](gallery/08-landing-product.png) | ![Before and after: a landing page with the bread as a still life](gallery/10-landing-photo.png) |
+| ![Before and after: a landing page where the product plays its own week](gallery/08-landing-product.png) | ![Before and after: a landing page with the bread as a still life](gallery/10-landing-photo.png) |
 | ![Before and after: dissolving nested cards](gallery/07-dissolve.png) | ![Before and after: a table on a phone](gallery/19-phone.png) |
 | ![Before and after: a sailing club's home screen with the day's wind drawn hour by hour](gallery/20-home.png) | ![Before and after: a paywall with one plan and a timeline of the trial](gallery/22-paywall.png) |
 
@@ -116,7 +118,6 @@ npm run shoot                     # every pair, light and dark
 npm run shoot -- 08-landing-product   # one pair
 ```
 
-Photographs from Unsplash: the kitchen in pair 08 by
-[Nicolas J Leclercq](https://unsplash.com/photos/KBjDo_QA1lY), the loaf in pair 10 by
+Photograph from Unsplash: the loaf in pair 10 by
 [Robert Stump](https://unsplash.com/photos/DNqwLdfo0b8). All names, businesses and numbers in the
 pairs are made up.

@@ -12,9 +12,9 @@ of truth and moves everything else to where it's loaded only when needed.
 
 - **One file, no drift.** AGENTS.md is the source of truth; CLAUDE.md and GEMINI.md become
   symlinks to it, in every directory of the repo. Whichever file an agent edits, they all change.
-- **Audit.** Flags files over 60 lines or ~1,500 tokens, onboarding sections, task-specific
+- **Audit.** Flags files over 50 lines or ~1,500 tokens, `@` imports, onboarding sections, task-specific
   sections that belong in `docs/`, long sections, file paths that no longer exist, and CLAUDE.md
-  or GEMINI.md files that aren't links.
+  or GEMINI.md files that are neither links nor an `@AGENTS.md` import. A repo with only a CLAUDE.md is audited too.
 - **What goes where.** A clear rule for AGENTS.md, `docs/`, a package's own AGENTS.md, a skill,
   or the README, plus how to fix a bloated file and start a new one.
 - **Grow from real mistakes.** Rules get added only after an agent gets something wrong, in the

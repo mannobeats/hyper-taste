@@ -23,6 +23,7 @@ while IFS= read -r agents; do
   for n in "${names[@]}"; do
     t="$d/$n"
     if [ -L "$t" ] && [ "$(readlink "$t")" = AGENTS.md ]; then echo "ok       $t"; continue; fi
+    if [ ! -L "$t" ] && [ -f "$t" ] && [ "$(head -1 "$t")" = "@AGENTS.md" ]; then echo "ok       $t (imports AGENTS.md)"; continue; fi
     if [ -e "$t" ] || [ -L "$t" ]; then
       if [ ! -L "$t" ] && cmp -s "$t" "$agents"; then rm "$t"
       elif [ $force = 1 ]; then mv "$t" "$t.bak"; echo "backup   $t.bak (merge anything unique into AGENTS.md)"

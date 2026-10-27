@@ -3,76 +3,422 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Seam</title>
+<title>Seam: see the lock before you merge the migration</title>
+<meta name="description" content="Seam replays your real write traffic against every migration in CI and shows each lock it takes, how long it holds and what waits behind it.">
 <link rel="stylesheet" href="../tokens.css">
 <style>
-  /* Dark because it lives next to a terminal. The object is Seam's own report: your real write
-     traffic, replayed, with the hole the migration would punch in it. Red only for that hole. */
-  :root { --accent-h: 190; --accent-c: .7; --tint-h: 250; --tint-c: .012; }
-  body { overflow: hidden; text-align: center; background: oklch(.15 .012 250); }
-  nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 18px 40px; font-size: var(--text-md); color: var(--ink-2); text-align: left; }
-  nav .mid { display: flex; gap: 32px; }
-  .logo { display: flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 650; font-size: 17px; letter-spacing: -.01em; }
-  .logo svg { width: 20px; height: 20px; color: var(--accent); }
-  .end { justify-self: end; display: flex; gap: 8px; }
+  /* Direction. Dark because it lives next to a terminal, graphite with no accent hue: light is kept
+     for the one thing that should glow, the write traffic. The signature is the hole the migration
+     punches in it. Red only for that hole and what it blocks, green only when it's gone.
+     Brand material: writes as a field of thin ticks (the logo, the window, the week strip). */
+  :root[data-theme] {
+    --bg: #050506; --panel: #09090b; --surface: #111113; --fill: #18181b; --hover: #212125; --press: #2a2a2f;
+    --line: rgb(244 244 246 / .08); --line-strong: rgb(244 244 246 / .14);
+    --ink: #f4f4f6; --ink-2: rgb(244 244 246 / .78); --muted: rgb(244 244 246 / .64); --faint: rgb(244 244 246 / .5);
+    --strong: #f4f4f6; --strong-hover: #dedee2; --on-strong: #09090b;
+    --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgb(244 244 246 / .7);
+    --hair: inset 0 0 0 .5px var(--line-strong);
+    --gutter: clamp(20px, 4vw, 40px);
+    --quiet: color-mix(in oklch, var(--ink) 46%, var(--bg));
+  }
+  html { scrollbar-width: none; }
+  body { font-size: 16px; line-height: 1.5; }
+  .wrap { width: min(1200px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+  a { text-decoration: none; }
+  .btn { border-radius: 999px; gap: 8px; }
+  .btn:active { transform: scale(.98); }
+  .btn.xl { height: 48px; padding: 0 22px; font-size: 16px; font-weight: 550; }
+  .btn.xl.soft { background: var(--fill); box-shadow: var(--hair); }
+  .btn.xl.soft:hover { background: var(--hover); }
 
-  h1 { margin: 40px auto 0; font-size: 68px; line-height: 1.02; letter-spacing: -.035em; font-weight: 600; max-width: 23ch; }
-  .lead { margin: 20px auto 0; font-size: 19px; color: var(--ink-2); max-width: 54ch; line-height: 1.5; }
-  .cta { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 26px; }
-  .cta .btn { height: 48px; padding: 0 22px; font-size: 16px; border-radius: var(--r-lg); }
-  .cta .btn.accent { color: oklch(.16 .02 220); }
-  .cta small { margin-left: 8px; color: var(--muted); font-size: var(--text-sm); }
+  /* nav */
+  .nav { position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 64px;
+         padding-inline: var(--gutter); font-size: 14px; transition: background-color var(--t-base), box-shadow var(--t-base); }
+  .nav[data-scrolled] { background: color-mix(in oklch, var(--bg) 75%, transparent); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: 0 .5px 0 var(--line); }
+  .logo { display: flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 600; font-size: 17px; letter-spacing: -.02em; }
+  .logo svg { width: 20px; height: 20px; }
+  .nav .mid { display: flex; gap: 28px; } .nav .mid a { color: var(--muted); transition: color var(--t-fast); } .nav .mid a:hover { color: var(--ink); }
+  .nav .end { justify-self: end; display: flex; align-items: center; gap: 6px; }
+  .nav .btn { height: 36px; padding: 0 14px; font-size: 14px; }
 
-  .report { margin: 36px 56px 0; text-align: left; border-radius: 18px 18px 0 0; background: oklch(.19 .012 250);
-            box-shadow: 0 0 0 1px var(--line), 0 -20px 60px oklch(0 0 0 / .35); padding: 18px 24px 0; }
-  .report header { display: flex; align-items: baseline; gap: 12px; font-size: var(--text-sm); color: var(--muted); }
-  .report header b { color: var(--ink); font-weight: var(--w-ui); font-size: var(--text-md); }
-  .report header .mono { margin-left: auto; color: var(--ink-2); }
-  .chart { position: relative; display: grid; grid-template-columns: 40px 1fr; gap: 0 12px; margin-top: 18px; }
-  .y { display: flex; flex-direction: column; justify-content: space-between; height: 170px; font-size: var(--text-xs); color: var(--muted); text-align: right; translate: 0 -6px; }
-  .plot { position: relative; height: 170px; }
+  /* first screen */
+  .hero { padding-top: 44px; }
+  .fact { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px; font: 500 14px/1 var(--font);
+          color: var(--ink-2); background: color-mix(in oklch, var(--surface) 70%, transparent); box-shadow: var(--hair); transition: background-color var(--t-fast); }
+  .fact:hover { background: var(--fill); } .fact span { color: var(--muted); }
+  h1 { margin-top: 24px; font: 600 clamp(2.5rem, 1rem + 3.9vw, 4.5rem)/1 var(--font); letter-spacing: -.045em; }
+  .quiet { color: var(--quiet); }
+  .hero-foot { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px 48px; margin-top: 28px; }
+  .lede { font-size: 18px; line-height: 1.5; color: var(--muted); max-width: 54ch; }
+  .actions { display: grid; justify-items: end; gap: 12px; }
+  .actions div { display: flex; gap: 8px; }
+  .actions small { font-size: 13px; color: var(--muted); }
+
+  /* the film: Seam's report on a lit plate */
+  .film { margin-top: 48px; }
+  .plate { position: relative; isolation: isolate; overflow: hidden; border-radius: 28px; padding: 8px; box-shadow: var(--hair);
+    background: radial-gradient(70% 55% at 50% 0%, rgb(244 244 246 / .1), transparent 70%),
+                radial-gradient(50% 40% at 100% 100%, rgb(244 244 246 / .03), transparent 70%), var(--panel); }
+  .plate::after { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .22; mix-blend-mode: soft-light; pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .window { container-type: inline-size; aspect-ratio: 1120 / 636; border-radius: 20px; overflow: hidden; background: var(--surface);
+    box-shadow: inset 0 0 0 .5px var(--line-strong), 0 40px 100px -40px rgb(0 0 0 / .9); }
+  .film-bar { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 60px; padding: 0 8px 0 16px; }
+  .captions { display: grid; font-size: 17px; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
+  .captions > p { grid-area: 1 / 1; opacity: 0; transition: opacity 500ms var(--ease); }
+  .film:not([data-chapter]) .captions > :first-child, .captions > [data-on] { opacity: 1; }
+  .steps { display: flex; align-items: center; gap: 4px; }
+  .steps [data-step] { position: relative; width: 32px; height: 44px; }
+  .steps [data-step]::before, .steps [data-step]::after { content: ""; position: absolute; inset: 20px 0; border-radius: 2px; background: var(--line-strong); }
+  .steps [data-step]::after { background: var(--ink); transform: scaleX(0); transform-origin: left; }
+  .steps [aria-current="step"]::after { transform: none; }
+  .film[data-playing] .steps [aria-current="step"]::after { animation: fill var(--hold) linear; }
+  @keyframes fill { from { transform: scaleX(0); } }
+  .steps [data-pause] { height: 32px; min-width: 64px; margin-left: 12px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 500;
+    color: var(--ink-2); background: var(--fill); box-shadow: var(--hair); line-height: 1; transition: background-color var(--t-fast); }
+  .steps [data-pause]:hover { background: var(--hover); }
+
+  /* the window: Seam's report, designed at 1120 x 636, every size N × --u */
+  .w { --u: calc(100cqw / 1120); height: 100%; display: grid; grid-template-rows: calc(30 * var(--u)) calc(52 * var(--u)) 1fr;
+       font-size: calc(13 * var(--u)); line-height: 1.4; color: var(--ink-2); --t: 600ms var(--ease); }
+  .w .mono { font-size: calc(13 * var(--u)); }
+  .w-addr { display: grid; place-items: center; background: #0b0b0d; box-shadow: inset 0 -.5px 0 var(--line); font-size: calc(11.5 * var(--u)); line-height: 1; color: var(--faint); }
+  .w-head { display: flex; align-items: center; gap: calc(10 * var(--u)); padding-inline: calc(18 * var(--u)); box-shadow: inset 0 -.5px 0 var(--line); white-space: nowrap; }
+  .w-head svg { width: calc(18 * var(--u)); height: calc(18 * var(--u)); color: var(--ink); }
+  .w-head .crumb { color: var(--muted); } .w-head b { color: var(--ink); font-weight: 500; } .w-head .by { color: var(--muted); }
+  .w-head .state { display: grid; margin-left: auto; font-weight: 500; text-align: right; }
+  .w-head .state > *, .w-swap > * { grid-area: 1 / 1; transition: opacity var(--t), transform var(--t); }
+  .w-btn { display: inline-flex; align-items: center; height: calc(28 * var(--u)); padding: 0 calc(11 * var(--u)); border-radius: calc(7 * var(--u)); background: var(--fill); box-shadow: var(--hair); color: var(--ink-2); line-height: 1; }
+  .w .bad-t, .tbl .bad-t { color: var(--bad-ink); } .w .ok-t { color: var(--ok-ink); }
+  .w-body { display: grid; grid-template-columns: calc(264 * var(--u)) 1fr; min-height: 0; }
+
+  .w-side { padding: calc(18 * var(--u)) calc(14 * var(--u)); background: #0e0e10; box-shadow: inset -.5px 0 0 var(--line); display: flex; flex-direction: column; }
+  .w-label { padding-inline: calc(6 * var(--u)); color: var(--muted); font-size: calc(11.5 * var(--u)); }
+  .migs { list-style: none; padding: 0; margin: calc(8 * var(--u)) 0 calc(22 * var(--u)); display: grid; gap: calc(2 * var(--u)); }
+  .migs li { display: grid; gap: calc(2 * var(--u)); padding: calc(8 * var(--u)) calc(6 * var(--u)); border-radius: calc(7 * var(--u)); }
+  .migs li.on { background: var(--fill); box-shadow: var(--hair); }
+  .migs .mono { color: var(--ink); }
+  .migs li { color: var(--muted); }
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: calc(7 * var(--u)) calc(12 * var(--u)); margin-top: calc(10 * var(--u)); padding-inline: calc(6 * var(--u)); }
+  .facts dt { color: var(--muted); } .facts dd { color: var(--ink-2); text-align: right; }
+  .w-rule { margin-top: calc(8 * var(--u)); padding-inline: calc(6 * var(--u)); color: var(--ink-2); }
+  .facts + .w-label { margin-top: calc(22 * var(--u)); }
+  .w-note { margin-top: auto; padding: calc(10 * var(--u)) calc(6 * var(--u)) 0; box-shadow: inset 0 .5px 0 var(--line); color: var(--muted); font-size: calc(11.5 * var(--u)); }
+
+  .w-main { position: relative; padding: calc(18 * var(--u)) calc(24 * var(--u)); min-width: 0; }
+  .c-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .c-head b { color: var(--ink); font-weight: 500; } .c-head span { color: var(--muted); font-size: calc(11.5 * var(--u)); }
+  .chart { display: grid; grid-template-columns: calc(38 * var(--u)) 1fr; column-gap: calc(10 * var(--u)); margin-top: calc(14 * var(--u)); }
+  .y { position: relative; color: var(--faint); font-size: calc(11.5 * var(--u)); text-align: right; }
+  .y span { position: absolute; right: 0; translate: 0 -50%; }
+  .plot { position: relative; aspect-ratio: 760 / 224; }
   .plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .x { grid-column: 2; display: flex; justify-content: space-between; margin-top: 8px; font-size: var(--text-xs); color: var(--muted); }
-  .hole { position: absolute; top: 0; bottom: 0; left: 50%; width: 15.83%; background: oklch(.66 .19 25 / .12); border-left: 1px solid oklch(.66 .19 25 / .7); }
-  .hole p { position: absolute; left: 12px; right: 8px; top: 12px; font-size: var(--text-sm); line-height: 1.35; color: var(--ink-2); }
-  .hole b { display: block; color: var(--bad-ink); font-weight: var(--w-strong); font-size: var(--text-md); }
-  .deploy { position: absolute; left: 50%; top: -20px; translate: -50% 0; font-size: var(--text-xs); color: var(--bad-ink); white-space: nowrap; }
-  .fix { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin-top: 18px; padding: 14px 0 18px; border-top: 1px solid var(--line); font-size: var(--text-sm); }
-  .fix dt { color: var(--muted); } .fix dd { color: var(--ink-2); } .fix .mono { color: var(--ink); }
+  .bars { fill: none; stroke-width: 1.9; transition: opacity var(--t); }
+  .bars.hole, .bars.rush { stroke: rgb(244 244 246 / .82); }
+  .bars.fixed { stroke: rgb(244 244 246 / .82); opacity: 0; }
+  .plot .glow { filter: drop-shadow(0 0 calc(5 * var(--u)) rgb(244 244 246 / .28)); }
+  .grid { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .hole-band { position: absolute; top: 0; bottom: 0; left: 50%; width: 15.92%; transition: opacity var(--t);
+    background: linear-gradient(to top, oklch(.66 .19 25 / .2), oklch(.66 .19 25 / .03) 75%); box-shadow: inset 0 calc(-2 * var(--u)) 0 var(--bad); }
+  .hole-band p { position: absolute; top: calc(4 * var(--u)); left: calc(8 * var(--u)); right: 0; color: var(--bad-ink); line-height: 1.25; }
+  .hole-band b { display: block; font-size: calc(21 * var(--u)); font-weight: 600; letter-spacing: -.02em; color: var(--bad-ink); }
+  .x { position: relative; grid-column: 2; height: calc(16 * var(--u)); margin-top: calc(6 * var(--u)); color: var(--faint); font-size: calc(11.5 * var(--u)); }
+  .x span { position: absolute; translate: -50% 0; } .x span:first-child { translate: 0; } .x span:last-child { translate: -100% 0; }
+  .x .at { color: var(--bad-ink); transition: color var(--t); }
+  .film[data-chapter="4"] .x .at { color: var(--faint); }
+
+  .lanes { display: grid; margin-top: calc(14 * var(--u)); }
+  .lane { display: grid; grid-template-columns: calc(48 * var(--u)) 1fr; height: calc(24 * var(--u)); align-items: center; transition: opacity var(--t); }
+  .lane > div { position: relative; height: 100%; display: grid; align-items: center; }
+  .lane .lbl { position: absolute; right: calc(50% + 10 * var(--u)); white-space: nowrap; color: var(--muted); transition: opacity var(--t); }
+  .lane .bar { position: absolute; left: 50%; width: 15.92%; height: calc(12 * var(--u)); border-radius: calc(3 * var(--u)); transition: opacity var(--t), filter var(--t); }
+  .l-lock .bar.was { background: oklch(.66 .19 25 / .32); box-shadow: inset 0 0 0 .5px var(--bad); }
+  .l-wait .bar.was { background: repeating-linear-gradient(-45deg, rgb(244 244 246 / .22) 0 calc(2 * var(--u)), transparent 0 calc(5 * var(--u))); box-shadow: inset 0 0 0 .5px var(--line-strong); }
+  .l-lock .bar.now { width: 50%; background: rgb(244 244 246 / .1); box-shadow: inset 0 0 0 .5px var(--line-strong); }
+  .lane .now { opacity: 0; }
+
+  .why { margin-top: calc(16 * var(--u)); border-radius: calc(10 * var(--u)); box-shadow: inset 0 0 0 .5px var(--line); background: #0e0e10; transition: opacity var(--t); }
+  .stmt { display: flex; justify-content: space-between; gap: calc(16 * var(--u)); padding: calc(9 * var(--u)) calc(14 * var(--u)); box-shadow: inset 0 -.5px 0 var(--line); transition: opacity var(--t), background-color var(--t); }
+  .stmt code { color: var(--ink); white-space: nowrap; } .stmt span { white-space: nowrap; color: var(--muted); }
+  .why p { padding: calc(10 * var(--u)) calc(14 * var(--u)) calc(12 * var(--u)); color: var(--muted); }
+  .why p b { color: var(--ink-2); font-weight: 500; }
+
+  .glass { position: absolute; left: calc(24 * var(--u)); right: calc(24 * var(--u)); bottom: calc(18 * var(--u)); display: grid; border-radius: calc(12 * var(--u));
+    background: color-mix(in oklch, var(--fill) 70%, transparent); -webkit-backdrop-filter: blur(14px) saturate(1.2); backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: inset 0 0 0 .5px rgb(244 244 246 / .18), 0 calc(24 * var(--u)) calc(60 * var(--u)) calc(-20 * var(--u)) rgb(0 0 0 / .8);
+    opacity: 0; transform: translateY(calc(16 * var(--u))); transition: opacity var(--t), transform var(--t); }
+  .glass > div { grid-area: 1 / 1; padding: calc(14 * var(--u)) calc(16 * var(--u)); transition: opacity var(--t); }
+  .g-head { display: flex; align-items: center; gap: calc(8 * var(--u)); } .g-head b { color: var(--ink); font-weight: 500; } .g-head span { color: var(--muted); }
+  .g-head .w-btn { margin-left: auto; background: var(--ink); color: var(--on-strong); box-shadow: none; font-weight: 500; }
+  .diff { margin-top: calc(10 * var(--u)); border-radius: calc(7 * var(--u)); overflow: hidden; }
+  .diff code { display: block; padding: calc(5 * var(--u)) calc(10 * var(--u)); color: var(--ink); }
+  .diff .del { background: oklch(.66 .19 25 / .14); } .diff .add { background: oklch(.72 .15 150 / .13); }
+  .glass p { margin-top: calc(10 * var(--u)); color: var(--muted); }
+  .glass .big { margin-top: calc(8 * var(--u)); font-size: calc(21 * var(--u)); font-weight: 600; letter-spacing: -.02em; color: var(--ink); }
+  .g-run { opacity: 0; }
+
+  /* chapters: each changes one or two things in the window */
+  .film[data-chapter="1"] .s1, .film[data-chapter="1"] .l-wait { opacity: .4; }
+  .film[data-chapter="1"] .s2 { background: oklch(.66 .19 25 / .1); }
+  .film[data-chapter="1"] .l-lock .bar.was { filter: brightness(1.5); }
+  .film[data-chapter="2"] .l-lock, .film[data-chapter="2"] .why { opacity: .4; }
+  .film[data-chapter="2"] .bars.hole { opacity: .35; }
+  .film[data-chapter="2"] .l-wait .bar.was { filter: brightness(1.6); }
+  .film[data-chapter="3"] .glass, .film[data-chapter="4"] .glass { opacity: 1; transform: none; }
+  .film[data-chapter="4"] .g-fix { opacity: 0; } .film[data-chapter="4"] .g-run { opacity: 1; }
+  .film[data-chapter="4"] :is(.bars.hole, .bars.rush, .hole-band, .lane .was) { opacity: 0; }
+  .film[data-chapter="4"] :is(.bars.fixed, .lane .now) { opacity: 1; }
+  .w-swap { display: grid; } .w-swap > :last-child, .w-head .state > :last-child { opacity: 0; }
+  .film[data-chapter="4"] :is(.w-swap, .w-head .state) > :first-child { opacity: 0; }
+  .film[data-chapter="4"] :is(.w-swap, .w-head .state) > :last-child { opacity: 1; }
+
+  /* product states */
+  section.more { padding-top: clamp(96px, 12vw, 200px); }
+  h2 { font: 600 clamp(2rem, 1.2rem + 2.6vw, 3.5rem)/1.04 var(--font); letter-spacing: -.035em; max-width: 19ch; }
+  .states { display: grid; gap: 16px; grid-template-columns: 1.4fr 1fr; margin-top: 56px; }
+  .states > .wide { grid-column: 1 / -1; display: grid; grid-template-columns: 5fr 7fr; gap: 16px; align-items: center; }
+  .states > * { min-width: 0; }
+  .cell .plate { padding: 28px; min-height: 300px; display: grid; align-content: center; }
+  .cell > p { margin-top: 16px; max-width: 46ch; color: var(--muted); }
+  .cell > p b, .wide p b { color: var(--ink); font-weight: 550; }
+  .glass-s { border-radius: 16px; padding: 18px; font-size: 14px; background: color-mix(in oklch, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(1.3); backdrop-filter: blur(20px) saturate(1.3);
+    box-shadow: inset 0 0 0 .5px rgb(244 244 246 / .16), 0 24px 60px -24px rgb(0 0 0 / .8); }
+  .bot { display: flex; align-items: baseline; gap: 8px; color: var(--muted); font-size: 13px; } .bot b { color: var(--ink); font-weight: 550; }
+  .glass-s h3 { margin-top: 10px; font-size: 16px; font-weight: 550; letter-spacing: -.01em; }
+  .tbl { width: 100%; margin-top: 14px; border-collapse: collapse; font-size: 13px; }
+  .tbl th { text-align: left; font-weight: 500; color: var(--muted); padding: 0 0 8px; }
+  .tbl td { padding: 9px 0; box-shadow: inset 0 .5px 0 var(--line); color: var(--ink-2); }
+  .tbl :is(th, td):last-child { text-align: right; } .tbl .mono { font-size: 13px; }
+  .yaml { font: 450 13px/1.75 var(--font-mono); color: var(--ink-2); white-space: pre; }
+  .yaml i { font-style: normal; color: var(--muted); }
+  .week svg { width: 100%; height: auto; overflow: visible; }
+  .week .ticks { stroke: rgb(244 244 246 / .5); stroke-width: 2.4; }
+  .week .peak { stroke: var(--ink); stroke-width: 2.4; }
+  .week .days { display: grid; grid-template-columns: repeat(7, 1fr); margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .week .days b { color: var(--ink); font-weight: 500; }
+  .week figcaption { margin-top: 14px; font-size: 13px; color: var(--muted); }
+  .wide > p { font-size: 18px; color: var(--muted); max-width: 30ch; }
+
+  /* the close */
+  .close { padding-top: clamp(120px, 14vw, 220px); text-align: center; display: grid; justify-items: center; }
+  .close h2 { max-width: none; } .close .quiet { display: block; }
+  .close .actions { justify-items: center; margin-top: 32px; }
+  footer { margin-top: 96px; overflow: hidden; }
+  .wordmark { margin: 0; text-align: center; font: 600 clamp(64px, 22vw, 340px)/.8 var(--font); letter-spacing: -.06em;
+    background: linear-gradient(180deg, color-mix(in oklch, var(--ink) 14%, transparent), transparent 85%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; user-select: none; }
+  .foot { display: flex; justify-content: space-between; gap: 24px; padding: 24px 0 40px; box-shadow: inset 0 .5px 0 var(--line); font-size: 13px; color: var(--muted); }
+  .foot nav { display: flex; gap: 24px; } .foot a:hover { color: var(--ink); }
+
+  [data-reveal] { transition: opacity 1s var(--ease), transform 1.2s var(--ease), filter 1s var(--ease); transition-delay: calc(var(--i, 0) * 70ms); }
+  [data-reveal].pending { opacity: 0; transform: translateY(24px); filter: blur(8px); }
+
+  @media (max-width: 760px) {
+    .nav .mid, .nav .end .ghost { display: none; }
+    .hero-foot, .states, .states > .wide { grid-template-columns: 1fr; }
+    .actions { justify-items: start; }
+    .film-bar { flex-direction: column; align-items: flex-start; height: auto; padding: 14px 8px 4px; gap: 4px; }
+    .foot { flex-direction: column; }
+  }
 </style>
 </head>
 <body class="bleed">
-  <nav>
-    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h6l2-5 2 10 2-5h6"/></svg>Seam</span>
-    <span class="mid"><span>Docs</span><span>Pricing</span><span>Changelog</span></span>
-    <span class="end"><span class="btn ghost">GitHub ↗</span><span class="btn strong">Add to CI</span></span>
-  </nav>
+  <header class="nav">
+    <a class="logo" href="#"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M2 15V9M4.75 15V6.5M7.5 15V10M12.5 15V3.5M15.25 15V7M18 15V9.5"/></svg>Seam</a>
+    <nav class="mid" aria-label="Main"><a href="#">How it works</a><a href="#">Docs</a><a href="#">Pricing</a><a href="#">Changelog</a></nav>
+    <div class="end"><a class="btn ghost" href="#"><i data-lucide="github"></i>GitHub</a><a class="btn strong" href="#">Add to CI</a></div>
+  </header>
 
-  <h1>Catch the migration that locks your table before it ships.</h1>
-  <p class="lead">Seam replays every migration in a pull request against your real table sizes and traffic, and shows what would block writes, and for how long.</p>
-  <div class="cta"><span class="btn accent">Add to CI</span><span class="btn">Read a real report</span><small>Free for open source. Postgres and MySQL.</small></div>
-
-  <section class="report" aria-label="A Seam report on a pull request">
-    <header><b>orders, writes per second</b><span>replayed from last Friday's peak</span><span class="mono">if 0042_orders_add_status.sql ships at 14:00</span></header>
-    <div class="chart">
-      <div class="y num"><span>2.8k</span><span>1.4k</span><span>0</span></div>
-      <div class="plot">
-        <svg viewBox="0 0 1040 170" preserveAspectRatio="none" fill="none" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true">
-          <path d="M0 85H1040M0 170H1040" stroke="oklch(.3 .012 250)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-          <path stroke="oklch(.84 .01 250)" vector-effect="non-scaling-stroke" d="M0.0,89.1 L8.7,85.5 L17.3,88.2 L26.0,88.2 L34.7,90.4 L43.3,87.0 L52.0,81.0 L60.7,83.5 L69.3,80.6 L78.0,83.6 L86.7,82.6 L95.3,83.2 L104.0,90.7 L112.7,79.7 L121.3,80.9 L130.0,80.6 L138.7,89.7 L147.3,89.7 L156.0,85.8 L164.7,83.8 L173.3,80.3 L182.0,81.6 L190.7,79.1 L199.3,83.9 L208.0,79.7 L216.7,79.2 L225.3,83.7 L234.0,73.5 L242.7,78.4 L251.3,75.7 L260.0,83.4 L268.7,83.9 L277.3,82.3 L286.0,81.4 L294.7,78.3 L303.3,80.1 L312.0,83.2 L320.7,85.5 L329.3,83.8 L338.0,76.6 L346.7,85.4 L355.3,81.2 L364.0,80.6 L372.7,89.1 L381.3,82.8 L390.0,77.7 L398.7,92.2 L407.3,85.3 L416.0,84.7 L424.7,88.1 L433.3,82.8 L442.0,85.6 L450.7,91.9 L459.3,82.5 L468.0,83.6 L476.7,82.8 L485.3,81.1 L494.0,86.1 L502.7,87.5 L511.3,93.9 L520.0,170.0"/>
-          <path stroke="oklch(.66 .19 25)" stroke-width="2.5" vector-effect="non-scaling-stroke" d="M520,170 L684.7,170"/>
-          <path stroke="oklch(.84 .01 250)" vector-effect="non-scaling-stroke" d="M684.7,170 L684.7,15.0 L693.3,30.5 L702.0,42.5 L710.7,47.7 L719.3,60.1 L728.0,67.0 L736.7,72.1 L745.3,85.3 L754.0,76.5 L762.7,80.6 L771.3,84.5 L780.0,96.8 L788.7,92.4 L797.3,87.1 L806.0,99.1 L814.7,92.8 L823.3,88.1 L832.0,98.3 L840.7,86.0 L849.3,90.6 L858.0,93.6 L866.7,91.5 L875.3,90.0 L884.0,92.1 L892.7,87.6 L901.3,95.0 L910.0,93.7 L918.7,87.2 L927.3,91.3 L936.0,94.8 L944.7,86.7 L953.3,84.1 L962.0,91.9 L970.7,95.5 L979.3,89.8 L988.0,89.5 L996.7,89.8 L1005.3,82.1 L1014.0,92.1 L1022.7,82.0 L1031.3,92.3 L1040.0,89.9"/>
-        </svg>
-        <span class="deploy">0042 deploys</span><div class="hole"><p><b>Writes blocked for 38s</b>1,900 checkouts wait, then land at once.</p></div>
+  <main>
+    <section class="hero wrap">
+      <a class="fact" href="#">Now checks MySQL 8 as well as Postgres <span aria-hidden="true">›</span></a>
+      <h1>Checkout stops for 38 seconds. <span class="quiet">Seam shows you before you merge.</span></h1>
+      <div class="hero-foot">
+        <p class="lede">Seam replays your real write traffic against each migration in CI, and shows every lock it takes and what waits behind it.</p>
+        <div class="actions">
+          <div><a class="btn strong xl" href="#"><i data-lucide="git-pull-request"></i>Add to CI</a><a class="btn soft xl" href="#">Read the docs</a></div>
+          <small>Free for open source. Reads table stats, never your rows.</small>
+        </div>
       </div>
-      <div class="x num"><span>13:58</span><span>13:59</span><span>14:00</span><span>14:01</span><span>14:02</span></div>
-    </div>
-    <dl class="fix">
-      <dt>Why</dt><dd><span class="mono">ADD COLUMN status NOT NULL DEFAULT 'new'</span> rewrites all 4.2M rows under an exclusive lock.</dd>
-      <dt>Fix</dt><dd>Add it nullable, backfill in batches of 10,000, then <span class="mono">SET NOT NULL</span>. Seam re-runs the replay on your next push.</dd>
-    </dl>
-  </section>
+    </section>
+
+    <section class="film wrap" style="--hold: 4200ms" data-film aria-label="How a Seam check runs">
+      <div class="plate">
+        <figure class="window" role="img" aria-label="Seam’s report on pull request 1187: replaying Friday’s traffic, migration 0042 blocks writes to orders for 38.2 seconds while 1,900 checkouts wait.">
+          <div class="w">
+            <div class="w-addr">seam.dev/tidewater/checkout/pull/1187</div>
+            <div class="w-head">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M2 15V9M4.75 15V6.5M7.5 15V10M12.5 15V3.5M15.25 15V7M18 15V9.5"/></svg>
+              <span class="crumb">tidewater / checkout</span><b>#1187 Add status to orders</b><span class="by">Ines Duarte · ines/order-status</span>
+              <span class="state"><span class="bad-t">Blocks writes</span><span class="ok-t">Safe to merge</span></span>
+              <span class="w-btn">Re-run</span>
+            </div>
+            <div class="w-body">
+              <div class="w-side">
+                <p class="w-label">Migrations</p>
+                <ul class="migs">
+                  <li><span class="mono">0041_gift_note.sql</span><span class="r">No blocking lock</span></li>
+                  <li class="on"><span class="mono">0042_orders_add_status.sql</span><span class="w-swap"><span class="r bad-t">Blocks writes for 38.2 s</span><span class="r">Longest wait 40 ms</span></span></li>
+                </ul>
+                <p class="w-label">Replayed against</p>
+                <dl class="facts num">
+                  <dt>Traffic</dt><dd>Fri 23 Oct, 13:58</dd>
+                  <dt>Length</dt><dd>4 min</dd>
+                  <dt>Writes</dt><dd>32,326</dd>
+                  <dt>Table</dt><dd>orders</dd>
+                  <dt>Rows</dt><dd>41.6M</dd>
+                  <dt>Database</dt><dd>Postgres 16.4</dd>
+                </dl>
+                <p class="w-label">Fails when</p>
+                <p class="w-rule">Any write waits over 2 s</p>
+                <p class="w-note">Required check on main</p>
+              </div>
+              <div class="w-main">
+                <div class="c-head"><b>Writes to orders per second</b><span>Replayed from Fri 23 Oct, the week’s peak</span></div>
+                <div class="chart num">
+                  <div class="y"><span style="top:6.25%">300</span><span style="top:53.1%">150</span><span style="top:100%">0</span></div>
+                  <div class="plot">
+                    <svg viewBox="0 0 760 200" preserveAspectRatio="none" aria-hidden="true">
+                      <path class="grid" d="M0 12.5H760M0 106.25H760M0 200H760"/>
+                      <g class="glow">
+                        <path class="bars hole" d="M0.63 200V126.9M3.8 200V108.5M6.97 200V119.2M10.13 200V119.5M13.3 200V108.8M16.47 200V111.4M19.63 200V114.3M22.8 200V105.5M25.97 200V104.7M29.13 200V108.1M32.3 200V104.8M35.47 200V105.3M38.63 200V101.6M41.8 200V112.1M44.97 200V109.6M48.13 200V103.3M51.3 200V103.6M54.47 200V115.9M57.63 200V104.4M60.8 200V108.8M63.97 200V100.7M67.13 200V103.3M70.3 200V116.7M73.47 200V109.9M76.63 200V102.8M79.8 200V107.8M82.97 200V109.2M86.13 200V111M89.3 200V105.2M92.47 200V105.7M95.63 200V116.1M98.8 200V117.1M101.97 200V107.9M105.13 200V117.5M108.3 200V120.9M111.47 200V118.2M114.63 200V115.6M117.8 200V117.9M120.97 200V105.5M124.13 200V112.3M127.3 200V108.6M130.47 200V105.3M133.63 200V120.2M136.8 200V115.5M139.97 200V109.5M143.13 200V109.9M146.3 200V110.9M149.47 200V114.6M152.63 200V100.6M155.8 200V116.1M158.97 200V109.8M162.13 200V109.8M165.3 200V103.5M168.47 200V98.4M171.63 200V105.9M174.8 200V112.5M177.97 200V108.1M181.13 200V110.6M184.3 200V109.4M187.47 200V108.7M190.63 200V110.9M193.8 200V107.9M196.97 200V107.1M200.13 200V115.1M203.3 200V103.4M206.47 200V112.8M209.63 200V106.2M212.8 200V111.6M215.97 200V112.8M219.13 200V116.1M222.3 200V117.5M225.47 200V115.1M228.63 200V111.5M231.8 200V122.8M234.97 200V117.9M238.13 200V127.4M241.3 200V122M244.47 200V127.2M247.63 200V128.2M250.8 200V127.6M253.97 200V120.5M257.13 200V119.3M260.3 200V133.9M263.47 200V120.7M266.63 200V134.6M269.8 200V128.3M272.97 200V132.9M276.13 200V134M279.3 200V116.5M282.47 200V130.6M285.63 200V122.4M288.8 200V131.1M291.97 200V124.7M295.13 200V121.7M298.3 200V129.7M301.47 200V114.5M304.63 200V114.7M307.8 200V114.2M310.97 200V113.9M314.13 200V113.2M317.3 200V115.7M320.47 200V124.6M323.63 200V129.5M326.8 200V125.1M329.97 200V128.4M333.13 200V130M336.3 200V118.8M339.47 200V126.4M342.63 200V117.3M345.8 200V122.5M348.97 200V119.4M352.13 200V128.4M355.3 200V117M358.47 200V129.8M361.63 200V127.8M364.8 200V118.8M367.97 200V134M371.13 200V127.6M374.3 200V137.3M377.47 200V120.7M621.3 200V71.3M624.47 200V77M627.63 200V85.1M630.8 200V73.5M633.97 200V74.2M637.13 200V74.1M640.3 200V76M643.47 200V82.1M646.63 200V78.7M649.8 200V98M652.97 200V86M656.13 200V90.8M659.3 200V90.3M662.47 200V88.8M665.63 200V106.7M668.8 200V106.5M671.97 200V109.1M675.13 200V110M678.3 200V111.8M681.47 200V114.5M684.63 200V104.5M687.8 200V99.2M690.97 200V114.2M694.13 200V116.1M697.3 200V115.5M700.47 200V107.2M703.63 200V115.7M706.8 200V112.1M709.97 200V102.2M713.13 200V113.1M716.3 200V108.4M719.47 200V106.6M722.63 200V113.6M725.8 200V113.1M728.97 200V119.7M732.13 200V116.4M735.3 200V105.5M738.47 200V102.2M741.63 200V117.6M744.8 200V103.1M747.97 200V110.9M751.13 200V118.2M754.3 200V116.7M757.47 200V109.6"/>
+                        <path class="bars rush" d="M500.97 200V8.5M504.13 200V7.2M507.3 200V8.8M510.47 200V19.9M513.63 200V16.1M516.8 200V25.2M519.97 200V32.6M523.13 200V33.7M526.3 200V24.1M529.47 200V26.8M532.63 200V36.3M535.8 200V34.4M538.97 200V35.9M542.13 200V51.7M545.3 200V45.4M548.47 200V56.9M551.63 200V51.9M554.8 200V52.4M557.97 200V49.9M561.13 200V48M564.3 200V57.9M567.47 200V64.5M570.63 200V60.7M573.8 200V66.9M576.97 200V58.4M580.13 200V61.9M583.3 200V61.9M586.47 200V63.7M589.63 200V59.7M592.8 200V67.8M595.97 200V61.3M599.13 200V75.7M602.3 200V71.4M605.47 200V67.8M608.63 200V75.1M611.8 200V66.4M614.97 200V75.7M618.13 200V77.9"/>
+                        <path class="bars fixed" d="M0.63 200V126.9M3.8 200V108.5M6.97 200V119.2M10.13 200V119.5M13.3 200V108.8M16.47 200V111.4M19.63 200V114.3M22.8 200V105.5M25.97 200V104.7M29.13 200V108.1M32.3 200V104.8M35.47 200V105.3M38.63 200V101.6M41.8 200V112.1M44.97 200V109.6M48.13 200V103.3M51.3 200V103.6M54.47 200V115.9M57.63 200V104.4M60.8 200V108.8M63.97 200V100.7M67.13 200V103.3M70.3 200V116.7M73.47 200V109.9M76.63 200V102.8M79.8 200V107.8M82.97 200V109.2M86.13 200V111M89.3 200V105.2M92.47 200V105.7M95.63 200V116.1M98.8 200V117.1M101.97 200V107.9M105.13 200V117.5M108.3 200V120.9M111.47 200V118.2M114.63 200V115.6M117.8 200V117.9M120.97 200V105.5M124.13 200V112.3M127.3 200V108.6M130.47 200V105.3M133.63 200V120.2M136.8 200V115.5M139.97 200V109.5M143.13 200V109.9M146.3 200V110.9M149.47 200V114.6M152.63 200V100.6M155.8 200V116.1M158.97 200V109.8M162.13 200V109.8M165.3 200V103.5M168.47 200V98.4M171.63 200V105.9M174.8 200V112.5M177.97 200V108.1M181.13 200V110.6M184.3 200V109.4M187.47 200V108.7M190.63 200V110.9M193.8 200V107.9M196.97 200V107.1M200.13 200V115.1M203.3 200V103.4M206.47 200V112.8M209.63 200V106.2M212.8 200V111.6M215.97 200V112.8M219.13 200V116.1M222.3 200V117.5M225.47 200V115.1M228.63 200V111.5M231.8 200V122.8M234.97 200V117.9M238.13 200V127.4M241.3 200V122M244.47 200V127.2M247.63 200V128.2M250.8 200V127.6M253.97 200V120.5M257.13 200V119.3M260.3 200V133.9M263.47 200V120.7M266.63 200V134.6M269.8 200V128.3M272.97 200V132.9M276.13 200V134M279.3 200V116.5M282.47 200V130.6M285.63 200V122.4M288.8 200V131.1M291.97 200V124.7M295.13 200V121.7M298.3 200V129.7M301.47 200V114.5M304.63 200V114.7M307.8 200V114.2M310.97 200V113.9M314.13 200V113.2M317.3 200V115.7M320.47 200V124.6M323.63 200V129.5M326.8 200V125.1M329.97 200V128.4M333.13 200V130M336.3 200V118.8M339.47 200V126.4M342.63 200V117.3M345.8 200V122.5M348.97 200V119.4M352.13 200V128.4M355.3 200V117M358.47 200V129.8M361.63 200V127.8M364.8 200V118.8M367.97 200V134M371.13 200V127.6M374.3 200V137.3M377.47 200V120.7M380.63 200V126.3M383.8 200V121.3M386.97 200V138.5M390.13 200V122.2M393.3 200V135.5M396.47 200V120.8M399.63 200V128.2M402.8 200V125.8M405.97 200V133.1M409.13 200V133.4M412.3 200V133M415.47 200V125.6M418.63 200V134.3M421.8 200V120M424.97 200V120.3M428.13 200V119M431.3 200V121.9M434.47 200V129.5M437.63 200V126.9M440.8 200V110.6M443.97 200V124.3M447.13 200V112.8M450.3 200V107.9M453.47 200V123M456.63 200V106.2M459.8 200V105.8M462.97 200V102.6M466.13 200V102.6M469.3 200V105.6M472.47 200V111.7M475.63 200V114.6M478.8 200V105.4M481.97 200V102.4M485.13 200V111.4M488.3 200V114.6M491.47 200V111.6M494.63 200V102.8M497.8 200V109.3M500.97 200V113.5M504.13 200V108.9M507.3 200V107.2M510.47 200V115.2M513.63 200V108.4M516.8 200V114.5M519.97 200V119.2M523.13 200V117.5M526.3 200V105.2M529.47 200V105.3M532.63 200V112.4M535.8 200V108M538.97 200V107.2M542.13 200V120.7M545.3 200V112.3M548.47 200V121.6M551.63 200V114.6M554.8 200V113.1M557.97 200V108.6M561.13 200V104.9M564.3 200V113M567.47 200V117.9M570.63 200V112.3M573.8 200V116.9M576.97 200V106.8M580.13 200V108.7M583.3 200V107.3M586.47 200V107.6M589.63 200V102.3M592.8 200V109M595.97 200V101.2M599.13 200V114.3M602.3 200V108.8M605.47 200V104M608.63 200V110.2M611.8 200V100.4M614.97 200V108.5M618.13 200V109.7M621.3 200V102.1M624.47 200V106.8M627.63 200V114M630.8 200V101.5M633.97 200V101.3M637.13 200V100.4M640.3 200V101.4M643.47 200V106.6M646.63 200V102.5M649.8 200V121M652.97 200V108.3M656.13 200V112.5M659.3 200V111.3M662.47 200V109.1M665.63 200V126.3M668.8 200V125.5M671.97 200V127.5M675.13 200V127.8M678.3 200V129.1M681.47 200V131.2M684.63 200V120.7M687.8 200V114.8M690.97 200V129.4M694.13 200V130.8M697.3 200V129.7M700.47 200V120.9M703.63 200V129M706.8 200V125M709.97 200V114.7M713.13 200V125.2M716.3 200V120.1M719.47 200V117.9M722.63 200V124.6M725.8 200V123.8M728.97 200V130M732.13 200V126.4M735.3 200V115.1M738.47 200V111.6M741.63 200V126.6M744.8 200V111.8M747.97 200V119.4M751.13 200V126.4M754.3 200V124.7M757.47 200V117.3"/>
+                      </g>
+                    </svg>
+                    <div class="hole-band"><p><b>38.2 s</b>writes blocked</p></div>
+                  </div>
+                  <div class="x"><span style="left:0">13:58</span><span style="left:25%">13:59</span><span class="at" style="left:50%">14:00</span><span style="left:75%">14:01</span><span style="left:100%">14:02</span></div>
+                </div>
+                <div class="lanes num">
+                  <div class="lane l-lock"><span></span><div><span class="lbl was">CREATE INDEX holds a SHARE lock</span><span class="lbl now">Builds concurrently, nothing waits</span><i class="bar was"></i><i class="bar now"></i></div></div>
+                  <div class="lane l-wait"><span></span><div><span class="lbl was">1,900 checkouts wait</span><span class="lbl now">Checkouts, longest wait 40 ms</span><i class="bar was"></i></div></div>
+                  <div class="lane l-wait"><span></span><div><span class="lbl was">3,059 status updates wait</span><span class="lbl now">Status updates, longest wait 31 ms</span><i class="bar was"></i></div></div>
+                </div>
+                <div class="why">
+                  <div class="stmt s1"><code class="mono">ALTER TABLE orders ADD COLUMN status text NOT NULL DEFAULT 'new';</code><span>Catalog only, 3 ms</span></div>
+                  <div class="stmt s2"><code class="mono">CREATE INDEX orders_status_idx ON orders (status);</code><span class="bad-t">Blocks writes for 38.2 s</span></div>
+                  <p>A plain index build holds a SHARE lock on <b>orders</b> until all 41.6M rows are indexed. Reads go on; every INSERT and UPDATE waits.</p>
+                </div>
+                <div class="glass">
+                  <div class="g-fix">
+                    <div class="g-head"><b>Suggested change</b><span>on 0042_orders_add_status.sql</span><span class="w-btn">Commit suggestion</span></div>
+                    <div class="diff"><code class="mono del">− CREATE INDEX orders_status_idx ON orders (status);</code><code class="mono add">+ CREATE INDEX CONCURRENTLY orders_status_idx ON orders (status);</code></div>
+                    <p>Builds without blocking writes, in about 2 min 10 s. It can’t run inside a transaction, so Seam moves it to its own step.</p>
+                  </div>
+                  <div class="g-run">
+                    <div class="g-head"><b>Re-run on 7c41e0a</b><span>Ines Duarte pushed the suggestion</span><span class="w-btn">Merge</span></div>
+                    <p class="big">No write waited longer than 40 ms.</p>
+                    <p>32,326 writes replayed, none blocked. The index built concurrently in 2 min 10 s.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="film-bar">
+          <div class="captions">
+            <p>Ines opens #1187, and Seam replays Friday’s peak against it.</p>
+            <p>One line takes a lock, and every write to orders stops.</p>
+            <p>1,900 checkouts wait behind it, then land in one rush.</p>
+            <p>Seam suggests the safe version on the pull request.</p>
+            <p>She commits it, the replay runs again, and the hole is gone.</p>
+          </div>
+          <div class="steps">
+            <button data-step aria-label="Ines opens #1187, and Seam replays Friday’s peak against it"></button>
+            <button data-step aria-label="One line takes a lock, and every write to orders stops"></button>
+            <button data-step aria-label="1,900 checkouts wait behind it, then land in one rush"></button>
+            <button data-step aria-label="Seam suggests the safe version on the pull request"></button>
+            <button data-step aria-label="She commits it, the replay runs again, and the hole is gone"></button>
+            <button data-pause>Pause</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="more wrap">
+      <h2 data-reveal>Everything a reviewer needs, on the pull request.</h2>
+      <div class="states">
+        <div class="cell" data-reveal>
+          <div class="plate">
+            <div class="glass-s">
+              <div class="bot"><b>seam</b> commented on #1187 · 4 min ago</div>
+              <h3>0042 blocks writes to orders for 38.2 s</h3>
+              <table class="tbl num">
+                <thead><tr><th>Statement</th><th>Lock</th><th>Writes wait</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">ADD COLUMN status</td><td class="mono">ACCESS EXCLUSIVE</td><td>3 ms</td></tr>
+                  <tr><td class="mono">CREATE INDEX orders_status_idx</td><td class="mono">SHARE</td><td class="bad-t">38.2 s</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p><b>The check fails before review.</b> With the line, the lock, how long it holds and the change that avoids it.</p>
+        </div>
+        <div class="cell" data-reveal style="--i:1">
+          <div class="plate">
+            <div class="glass-s yaml"><i># .github/workflows/ci.yml</i>
+- uses: seam-dev/check@v2
+  with:
+    database: ${{ secrets.SEAM_DB }}
+    replay: busiest-4-min</div>
+          </div>
+          <p><b>One step in the CI you have.</b> GitHub Actions, GitLab CI or Buildkite. Postgres 12 to 17 and MySQL 8.</p>
+        </div>
+        <div class="wide" data-reveal style="--i:2">
+          <p><b>Your traffic, not a benchmark.</b> Seam keeps a week of write shape from pg_stat_statements and replays its busiest four minutes. It never reads a row.</p>
+          <div class="plate">
+            <figure class="week num" role="img" aria-label="A week of writes to orders, Monday to Sunday, with the peak on Friday at 14:00">
+              <svg viewBox="0 0 672 96" aria-hidden="true"><path class="ticks" d="M0.6 96V93M4.6 96V93.4M8.6 96V92.5M12.6 96V90.8M16.6 96V91.2M20.6 96V91.6M24.6 96V89.2M28.6 96V87.6M32.6 96V85.3M36.6 96V83.5M40.6 96V79.5M44.6 96V70M48.6 96V56.4M52.6 96V49.4M56.6 96V48.7M60.6 96V54M64.6 96V65.9M68.6 96V73.4M72.6 96V74.1M76.6 96V63.5M80.6 96V54M84.6 96V54.9M88.6 96V65.3M92.6 96V76.6M96.6 96V92.3M100.6 96V92.1M104.6 96V91.7M108.6 96V91.7M112.6 96V91.4M116.6 96V90.7M120.6 96V90.9M124.6 96V85.4M128.6 96V84.3M132.6 96V81.5M136.6 96V76.5M140.6 96V66.7M144.6 96V57.9M148.6 96V49.5M152.6 96V47.4M156.6 96V55.4M160.6 96V69M164.6 96V77.4M168.6 96V75.4M172.6 96V64.6M176.6 96V56.7M180.6 96V56.8M184.6 96V65.2M188.6 96V76.4M192.6 96V92.7M196.6 96V92.6M200.6 96V90M204.6 96V93.2M208.6 96V89.5M212.6 96V90M216.6 96V90.7M220.6 96V84.5M224.6 96V84.6M228.6 96V82.7M232.6 96V75.2M236.6 96V66.9M240.6 96V53.5M244.6 96V47.6M248.6 96V45.7M252.6 96V55.4M256.6 96V67.1M260.6 96V75.6M264.6 96V72.9M268.6 96V65.7M272.6 96V53.5M276.6 96V54M280.6 96V66.2M284.6 96V75.7M288.6 96V89.6M292.6 96V93M296.6 96V92.1M300.6 96V89.4M304.6 96V93.5M308.6 96V92.9M312.6 96V91.7M316.6 96V87.3M320.6 96V83.5M324.6 96V80.2M328.6 96V77.8M332.6 96V67.6M336.6 96V52M340.6 96V44.2M344.6 96V46.6M348.6 96V55.7M352.6 96V65.2M356.6 96V75.7M360.6 96V71.3M364.6 96V63.2M368.6 96V53M372.6 96V55.9M376.6 96V65.3M380.6 96V75M384.6 96V88.4M388.6 96V90.3M392.6 96V90.1M396.6 96V89.2M400.6 96V89.6M404.6 96V89.4M408.6 96V90M412.6 96V85.2M416.6 96V84.6M420.6 96V79.3M424.6 96V74.4M428.6 96V61.2M432.6 96V48.3M436.6 96V38.1M440.6 96V5.6M444.6 96V46.5M448.6 96V59.4M452.6 96V71.1M456.6 96V67.1M460.6 96V60.4M464.6 96V46.4M468.6 96V47.9M472.6 96V58.1M476.6 96V72M480.6 96V90.6M484.6 96V93.7M488.6 96V90M492.6 96V91.9M496.6 96V90.5M500.6 96V92.3M504.6 96V90.2M508.6 96V85.4M512.6 96V85M516.6 96V82.2M520.6 96V77.5M524.6 96V72M528.6 96V59M532.6 96V53.9M536.6 96V54.1M540.6 96V57.9M544.6 96V68M548.6 96V78.7M552.6 96V77.9M556.6 96V69.3M560.6 96V58.1M564.6 96V58.6M568.6 96V67M572.6 96V79.8M576.6 96V93.7M580.6 96V94.5M584.6 96V92.5M588.6 96V92.1M592.6 96V94M596.6 96V93.2M600.6 96V92.4M604.6 96V88.9M608.6 96V89.2M612.6 96V87.4M616.6 96V82.9M620.6 96V72.8M624.6 96V64.1M628.6 96V55.8M632.6 96V56.2M636.6 96V63.9M640.6 96V72.1M644.6 96V79.4M648.6 96V77.7M652.6 96V69.2M656.6 96V62.8M660.6 96V62.1M664.6 96V71.1M668.6 96V80.3"/><path class="peak" d="M441.2 96V0"/></svg>
+              <div class="days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><b>Fri</b><span>Sat</span><span>Sun</span></div>
+              <figcaption>Writes to orders, last 7 days. Friday 14:00 is the four minutes Seam replays.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="close wrap">
+      <h2 data-reveal>Merge it on a Friday. <span class="quiet">Seam already ran it against last Friday.</span></h2>
+      <div class="actions" data-reveal style="--i:1">
+        <div><a class="btn strong xl" href="#"><i data-lucide="git-pull-request"></i>Add to CI</a><a class="btn soft xl" href="#">Read the docs</a></div>
+        <small>Free for open source. Reads table stats, never your rows.</small>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="wordmark" aria-hidden="true">seam</p>
+    <div class="foot wrap"><span>© 2026 Seam</span><nav aria-label="Footer"><a href="#">Docs</a><a href="#">Pricing</a><a href="#">Changelog</a><a href="#">Security</a><a href="#">Status</a></nav></div>
+  </footer>
+
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 <script src="../pair.js"></script>
+<script>
+  const nav = document.querySelector('.nav');
+  addEventListener('scroll', () => nav.toggleAttribute('data-scrolled', scrollY > 8), { passive: true });
+
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!calm) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.remove('pending'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -12% 0px' });
+    for (const el of document.querySelectorAll('[data-reveal]'))
+      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pending'); io.observe(el); }
+  }
+
+  const film = document.querySelector('[data-film]'), steps = [...film.querySelectorAll('[data-step]')], caps = [...film.querySelectorAll('.captions > p')];
+  const toggle = film.querySelector('[data-pause]'), hold = parseFloat(getComputedStyle(film).getPropertyValue('--hold'));
+  let at = 0, timer = 0, seen = false, paused = calm;
+  const show = (n) => { at = n; film.dataset.chapter = n; caps.forEach((c, i) => c.toggleAttribute('data-on', i === n));
+    steps.forEach((s, i) => s.setAttribute('aria-current', i === n ? 'step' : 'false')); };
+  const run = () => { clearInterval(timer); const on = seen && !paused; film.toggleAttribute('data-playing', on);
+    toggle.textContent = paused ? 'Play' : 'Pause'; if (on) timer = setInterval(() => show((at + 1) % steps.length), hold); };
+  steps.forEach((s, i) => s.addEventListener('click', () => { show(i); run(); }));
+  toggle.addEventListener('click', () => { paused = !paused; run(); });
+  new IntersectionObserver(([e]) => { seen = e.isIntersecting; run(); }, { threshold: .3 }).observe(film);
+  show(0); run();
+</script>
 </body>
 </html>

@@ -1,312 +1,133 @@
 ---
 name: ui-director
-description: Design and build interfaces nobody can tell were made by AI. Striking pages that sell and convert, calm and precise app screens, and a token system that fits any stack. Use it whenever you design, build, restyle, redesign, audit or set up the design system of any UI (landing pages, launch and product pages, portfolios, pricing, dashboards, admin panels, tables, settings, onboarding, mobile and responsive layouts, dark mode and themes, color and contrast) in any framework (plain HTML and CSS, Tailwind, shadcn, React, Next.js, Vue, Svelte, Astro, Bootstrap, MUI, SwiftUI, Flutter), even when the user only says "make it look good", "premium", "polish this", "it looks off", "fix how it looks" or asks for a page without mentioning design.
+description: Art direction for any UI, from the idea to a check in a real browser. Use when building a landing page, product site, dashboard or app screen, redesigning or polishing how one looks ("make it premium", "it looks off"), auditing a UI's design, matching a reference site, or setting up design tokens. Skip for UI logic, data or bugs that don't change the look.
 ---
 
 # UI Director
 
-Your job is to make interfaces nobody would guess were generated. Generated UI fails in two ways:
+You direct an interface, build it, and look at it before you call it done. The bar is what a
+design studio ships: one idea taken from the product's own world, carried far, finished with
+exact craft. Be bold in the idea and precise in the execution.
 
-- **Slop:** explanation, color, boxes, badges and motion that nobody chose.
-- **The safe page:** clean, correct and forgotten in a minute. Today's models share a house
-  style, and people now recognize it on sight (see "Model habits").
+## Pick the job
 
-The fix is the same every time: one idea taken from the product, carried further than feels
-safe, everything else cut, built on a consistent system, and checked with your own eyes.
+| Job | What to do | Read now |
+|---|---|---|
+| A page that sells: landing, launch, product, pricing, portfolio, event | The loop below | `references/landing.md` |
+| App UI: dashboard, table, settings, detail, phone app, onboarding, paywall | The loop below | `references/app-ui.md` |
+| Redesign, polish, "it looks off" | Keep URLs, labels, field order and logo. Fix the biggest visible problems in one pass | `references/tells.md` |
+| Audit (review only) | Look at it, report at most 5 findings worst first, each with its evidence and smallest fix. Change nothing unless asked | `references/look.md`, `references/tells.md` |
+| Set up or clean up a design system | Tokens in the project's own format | `references/system.md` |
 
-## Pick the job, then open its files
+**The user's direction wins.** A named style, a reference, their brand or an existing design
+system beats every default here. Extend what exists. Only "Never" below holds regardless.
 
-The files below hold the details this page only summarizes. Open the ones for your job before
-you write any code.
+Use the tools your harness gives you: a browser to look (`references/look.md`), image
+generation for photographs, the project's own component and animation libraries. Install
+nothing the user didn't ask for, run one browser at a time, and stop every server you start.
 
-| Job | Open first |
-|---|---|
-| A page that sells: landing, launch, product, portfolio, pricing | `references/direction.md`, `references/scroll.md`, `references/visuals.md`, `references/words.md` |
-| App UI: dashboard, admin, table, settings, detail page, phone app | `references/app-ui.md`, `references/words.md` |
-| An app's onboarding, first run, waits, paywall, success and failure moments | `references/moments.md`, `references/app-ui.md` |
-| A new project, or one with no tokens yet | `references/system.md` |
-| An existing project to audit, clean up or put on tokens | `references/system.md`, `references/tells.md` |
-| A redesign, a polish, a fix or a review | `references/tells.md`, plus `references/app-ui.md` for app screens |
-| Anything that moves | `references/motion.md` |
-| Every job, before you say it's done | `references/look.md` |
+## The loop
 
-Read every file on your row, whole. They're short, and a search returns lines without the rules
-around them: most misses in testing were rules in a file that was searched or never opened.
+Each step ends on something you can check.
 
-- **Build** (new page or screen): the procedure below.
-- **Redesign:** look at it first, keep what works (URLs, labels, field order, logo), then follow
-  the redesign order in `references/tells.md`.
-- **Polish** (also "fix it", "it feels off", "make it work on phones"): keep the visual language,
-  fix the biggest visible problems in one pass, leave working areas alone.
-- **Audit** (review only): look at it (`references/look.md`), report at most 5 findings, worst
-  first, each with its evidence and the smallest fix. Change nothing unless asked.
-- **Set up or clean up a design system:** `references/system.md`.
+1. **Direction.** Fill the direction block from your job's file and write it into `DESIGN.md`
+   at the project root (add a section if one exists). Done when every field is filled and no
+   line could describe another product.
+2. **Tokens.** `references/system.md`. Done when components use only tokens for color, size,
+   radius, shadow and duration, and the font files are in the project.
+3. **Build all of it.** Every section and state the brief implies, with real copy
+   (`references/words.md`) and one coherent sample world. Done when nothing is missing or
+   placeholder.
+4. **Make it the one.** Pages that sell: the signature and the finish from
+   `references/craft.md` (`references/visuals.md` for photography and 3D). App UI: the key
+   object and the moments. Motion from `references/motion.md`. Done when you can point at the
+   moment people would screenshot, on the first screen or the first scroll.
+5. **Look.** `references/look.md`: 1440 and 390 wide, light and dark, the whole scroll, every
+   control, the page check. Done when the page check is clean or each finding has a reason, the
+   screen matches `DESIGN.md`, and you have fixed and looked again at least twice.
+6. **Finish.** Stop servers, delete temporary files, and tell the user what you made, what you
+   invented (numbers, names, quotes) and what to check.
 
-**The user's direction wins.** A named style, a reference, a URL or their brand beats every
-default here, and an existing design system gets extended, not replaced. Only the hard bans
-stay unless the user asks for one by name.
+## Craft numbers
 
-## Your tools
+These are the defaults. A blueprint or the user's system replaces them.
 
-Every harness gives you different tools. Before you start, find out what yours has, and use it:
+- **Type:** one family for UI and body; a display face only with a reason from the product's
+  world. Its files go in the project (`fonts/` has Geist and Geist Mono as a fallback). Pages
+  that sell: body 16–18px, display up to about 80px at line height .95–1.05, tracking −.035 to
+  −.05em at 40px and up, −.01 to −.02em below. App UI: 12 / 13 / 14 / 16 / 20 / 24px, weights
+  450 body, 500 UI, 600 headings. At most 10 sizes on a page. `tabular-nums` on numbers,
+  `text-wrap: balance` on headings, sentence case everywhere.
+- **Color:** neutrals do the structure (3 surfaces, 2 lines, 4 text levels). One brand color
+  (or none: graphite, with light only on what glows), rationed to what acts, is selected or
+  should glow. Red, amber and green carry state; red
+  means failed, overdue or destructive, whatever the brand. Text is never pure black. Contrast 4.5:1 for reading text, 3:1 for large
+  text and control edges, measured on the real background.
+- **Space:** a 4px grid. 8px inside a group, 12–16px between related items, 24–32px between
+  groups. Sections on pages that sell `clamp(96px, 12vw, 200px)` apart, in apps 48–64px (32–40px
+  when a full-width hairline divides them).
+  Content up to 1200px, gutter `clamp(20px, 4vw, 40px)`, reading text under 65ch, lists and
+  forms 360–600px.
+- **Shape:** one radius family, nested (inner radius = outer radius − padding). Edges are
+  0.5–1px hairlines. Shadows are tinted to the ground and only lift raised or lit objects, three
+  levels at most.
+- **Controls:** 3–4 heights for the whole product: about 32px in app UI, 40–44px for fields and
+  main buttons, 44–52px buttons on pages that sell, 44px touch targets. Labels at least 10px
+  from their edge, centered on their height.
 
-- **A browser you can drive:** a browser pane, a browser MCP server, a preview tool, devtools.
-  It's how you see what you built (`references/look.md`).
-- **Image generation:** a built-in image tool, an MCP server, an API the user set up. On a page
-  that sells, this is the biggest lever you have: the product, the place, the people, and the
-  separate layers that give a page depth (`references/visuals.md`).
-- **Video and 3D generation,** design sources (Figma, a design-system tool) and the project's
-  own stack: its component library, animation library and image component. Build with them.
+## Layout
 
-Keep the user's machine usable:
+- **Edges:** reading text, lists and forms align left; numbers, times and actions align
+  right. Every block lines up with a line another block uses.
+- **Group, then differentiate:** people get faces, categories get chips, numbers get tabular
+  figures, the same thing gets the same mark everywhere.
+- **Show, don't tell:** a bar, a face or the real interface instead of a sentence. Unclear UI
+  gets redesigned, never rescued with a paragraph or an ⓘ.
+- **Emphasis is a difference:** quiet the neighbors. Color only what changed, is selected, needs
+  attention, or is the one primary action.
+- **One surface,** split by lines and headings. Cards hold real objects (a message, a product
+  state, a tile) and floating layers, never another card.
 
-- **Use the tools you were given.** Don't install browsers, Playwright or Puppeteer, and don't
-  write your own screenshot scripts, unless the user asks. With no browser tool, follow the
-  fallback in `references/look.md`.
-- **One browser at a time.** Close what you open. Stop every server you started.
-- **No long jobs.** Nothing that runs more than a few minutes (offline renders, path tracers,
-  image batches in a loop), and nothing still running when you finish.
+## Never
 
-## Build: the procedure
+These read as generated in every style. Each has a better move.
 
-Do the steps in order. Each one produces something you can point at.
+- A dot inside a pill or badge. Status is a word, colored only when it needs action.
+- An icon on a tinted circle or square heading a card, stat, dialog or empty state. The words
+  carry it.
+- Emoji in interface text, and greetings ("Welcome back, Sarah").
+- Default AI color: violet-to-pink or blue glow gradients, blurred blobs, neon. Color comes from
+  the product's world; a gradient on type is that world's light, on one headline at most.
+- One word of a headline in another color, style or weight. A whole second clause in a quieter
+  ink is a different move (`references/craft.md`).
+- Uppercase tracked labels, numbered section labels ("01 /"), a small label over every section.
+  One short label above the main headline at most, carrying a fact.
+- Invented proof: testimonials, logo walls, ratings and user counts nobody gave you. Use real
+  ones or a labeled slot.
+- Placeholders: lorem, "Acme", "John Doe", round numbers, "View all →" on every panel.
+- Fake UI: gray bars and fake charts standing in for the product. Rebuild the real interface or
+  use a real screenshot.
+- Photographs faked with 3D primitives or CSS shapes, and flat vector scenes standing in for the
+  subject.
+- Text symbols as icons (✦ ✳ ◐), two icon sets on one page, arrows on buttons.
+- A live countdown. State the date.
 
-### 1. Write the direction, before any code
+The page check in `references/look.md` also flags the display faces models reach for by habit;
+keep one only when the product's world gives the reason.
 
-Write it into `DESIGN.md` at the project root, under "Direction", before you create any other
-file, and say it in your reply too. Pages that sell use the first block, app UI the second. A
-step done in your head gets skipped, and then every product gets the same first idea. Fill every
-field; a field that could describe another product isn't filled. The finished page is checked
-against this file.
+## The obvious version
 
-```
-Product and visitor: <what it is, for whom>. They arrive asking: <their question>.
-Action: <the one thing to do>, button "<1–3 words>", with the line that lowers its risk.
-Flavor: <friendly | premium | technical | editorial | bold>.
-Obvious version: <the page any model would build first: first screen, section order, palette, type>.
-Three directions, each starting from one thing in the product's world (an object, a place, a ritual):
-  A. <the thing>: <first screen> / <section order> / <palette> / <type>
-  B. ...
-  C. ...
-Pick: <letter>, because <one sentence>.
-Grammar: <filmic | chaptered editorial | live surface | continuous world | typographic poster |
-  gallery | split stage | rhythmic cutlist> (references/scroll.md), and what it forbids.
-Feeling curve: <one line per section: the feeling, then what on screen causes it>. Peak: <which>.
-Signature: "It's the site where <something that happens to the visitor>", built with <a named
-  technique: layered parallax, scroll rotation, camera move, pin, pan, reveal, hands-on…>.
-Hero layers: <far / mid / subject / near / atmosphere, what each is and how it moves>;
-  opening, midpoint and exit in one sentence each.
-Palette: <2–4 colors> taken from <where in the product's world>. Leads in <light | dark>, because <reason>.
-Type: <family>, because <reason>. Headline <size> at 1440 wide.
-Images: <each image, its job, and where it comes from: user, real UI, generated, drawn, 3D>.
-  With an image tool, include the layers the signature needs (plate, subject on transparent).
-First screen: <one sentence that couldn't describe any other product>.
-```
+What any model builds when nothing was chosen. Each piece is fine alone and on purpose; name the
+obvious version in your direction, then leave it.
 
-```
-App: <product>, for <who>, doing <the primary job>, <how often>. They open it asking: <question>.
-Key object: <the invoice, the ticket, the pattern…> and its states.
-Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
-Needs attention: <what must jump out, and the one color it gets>.
-Actions: primary "<label>"; frequent <…>; rare <…>; destructive <…>.
-Density: <calm | standard | dense>, because <…>. Shell: <sidebar | top tabs | queue and detail | canvas>, because <…>.
-Obvious version: <the dashboard any model builds for this: greeting, stat cards, chart, table…>.
-Three directions, each from one thing in the user's world (a ledger, a board, a score, a map):
-  A. <the thing>: <what the first screen shows and how> / <palette> / <type>
-  B. ...
-  C. ...
-Pick: <letter>, because <one sentence>.
-Signature: <the one view only this product has, usually its key object drawn as data>.
-Palette: <neutrals and tint, the brand color from the user's world, what red means>. Type: <family, scale>.
-First screen: <what the user learns in one glance, in one sentence>.
-```
-
-Then **turn it up:** push the pick further than feels safe (bigger scale, stronger color, more
-image, a bolder signature), and pull back only what hurts reading or speed. Take one or two
-references, not ten: piling on references makes the result less consistent, not better.
-
-The obvious version includes "Model habits" below: if your pick uses two of them, pick again.
-**The signature lives on the first screen,** or is the first thing you scroll into. A bold idea
-further down behind a safe first screen still reads as the obvious version.
-Use the brief's facts exactly (prices, numbers, names); anything you add is marked as invented.
-Ask the user a question only if two readings would lead to very different products.
-
-### 2. Set up the tokens
-
-Follow `references/system.md`. Write the tokens in the project's own format (CSS variables, a
-Tailwind theme, shadcn's variables, a theme object, native color sets) and choose the knobs
-(brand hue, gray tint, font, radius) from the direction. From then on every color, size,
-radius, shadow and duration is a token. Put the font files in the project: a font that isn't
-there silently becomes Arial. `fonts/` in this skill has Geist and Geist Mono.
-
-### 3. Build the whole page first
-
-- **Every section the brief asks for,** with real copy, real names, varied numbers and every
-  state. No lorem, no "Acme", no half-built sections.
-- **Words:** write five headlines for the first screen and keep the one that is true only of
-  this product. Claims, not slogans (`references/words.md`).
-- **Images,** in this order: the user's assets, the real product UI, generated images, a 3D
-  object built from simple shapes, drawings in the subject's own language (plans and sections
-  for architecture, diagrams for engineering), a labeled slot that carries its prompt. Never
-  fake photography with 3D code: rooms, buildings, food, people and landscapes built from
-  primitives look like a video game (`references/visuals.md`).
-- **Motion as you go:** feedback on every control; on pages that sell, one entrance and reveals
-  that act out the content. App screens people open often never animate in (`references/motion.md`).
-
-A complete page comes before an ambitious one. Only move on when nothing is missing.
-
-### 4. Make it unforgettable
-
-Now spend your time on the signature and on depth (`references/scroll.md`, `references/visuals.md`):
-a hero built from planes that move at different rates, a product that turns as you scroll, a
-pinned section where the argument advances, a rail that slides sideways, something to try with
-your hands, type big enough to be the image. On a page that sells, the hero has at least three
-independently moving planes unless the direction says why not, and the sections use at least
-four different scroll techniques, never the same one twice in a row. The signature starts on
-the first screen and pays off at the peak, which gets the most scroll room and a quieter section
-before it; the ending resolves and holds. Make the signature big: it fills most of the screen,
-and a 3D product matches its photos or lives in its own scene. One scene per screen (a hero's
-planes moving together count as one), every effect sells the product, and the buying section
-stays calm. In app UI, the signature is the key object drawn so the answer is visible at a
-glance; spend the time there and on the states, not on motion.
-
-### 5. Look, fix, look again
-
-Open it in your browser (`references/look.md`): desktop (1440) and phone (390), light and dark,
-the whole scroll, every control once, the page check. The first render always has problems:
-two passes minimum. Stop when you'd be proud to show it, not when it merely works.
-
-### 6. Finish
-
-Delete your own tools and temporary files, stop your servers, and tell the user what you made,
-what you invented (numbers, quotes, details) and what they should check.
-
-## Hard bans
-
-Never produce these unless the user asks for one by name. They're what makes UI read as generated.
-
-- **A dot inside a pill, badge or chip,** including "● New" and "● Live" pills above headlines.
-  Dots only as timeline markers and chart legend keys.
-- **The fonts models reach for by habit:** Fraunces, Instrument Serif, Playfair Display,
-  Newsreader, DM Serif, Cormorant, EB Garamond, Libre Baskerville, Lora, Crimson, Young Serif,
-  and Georgia or Palatino as headline faces; Space Grotesk, Syne, Bricolage Grotesque, Clash
-  Display, Cabinet Grotesk. Any other face is fine when it comes from the product's world and
-  you can say why in one line.
-- **One word of a headline styled differently** (italic, serif, color, gray, weight, gradient),
-  and a colored period or symbol after the logo.
-- **Small labels above headlines:** at most one on the whole page, in any case. Never uppercase
-  tracked labels, numbered sections ("01 /"), chains of dots, emoji or version stamps.
-- **Monospace** for anything but code, IDs and numbers in tables.
-- **Arrows on buttons and links.** ↗ only marks a link to another site, → at most on two text
-  links, and no "Scroll" or "Explore ↓" links.
-- **Text symbols as icons** (✳ ✦ ◐ ⌕). One icon library at one stroke width, or no icons.
-- **An icon on a tinted circle or badge** heading a dialog, an empty state or a stat, whatever its
-  radius. The words do the work.
-- **Headline tracking tighter than −0.04em,** or letters that touch.
-- **Purple or blue glow gradients,** gradient text, neon, glass cards over blurred blobs.
-- **The split hero on a landing page's first screen:** headline and buttons in a left column,
-  the picture in a right column. Let the visual carry the screen: full-bleed, or full-width
-  under a centered headline, or the type itself as the image.
-
-## Model habits
-
-The house style of today's models. Each one is fine alone and on purpose; two together read as
-generated.
-
-- a small line of text above the headline, and above every section
-- a heavy grotesk headline squeezed to −0.06em or tighter
-- sections as rows of a label on the left and a paragraph on the right, between hairlines
-- a closing dark band with a huge two-line headline and one button on the right
-- a strip of three big numbers with small labels under them
-- headlines in two clipped fragments ("Less noise. More sleep.", "Small grinder. Serious
-  company."), the strongest habit of all: once a page at most
-- image and text swapping sides section after section, and the same product render twice
-- cream and terracotta for anything warm, black with one orange accent for anything premium
-- the product centered on a soft radial glow
-- a giant clock scrubbed by the scroll for anything about time
-- 3D built from primitives where a photograph belongs
-- testimonials with invented names and cities, and an FAQ nobody asked for
-- a flat vector illustration (skyline, sun, waves, little people) standing in for the subject
-- in app UI: "Good morning, Mara", four stat cards with icon circles and green % pills, a
-  gradient area chart, a sidebar of colored icons, every section in a card, "View all →" on
-  every panel, a status badge on every row
-
-## The craft rules
-
-1. **Lock every element to an edge.** Reading text, lists, labels and forms align left; numbers,
-   times and actions align right. A selling page's first screen is composition: the direction
-   decides where the words sit. Every element touches two edges (a container, a line, a row).
-2. **Keep related things close.** 8px inside a group, 12–16px between related items, 24–32px
-   between groups, 64px+ between sections. Reading text under ~65ch. Add columns, don't stretch.
-3. **Differentiate instead of spacing out.** People get faces, categories get chips, numbers get
-   tabular figures, clickable things get the link color. The same thing gets the same mark
-   everywhere it appears, so the eye links them.
-4. **Show, don't tell.** A bar, an avatar or an icon instead of a sentence. Never rescue an
-   unclear element with a paragraph or an ⓘ: redesign it.
-5. **Emphasis is a difference.** Quiet the neighbors to make one thing stand out. In app UI,
-   color only what changed, is selected, needs attention, or is the one primary action. Default
-   values stay plain: no decorative icon in front of each, no brand color on them; the one unusual
-   value (a trial, an expiry, an overdue date) gets the color.
-6. **Dissolve the cards.** One surface, split by lines and headings. Cards only for real
-   objects (a message, a product tile) and floating layers. Never a card in a card.
-7. **Let the data decide the form.** Fixed sets become chips, events over time a timeline,
-   numbers right-aligned and tabular, color from the data (overdue is red, paid is ordinary).
-8. **Show the right things, reveal the rest.** Primary actions visible, frequent ones on hover
-   with tooltips, rare ones in a menu, destructive ones never one click away. Design the empty,
-   loading, error and focus states too, and what follows each action: undo, failure, offline.
-   A flow of several steps shows where you are (2 of 4) and a Back link after the first step.
-
-**Flavor sets how strongly they apply.** Technical and premium products sit near monochrome.
-Friendly products carry more color, each color meaning something. Pages that sell take their
-palette from the product and can be bold as a whole. The test: can you say why each color is there?
-
-## The numbers
-
-- **Type:** one family for body and UI unless the direction calls for a display face. Pages that
-  sell: body 17–18px, headlines as large as the idea needs, tracking −0.01 to −0.04em on big
-  type, and at most 8 sizes on the page, all tokens. App UI: 12 / 13 / 14 / 16 / 20 / 24px. Weights 450 body, 500 UI, 600 headings.
-  `tabular-nums` on numbers, `text-wrap: balance` on headings.
-- **Color:** neutrals do the structure (3 surfaces, 2 lines, 4 text levels), one brand color as
-  a ramp does action and selection, red, amber and green carry state. Text is never pure black,
-  dark mode is designed, not inverted. Contrast 4.5:1 for every text people read, on photos,
-  tinted and dark surfaces, and faded rows too; `ink-4` is only for placeholders and disabled.
-- **Shape and space:** radius 6 / 8 / 12 / 16 or the direction's own; a 4px grid; controls 32px
-  in app UI, touch targets 44px, buttons on selling pages 44–56px. Lists, settings and forms
-  360–600px wide.
-- **Motion:** controls respond in 140–220ms, entrances take 400–700ms, eased out, once; nothing
-  in app UI runs past 800ms. Only `transform` and `opacity`. What people do many times a day is
-  instant, and app screens (dashboards, lists, settings, home screens) show at once with no load
-  animation. Everything shows without JavaScript and under reduced motion.
-
-## Audit before you say done
-
-Answer each one from what you saw in the browser, not from memory.
-
-- [ ] **The direction:** open `DESIGN.md`. Is the pick, the signature and its technique on the
-      page, as written? Put the first screen next to the obvious version you wrote: if they
-      match, rework the first screen.
-- [ ] **Nobody could tell:** does anything on the page match "Model habits" or the hard bans?
-      Would another model given this brief build the same first screen? Then rework it.
-- [ ] **The signature:** point at the moment people would screenshot. If it exists only in your
-      direction, build it.
-- [ ] **Scroll** (pages that sell): the hero's planes visibly move at different rates; no two
-      neighboring sections do the same thing; the peak is the biggest change; no dead scroll;
-      the last screen holds (`references/scroll.md`).
-- [ ] **It sells** (pages that sell): the first screen says what it is and what you get; one
-      action with one label, in reach from every screen; proof that feels real.
-- [ ] **Images:** each one has a job, they look like one shoot, and none is fake photography.
-- [ ] **Squint:** the answer to the visitor's question is the first thing you see; one primary
-      per view (in app UI, in the page header, not also in the top bar).
-- [ ] **Craft:** edges, grouping, no card in a card, 2–3 radii, every value a token.
-- [ ] **Fit:** no text clipped, touching or off-center in its pill, chevrons centered and
-      inset, one height scale for controls, nothing resizing between states
-      (`references/app-ui.md`).
-- [ ] **States:** hover, focus, active, disabled, empty, loading, error, undo, offline.
-- [ ] **Moments** (apps): the peak, the end and the screen they return to are designed; the
-      first try never dead-ends; waits name their steps (`references/moments.md`).
-- [ ] **Phone (390):** no sideways scroll, body and inputs 16px, 44px targets, tables as two-line
-      rows, its own image crops.
-- [ ] **Dark mode:** designed, checked in the browser.
-- [ ] **Contrast and keyboard:** 4.5:1 text, every control reachable with visible focus.
-- [ ] **Motion:** each effect has a job, and reduced motion shows the final state.
-- [ ] **Clean exit:** no tools, servers or jobs left behind; invented content listed.
+- A first screen with the headline left and the picture right, or a centered headline over a
+  framed screenshot on a soft glow.
+- Hero, logo strip, three feature cards, testimonials, pricing, FAQ, dark closing band, in that
+  order.
+- The category's stock palette: violet for AI, navy for finance, green for climate, cream and
+  terracotta for anything warm, black with one orange for premium.
+- Image and text swapping sides section after section; every headline in the same two-fragment
+  shape ("Less noise. More sleep.").
+- A strip of three vanity numbers; a giant clock for anything about time.
+- App UI: a greeting, four stat cards with icons and green percentage pills, a gradient area
+  chart, a sidebar of colored icons, every section in a card, a badge on every row.

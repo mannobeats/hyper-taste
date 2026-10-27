@@ -1,7 +1,7 @@
 ---
 type: regex
 target: { source: file, path: page.html }
-pattern: 'background-clip:\s*text|SECONDS'
+pattern: '#4f46e5|#06b6d4|SECONDS'
 flags: i
 match: not_contains
 ---

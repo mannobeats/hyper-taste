@@ -44,7 +44,10 @@
     const frames = [...root.querySelectorAll('iframe')];
     await Promise.all(frames.map(f => new Promise(ok => f.addEventListener('load', ok, { once: true }))));
     await Promise.all(frames.map(f => f.contentDocument.fonts.ready));
-    if (p.layout !== 'phone') {
+    if (p.layout === 'stack') {
+      // Stacked frames don't sit side by side, so each one is as tall as its own page, up to the pair's height.
+      frames.forEach(f => f.style.height = Math.min(p.height ?? Infinity, f.contentDocument.documentElement.scrollHeight) + 'px');
+    } else if (p.layout !== 'phone') {
       const h = p.height ?? Math.max(...frames.map(f => f.contentDocument.documentElement.scrollHeight));
       frames.forEach(f => f.style.height = h + 'px');
     }

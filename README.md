@@ -10,7 +10,7 @@ Cursor, OpenCode, Gemini CLI and others.
 
 | Skill | What it does |
 |---|---|
-| [ui-director](docs/ui-director/README.md) | Interfaces nobody can tell were made by AI: striking landing pages, calm app screens, and a token system for any stack. [19 before/after pairs, live](https://mannobeats.github.io/hyper-taste/docs/ui-director/). |
+| [ui-director](docs/ui-director/README.md) | Interfaces nobody can tell were made by AI: striking landing pages, calm app screens, and a token system for any stack. [23 before/after pairs, live](https://mannobeats.github.io/hyper-taste/docs/ui-director/). |
 | [agents-md](docs/agents-md/README.md) | Keeps AGENTS.md small and every agent in sync: CLAUDE.md and GEMINI.md become symlinks, and an audit flags bloat and stale paths. |
 
 ## Install

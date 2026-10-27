@@ -1,214 +1,175 @@
-# App UI: dashboards, tools and phone screens
+# App UI: dashboards, tools and phone apps
 
-Read this for admin panels, analytics, CRMs, tables, settings, detail pages, onboarding and any
-app screen, on the web or on a phone. There's no example dashboard on purpose: the layout comes
-from the job this product does.
+For admin panels, analytics, CRMs, tables, settings, detail pages, phone apps, and an app's
+onboarding, waits, paywalls, success and failure. The layout comes from the job this product
+does; the template (greeting, four stat cards, a chart, a table) is the obvious version.
 
-A dashboard can look finished and still fail in use. Three things give away one that was never
-used: the data doesn't shape the UI, everything is visible at once, and the invisible states were
-never designed.
+## The direction block
 
-Start with the app direction in `SKILL.md` step 1, written into `DESIGN.md`. The best app screens
-in testing each drew their key object as the signature: open invoices as one bar split at
-"today", a step key that lights as loud as its hit. The template (greeting, four stat cards, a
-chart, a table) is the obvious version, not a starting point. Those examples belong to their products;
-find the one that belongs to yours.
+Write it into `DESIGN.md` before any code.
+
+```
+App: <product>, for <who>, doing <the primary job>, <how often>. They open it asking: <question>.
+Key object: <the invoice, the take, the shift…> and its states.
+Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
+Needs attention: <what must jump out, and the one color it gets>.
+Actions: primary "<label>"; frequent <…>; rare <…>; destructive <…>.
+Density: <calm | standard | dense>, because <…>. Shell: <sidebar | top tabs | queue and detail | canvas>.
+Obvious version: <the screen any model builds for this>.
+Directions, each from one thing in the user's world (a ledger, a board, a score, a map):
+  A. <the thing>: <what the first screen shows and how> / <palette> / <type>
+  B. …
+  C. …
+Pick: <letter>, because <one sentence>.
+Signature: <the key object drawn so the answer is visible at a glance>.
+Palette: <neutrals and tint, the accent from the user's world, what red means>. Type: <family>.
+Sample world: <one team or person, their real-looking data>.
+First screen: <what the user learns in one glance, in one sentence>.
+```
+
+What worked in testing: open invoices drawn as one bar split at "today"; a drum step key that
+lights as loud as its hit; a take's waveform with the removed room noise drawn as grain. Each
+belongs to its product.
 
 ## The first screen answers the question
 
-- **The answer first, as words and numbers:** "€4,120 is overdue across 3 invoices" beats three
-  cards that make the reader add it up. One or two big figures, each with its context line.
-- **Then the key object as a view:** the queue, the strip, the board, the map. Make it the
-  largest thing on the screen, and let it be something only this product would draw.
+- **The answer first, in words and numbers:** "€4,120 is overdue across 3 invoices" beats three
+  cards the reader has to add up. One or two big figures, each with its context line.
+- **Then the key object as a view,** the largest thing on the screen: the queue, the board, the
+  strip, the map.
 - **Then the work:** the list people act on, with the frequent action on each row.
 
-## Pick the shell from the job
+## The shell
 
-A sidebar over a table is one answer, not the default:
-
-- **Many sections people move between:** a sidebar.
-- **Three to five views of one thing:** tabs or a segmented control in the top bar.
-- **Working through a queue** (inbox, support, review): a list with the selected item beside it.
-- **One focused job** (checkout, settings, an editor): one column, or a canvas with tools around it.
-- **Monitoring:** the few numbers that need action first, everything else one click away.
-
-Whatever the shell:
-
-- **One surface.** Side panels on `panel`, the main area on `surface`, a 1px `line` between.
-  Headings, hairlines and whitespace group things, not a card around each section.
-- **Sidebar, if there is one:** workspace switcher at the top, search, 4–6 items with muted icons
-  (the active one gets the `hover` fill), small sentence-case group labels, settings and help at
-  the bottom. Color only a count that needs attention.
-- **Top bar:** breadcrumbs left; sync status, share and icon buttons with tooltips right.
-- **Page title** without an explanatory subtitle, and never "Welcome back 👋".
-- **Toolbar over a table:** a segmented filter with counts on the left, icon buttons with
-  tooltips on the right, the one primary action ("New invoice") as the darkest button on the page.
-- **One primary per view.** The top bar holds navigation, search and the account; the page's
-  primary action sits once, in the page header or the toolbar, never in both.
-- **Natural widths:** a list, a settings panel or a form is 360–600px, not 1200px. On wide screens
-  add a column.
+- **Many sections:** a sidebar. **3–5 views of one thing:** tabs in the top bar. **A queue:** a
+  list with the selected item beside it. **One focused job:** one column or a canvas.
+  **Monitoring:** the few numbers that need action first.
+- **One surface:** side panels on `panel`, the main area on `surface`, a 1px `line` between;
+  headings and hairlines group things, not a card per section.
+- **Sidebar:** workspace switcher, search, 4–6 main items with muted icons (the active one on
+  `hover`), small sentence-case group labels, settings and help at the bottom.
+- **Top bar:** breadcrumbs left; sync status and icon buttons with tooltips right.
+- **Page title** without a subtitle explaining it.
+- **One primary per view,** the darkest button, in the page header or the toolbar, never both. A
+  monitoring screen with no main action has no dark button.
+- **Natural widths:** lists, settings and forms 360–600px; wide screens get another column.
 
 ## Let the data decide the form
 
-**Tables:**
-
-- Values from a fixed set become chips: a neutral chip for categories. States are words: plain
-  text for the ordinary ones (Paid, Sent), a tinted chip only for the one that needs action
-  (Overdue, Failed). Never a dot inside a chip.
-- Numbers align right with `tabular-nums`. Text aligns left. IDs in mono, muted.
-- Long text truncates with the full value in a tooltip. Inactive rows fade to `ink-3`. On touch
-  there's no tooltip, so names and labels wrap to a second line instead.
-- People get a face (an avatar). Headers are quiet: 12px, `ink-3`, sentence case. The first and
-  last columns sit flush with the section edges.
-
-**Time:** events over time are a timeline or a chart, not a table sorted by date. Group the dates
-(Today, This week). A timeline fits in a right column or a drawer.
-
-**Charts:** categories (photos, video, documents) get different hues at the same lightness, the
-chart tokens; shades of one hue are only for an ordered scale. The current series solid, the
-comparison a tint of the same hue; few solid gridlines;
-about 3 labels on the y-axis; a hover tooltip with exact values instead of a legend block.
-
-**Stats:** a label (muted, 13px), a value (600, tabular), a context line. No icon circles, no
-trend pill on every number: color only the value that needs attention. The stats can double as
-the chart's tabs.
+- **Tables:** fixed sets become neutral chips. States are words: plain for the ordinary (Paid,
+  Sent), a tinted chip only for the one that needs action (Overdue). Numbers right-aligned and
+  tabular, text left, IDs muted in mono. Long text truncates with a tooltip (wraps on touch).
+  People get a face. Headers quiet: 12px, `ink-3`. First and last columns flush with the edges;
+  hover actions sit just before a final amount column, or last when the row ends in text.
+  Inactive rows fade to `ink-3` and keep 4.5:1.
+- **Time:** events over time are a timeline grouped by Today and This week, not a table.
+- **Charts:** categories get different hues at one lightness (the chart tokens); one hue's
+  shades only for an ordered scale. The current series solid, the comparison a tint; few
+  gridlines, about 3 y-axis labels, a hover tooltip instead of a legend block (a one-line key
+  that states the totals is fine).
+- **Stats:** a muted 13px label, a 600 tabular value, a context line. Color only the value that
+  needs attention; the stats can double as the chart's tabs.
 
 ## Show the right things, reveal the rest
 
-Place each control by how often it's used and how important it is:
+1. The page's one primary action: a labeled button, always visible.
+2. Frequent tools: icon buttons with tooltips, icon-only only for icons everyone knows (delete,
+   more, close, search, share). A bar shows 3–4 labeled actions plus More.
+3. Row actions on hover or focus (swipe or long-press on touch).
+4. Share, filters and date pickers in popovers; rare actions in the `…` menu, destructive last.
+5. A new page only for a real separate task; drawers and inline editing for the rest.
 
-1. an always-visible labeled button for the page's one primary action
-2. an always-visible icon with a tooltip for frequent tools, but icon-only only for icons everyone
-   knows (delete, more, close, search, share). Anything else gets a word or goes in the menu; a bar
-   shows 3–4 labeled actions plus More
-3. on hover or focus for row actions (swipe or long-press on touch)
-4. in a popover for share, filters, date pickers
-5. in the `…` menu for rare actions, destructive ones at the bottom
-6. a separate page only for a real separate task
-
-## Design the invisible UI
+## The invisible states
 
 - **Tooltips** on every icon-only button and truncated value.
-- **Empty states:** one line on what goes here, plus the action that fills it.
-- **Loading:** skeletons shaped like the final layout, not a page spinner.
+- **Empty:** one line on what goes here, plus the action that fills it.
+- **Loading:** skeletons shaped like the final layout.
 - **Errors:** inline, next to the cause, with a way to recover.
-- **After every action** people know what happened, can take it back and know what's next: a
-  toast that names the result, with Undo for anything that isn't destructive.
-- **One pattern per situation, everywhere.** A limit reads the same on every screen ("2 of 3
-  used, resets 1 November"); one failure never gets two different screens.
-- **Failures get the care of the success screens.** A failed payment says what happened, that
-  the money is safe, what to do next, and has a contact button. Offline says what still works
-  and retries on its own. A result too small to count still shows something. Before you ship,
-  break it on purpose: go offline mid-flow, fail a payment, empty every list.
+- **After every action:** a toast naming the result, Undo for anything not destructive.
+  Destructive actions are red, never one click away, and name what's lost.
+- **One pattern per situation:** a limit reads the same everywhere ("2 of 3 used, resets 1
+  November"). Failures get the care of successes: a failed payment says what happened, that the
+  money is safe, what to do next, and has a contact button. Offline says what still works.
+  Break it on purpose before you ship: go offline mid-flow, fail a payment, empty every list.
+- **Flows:** ask for the minimum, branch on answers, show 2 of 4, Back after the first step.
 - **Hover, focus-visible, active, selected and disabled** on every interactive element.
-- **Dense tables:** a copy button over cells on hover, a selected-row state, a bulk-action bar
-  when rows are checked.
-- **Drawers, popovers and inline editing** instead of new pages and modals for secondary tasks.
-- **Onboarding** one step at a time: a single tip at the most important action, a quiet checklist
-  in a corner. Never a six-bullet modal on first login.
-- **Flows:** ask for the minimum, branch on answers (a solo user skips "invite teammates"), show
-  progress and a Back link on every step after the first.
 
 ## Controls that hold their shape
 
-Most "it looks off" comes from this list. Check every item in the browser, at every width, in
-light and dark.
+Most "it looks off" is here. Check each in the browser at every width, light and dark.
 
-- **Nothing touches its edge.** Text sits at least 10px inside any pill, button, highlight or
-  selected row, and never runs under an icon. A label that doesn't fit gets shorter or loses
-  its icon. It is never clipped.
-- **Segmented controls:** options size to their labels (`flex: 1 1 auto` plus side padding),
-  not equal columns too narrow for the longest label. The highlight sits exactly on its option
-  at every width.
-- **Dropdowns:** one chevron for the whole product, centered on the text's line and inset from
-  the right edge by the same padding as the text on the left. The value gets right padding, so
-  a long one truncates before the chevron. A native `select` gets `appearance: none` and that
-  chevron.
-- **Labels centered on their height:** single-line controls (buttons, chips, tabs, segmented
-  options, rows) get `line-height: 1` and `align-items: center`. An inherited body line height
-  makes a fractional line box that snaps the text a pixel or more above center, right next to
-  an icon that is centered. Zoom into a screenshot: the space above the capitals equals the
-  space below the baseline.
-- **Descenders:** no fixed height or `overflow: hidden` that cuts off g, y and p. Line height
-  at least 1.2 on anything that clips, and equal padding top and bottom.
-- **One height scale:** three or four control heights for the whole product, as tokens (for
-  example 24 tags, 32 small buttons, 40 chips, 44 fields and main buttons). On touch screens
-  anything tappable is 44 or more. Every pill, badge and button uses one.
-- **Sizes don't move between states.** A button whose label changes (Follow, Following) keeps
-  its width, set from the longest label. Icons sit centered in a square box
-  (`place-items: center`), one size for the whole set.
-- **Floating bars never cover content.** The scroll area pads by the bar's height plus the
-  safe area. Labels and timestamps stay clear of side panels.
+- **Nothing touches its edge:** text at least 10px inside any pill, button or highlight, never
+  under an icon. A label that doesn't fit gets shorter, never clipped.
+- **Centered labels:** single-line controls get `line-height: 1` and `align-items: center`; an
+  inherited body line height sits the text a pixel high.
+- **Segmented controls** size options to their labels; the highlight sits exactly on its option.
+- **Dropdowns:** one chevron for the product, centered on the text line and inset by the text's
+  own padding; native selects get `appearance: none` and that chevron.
+- **Descenders:** line height 1.2 or more on anything that clips.
+- **One height scale** of 3–4 control heights, as tokens.
+- **Sizes don't move between states:** a button keeps the width of its longest label (Follow,
+  Following); icons sit in a square box, one size for the set.
+- **Floating bars never cover content;** the scroll area pads by the bar plus the safe area.
 - **No browser defaults left:** sliders, checkboxes, radios and selects styled with the tokens.
-- **Only what the person knows:** no hashes, internal IDs, error codes, enum names or raw
-  timestamps on consumer screens, not even as a "reference". A support reference, if needed, is a
-  short human number. Each person and business gets its own picture, never one photo on two
-  accounts. Use the words of the apps they already use; coin a word only for what's new.
+- **Only what the person knows:** no hashes, internal IDs, error codes or enum names on consumer
+  screens. Each person and business gets its own picture.
 
 ## Density and dark
 
-- Base text 13–14px, labels and meta 12px, mono one step smaller than the sans beside it.
-- Rows 40–48px (touch 56px+), toolbar controls 28–32px.
-- Dark dashboards: one line color, hover at about 5% white, selection at 10%, the brand's lighter
-  step, weights 400–500 (semibold looks muddy on dark).
-- **Faded still reads.** Inactive rows, secondary numbers and "none" values use `ink-3` and keep
-  4.5:1; `ink-4` is for placeholders and disabled controls only. Measure on tinted panels.
-- A wide table scrolls inside its own wrapper, never the page. Grid children need `min-width: 0`.
+- Base text 13–14px, meta 12px, mono one step smaller than the sans beside it.
+- Rows 40–48px (56px+ on touch), toolbar controls 28–32px.
+- Dark: one line color, hover about 5% white, selection 10%, the accent's lighter step,
+  headings at 500–600 (heavier looks muddy on dark).
+- A wide table scrolls inside its own wrapper; grid children get `min-width: 0`.
 
-## Phones and responsive layouts
+## Phones and responsive
 
-- Design at 1440, check 1024, 768 and 390. Test 390 every time, not at the end.
-- Below about 720px every multi-column layout becomes one column, declared in the same component.
-- The page never scrolls sideways.
-- Tables become two-line rows: who and how much, then date and status as plain text, colored
-  only when it needs action. Drop the columns nobody needs on a phone.
-- The sidebar becomes a drawer over a scrim. Nothing important is hover-only.
-- Body at least 16px, inputs 16px (or iOS zooms), the right `type` and `inputmode` on inputs.
-- `min-height: 100dvh`, never `100vh`. Side padding 16px on phones, 24px on tablets.
-- Targets at least 44×44px with space between them. Primary actions in the bottom third.
-- Fixed bars respect `env(safe-area-inset-*)` with `viewport-fit=cover`.
+- Design at 1440, check 1024, 768 and 390 as you go.
+- Below about 720px every multi-column layout becomes one column, in the same component.
+- Tables become two-line rows: who and how much, then date and status as plain text.
+- The sidebar becomes a drawer; nothing important is hover-only.
+- Body and inputs 16px with the right `type` and `inputmode`; `min-height: 100dvh`; side
+  padding 16px; targets 44×44px; primary actions in the bottom third; fixed bars respect
+  `env(safe-area-inset-*)`.
+- **Patterns:** a tab bar for 3–5 sections (outlined icons, filled when active); stack
+  navigation whose back button names the previous screen; large titles that collapse; sheets
+  with a grabber for secondary tasks; lists with 56–64px rows. One platform language per app.
+- **Native** (SwiftUI, Compose, React Native): the system pieces first (`TabView`,
+  `NavigationStack`, `.sheet`, SF Symbols; Material 3), restyled with the tokens. Springs with
+  no bounce in UI (`.smooth`, `.snappy`; Compose `dampingRatio = 1f`), a drag handing its
+  velocity to the spring. Sheets with medium and large detents. Haptics on confirm, success and
+  error only. Check the largest Dynamic Type size.
 
-**App patterns:**
+If text feels small, the screen isn't finished: cut or split it, don't shrink the text.
 
-- **Tab bar** for 3–5 top-level sections, icon plus label. Icons outlined at rest and filled
-  when active, drawn from the product's world when you can; the main action is a labeled button
-  on the first screen, never something to discover.
-- **Launch:** a first frame shaped like the first screen, so the app feels open at once. A
-  splash only as a brand moment, under a second.
-- **Stack navigation** for drill-down; the back button names the previous screen.
-- **Large title** on top-level screens, collapsing when scrolled.
-- **Segmented control** to switch views within a screen.
-- **Sheets** for secondary tasks, with a grabber and a separate Cancel; destructive options red,
-  naming what's deleted.
-- **Lists** are the default: rows 56–64px, grouped under small muted labels.
-- **Detail screens:** the key value is the headline, then a timeline and details, actions in a
-  bottom bar.
-- **One platform language per app:** iOS (tab bar, sheets, large titles) or Android (top app bar,
-  bottom nav, FAB). Native apps use the platform's own components, styled with the tokens.
+## Moments
 
-**Native feel** (SwiftUI, Compose, React Native):
+People remember an app by its best moment and how it ends. Write the moments into `DESIGN.md`.
 
-- **System pieces first:** `TabView`, `NavigationStack`, `.sheet`, `List` and SF Symbols; Material 3
-  `NavigationBar`, `ModalBottomSheet` and Material Symbols. Restyle them with the tokens instead of
-  rebuilding them: they bring Dynamic Type, VoiceOver, back gestures and the right physics.
-- **Springs, no bounce in UI:** SwiftUI `.smooth`, `.snappy` for controls; Compose
-  `spring(dampingRatio = 1f)`. A little bounce (`.bouncy`) only on the app's own moment. A drag
-  hands its velocity to the spring, so a flicked sheet keeps moving.
-- **Sheets with detents:** medium for a decision or a quick task, large for editing
-  (`.presentationDetents([.medium, .large])`). The screen behind stays visible, so people keep
-  their place. Confirmations, pickers and failures go in a sheet; an alert only for a destructive
-  yes or no.
-- **Haptics confirm, never decorate:** success when a payment or booking lands, an error when it
-  fails, a selection tick on pickers and toggles, nothing on scroll or ordinary taps (SwiftUI
-  `.sensoryFeedback`, Compose `HapticFeedbackType.Confirm`).
-- **Safe areas:** backgrounds run under the status bar and home indicator, content and controls
-  never do. A bottom bar goes in `.safeAreaInset(edge: .bottom)` or a `Scaffold` slot, so the list
-  pads itself.
-- **Symbols:** one weight across the app, matched to the text beside it; the `.fill` variant only
-  for the selected tab.
-- **Dynamic Type:** check the largest size. Rows grow, nothing with text has a fixed height.
-- **Paywalls and onboarding:** `references/moments.md`. A paywall shows the product working;
-  onboarding asks the one question that changes the first screen, never slides of claims.
+- **The peak** sits on the core job (the plan built in front of them, the take that sounds
+  right). Let them perform it (pull, flip, press) rather than watch it; pay off with motion plus
+  a haptic or sound on confirm; name what they got; put the next step inside it.
+- **The end** closes the flow with what was done and what's next. The screen they come back to
+  is the best screen in the product.
+- **First run:** the shortest path to value (sign in, the one permission the core needs, the
+  core action). A long onboarding only when every answer changes the first screen, and then
+  build that screen in front of them. The first try never dead-ends: a sample result, a preview.
+- **Waits** name their steps (Uploading, Transcribing, Mixing) with real progress; never a bare
+  spinner past two seconds.
+- **Money:** a paywall comes after they've felt the value. It says when they're charged, how
+  much and how to cancel; a trial shows its timeline and "Nothing to pay today". One plan, two
+  at most, a visible close, Restore. Never blur their own content as bait.
+- **Progress:** toward a goal they chose; streaks they can pause; a missed day is neutral, never
+  red. Small, winnable comparisons over one global board.
+- **Question the category:** a list is wrong for people who struggle to read lists, typing a
+  meal is wrong when the camera can see it. Design for the real situation: one hand, half
+  asleep, on a train.
 
-If text feels small, the screen isn't finished: cut content or split it across screens instead
-of shrinking the text.
+## Done means
+
+- [ ] The first screen answers the question in one glance; the key object is the largest view.
+- [ ] Nothing from the obvious version or "Never" in `SKILL.md`.
+- [ ] Every control has hover, focus, active, disabled; every list has empty, loading, error.
+- [ ] The peak, the end and the screen they return to are designed.
+- [ ] Phone (390): no sideways scroll, two-line rows, 44px targets, 16px inputs.
+- [ ] Dark is designed and checked; the page check in `look.md` is clean or explained.

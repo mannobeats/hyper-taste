@@ -1,8 +1,7 @@
 # The system: tokens for any stack
 
-Read this when you start a project, when a project has no tokens yet, or when you're asked to
-audit, clean up or "make consistent" an existing one. Consistency is most of what reads as
-quality, and a token system is how it survives the next hundred changes.
+For a new project, one with no tokens, or one to audit and make consistent. Consistency is most
+of what reads as quality, and tokens are how it survives the next hundred changes.
 
 A token names a job, never a look: `--ink-3` is secondary text, `--gray-500` is a color. Components
 use roles only, which is what lets a theme, a brand change or dark mode change everything at once.
@@ -42,11 +41,10 @@ Plus:
   `bad-ink`) for chips and inline messages.
 - **Charts:** 6 colors at the same OKLCH lightness and chroma, hue stepped by 30 from the brand.
   A comparison series is a light tint of the main series' hue.
-- **Type:** the families, a size scale, weights 450 / 500 / 600. App UI 12 / 13 / 14 / 16 / 20 / 24px.
-  Pages that sell: body 17–18px and a display scale from the direction.
-- **Space:** a 4px grid. **Radius:** 6 chips, 8 controls, 12 cards, 16 sheets, or the
-  direction's own. **Shadows:** three levels, a hairline ring plus soft low-opacity lift, never a
-  dark border. **Motion:** 140ms and 220ms, entrances 400–700ms, one ease-out curve.
+- **Type, space, shape and controls:** the scales in `SKILL.md` "Craft numbers", as tokens.
+  **Radius:** one family from the direction (tight: 6 / 8 / 12; round: 10 / 14 / 20 / 28 and
+  capsules), nested. **Shadows:** three levels, a hairline ring plus a soft tinted lift.
+  **Motion:** the tokens in `motion.md`.
 
 ## The knobs
 
@@ -56,8 +54,10 @@ defaults untouched.
 - **Brand hue and chroma,** from one specific thing in the product's world, not the category.
 - **Gray tint:** none, barely there (chroma .004–.008 toward the brand hue, warmth without
   color), or themed (chroma .02 and lightness .03 lower). One gray family everywhere.
-- **Font:** a family you can say why, with its files in the project.
-- **Radius:** tight for premium and technical, rounder for friendly.
+- **Font:** a family you can say why, with its files in the project. Geist from `fonts/` when
+  the product has no face of its own.
+- **Radius:** one family, tight (6–12px) or round (20–28px cards with capsule buttons); the
+  blueprint and the product's objects decide, not the flavor.
 - **Lead mode:** light or dark, on purpose. The other one is still designed, not inverted.
 
 Rules the values follow:
@@ -65,7 +65,7 @@ Rules the values follow:
 - **Text is gray, not black.** Hierarchy through lightness, not only size.
 - **Dark mode doubles the distances** between steps, gets lighter as surfaces rise, brightens the
   lines and dims the text. Never `#000` with `#fff` text.
-- **Red is always destructive,** whatever the brand. Status is a tinted chip with words, never a
+- **Red means failed, overdue or destructive,** whatever the brand. Status is a tinted chip with words, never a
   saturated block.
 - **After you tint anything, measure the text again.** `ink-3` on a tinted `bg` often drops under
   4.5:1. Body text needs 4.5:1, large text and UI edges 3:1.
@@ -79,7 +79,7 @@ One file of custom properties. `light-dark()` follows the system setting with no
 it by hand.
 
 ```css
-@font-face { font-family: "Geist"; src: url("fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "<family>"; src: url("fonts/<family>.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
 
 :root {
   color-scheme: light dark;
@@ -115,7 +115,7 @@ it by hand.
   --warn: light-dark(oklch(.72 .16 70), oklch(.80 .14 75));
   --bad: light-dark(oklch(.58 .21 27), oklch(.66 .19 25));
 
-  --font: "Geist", system-ui, sans-serif;
+  --font: "<family>", system-ui, sans-serif;   /* the direction's face, or Geist from fonts/ */
   --text-body: 17px;                  /* 14px in app UI */
   --radius-sm: 6px; --radius: 8px; --radius-lg: 12px;
   --shadow-sm: 0 0 0 1px oklch(0 0 0 / .06), 0 2px 4px oklch(0 0 0 / .04), 0 12px 24px oklch(0 0 0 / .05);
@@ -124,16 +124,18 @@ it by hand.
 .dark, [data-theme="dark"] { color-scheme: dark; }
 .light, [data-theme="light"] { color-scheme: light; }
 body { background: var(--bg); color: var(--ink-2); font: 450 var(--text-body)/1.5 var(--font); }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
+/* transitions stay, so color and opacity feedback survive; put big movement inside (prefers-reduced-motion: no-preference) */
 ```
 
-Add the other roles (`panel`'s neighbors, soft and ink pairs, charts, more shadows) the same way
-when the product needs them. A landing page needs about 3–5 neutrals, not all 13.
+Add the other roles (soft and ink pairs, charts, more shadows) the same way when the product
+needs them. A landing page needs about 3–5 neutrals, not all 13.
 
 ### Tailwind
 
 v4: keep the file above and expose the roles in `@theme inline`, then use `bg-surface
-text-ink border-line`, never `bg-gray-50 text-slate-900`:
+text-ink border-line`. Clear the stock palette and radii (`--color-*: initial;
+--radius-*: initial;` in `@theme`) so `bg-gray-50` and stray values can't creep back:
 
 ```css
 @theme inline {
@@ -243,8 +245,9 @@ Put it at the project root, and one line in `AGENTS.md` (or `CLAUDE.md`, `.curso
 <Who uses it and what they come to do, in one line.> Flavor: <…>. Built with ui-director.
 
 ## Direction
-The block from SKILL.md step 1, kept as written: the obvious version, the three directions, the
-pick, the signature and its technique, palette, type, images, first screen.
+The direction block from landing.md or app-ui.md, kept as written and updated when the design
+changes: the obvious version, the blueprint, the directions, the pick, the signature, palette,
+type, images, the sample world, first screen.
 
 ## Tokens
 Source: `<path>`. Components never use raw colors, sizes, fonts or shadows.
@@ -254,10 +257,10 @@ Knobs: brand hue <n> (<why>), gray tint <…>, font <family> (<why>), radius <n>
 Where: `<folder>`. Variants: <list>. Pages own margin, width and placement; components own the rest.
 
 ## Rules
-ui-director's hard bans hold. Approved exceptions: none yet.
+ui-director's "Never" list holds. Approved exceptions: none yet.
 
 ## Done means
-Looked at in a browser at 1440 and 390 wide, light and dark.
+Looked at in a browser at 1440 and 390 wide, light and dark; the page check is clean or explained.
 ```
 
 List only the exceptions the user approved.
