@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "hyper-taste",
-      "version": "2.1.0",
+      "version": "2.2.0",
       "source": "./",
       "description": "Every Hyper Taste skill in one install: ui-director and agents-md.",
       "homepage": "https://github.com/mannobeats/hyper-taste",
@@ -28,7 +28,7 @@
     },
     {
       "name": "ui-director",
-      "version": "2.1.0",
+      "version": "2.2.0",
       "source": "./",
       "description": "Art direction for any UI: a direction from the product's world, a token system for any stack, a craft kit for studio-grade landing pages (the product rebuilt in code, playing its job as a film) and calm app screens, checked in a real browser.",
       "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/ui-director",

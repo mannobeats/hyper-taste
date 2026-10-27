@@ -12,7 +12,9 @@ world, graded to the palette, large and full-bleed. A sky for a browser, a kitch
 for an inventory tool, a motorway at night for write traffic. The words sit on its calm area
 (add a scrim from their side), the product window rises across its lower edge, and the
 photograph breaks into halftone dots that fade into the page, so the hero and the page are one
-surface. Without a photograph, the brand material below plays the same part as a live field.
+surface. When the photograph is the product (food, a place, an object), the most useful live
+piece rises across the seam instead: today's shelf, the booking form, the next date. Without a
+photograph, the brand material below plays the same part as a live field.
 
 ```html
 <section class="hero">
@@ -27,7 +29,7 @@ surface. Without a photograph, the brand material below plays the same part as a
 .hero .photo, .hero .dissolve { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; }
 .hero .photo { object-fit: cover; object-position: 50% 40%;
   -webkit-mask: linear-gradient(#000 50%, transparent 76%); mask: linear-gradient(#000 50%, transparent 76%); }
-.hero .dissolve { z-index: -1; }
+.hero .dissolve { z-index: -3; } /* under the photo: dots show only where it fades */
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; /* scrim behind the words */
   background: radial-gradient(52% 42% at 50% 34%, oklch(.14 .02 55 / .55), transparent),
               linear-gradient(180deg, oklch(.16 .02 55 / .7), transparent 74%); }
@@ -43,13 +45,14 @@ function dissolve() {
   cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
   const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell), iw = photo.naturalWidth, ih = photo.naturalHeight, k = Math.max(W / iw, H / ih);
   const o = Object.assign(document.createElement('canvas'), { width: cols, height: rows }).getContext('2d', { willReadFrequently: true });
-  o.drawImage(photo, (W - iw * k) * .5 / cell, (H - ih * k) * .4 / cell, iw * k / cell, ih * k / cell); // match object-position
+  const [ox, oy] = getComputedStyle(photo).objectPosition.split(' ').map((v) => parseFloat(v) / 100); // set it in %
+  o.drawImage(photo, (W - iw * k) * ox / cell, (H - ih * k) * oy / cell, iw * k / cell, ih * k / cell);
   const px = o.getImageData(0, 0, cols, rows).data;
   for (let j = Math.floor(from / cell); j < rows; j++) {
     const p = (j * cell + cell / 2 - from) / (H - from);
     for (let i = 0; i < cols; i++) {
       const q = (j * cols + i) * 4, lum = (px[q] * .3 + px[q + 1] * .59 + px[q + 2] * .11) / 255;
-      const r = cell * .5 * Math.min(1, p * 4) * Math.max(0, 1 - p * (1.2 - lum * .7) - grain(i, j) * .25 * p);
+      const r = cell * .5 * Math.min(1, p * 4, (1 - p) * 6) * Math.max(0, 1 - p * (1.2 - lum * .7) - grain(i, j) * .25 * p);
       if (r < .45) continue;
       c.fillStyle = `rgb(${px[q]} ${px[q + 1]} ${px[q + 2]})`; c.beginPath(); c.arc(i * cell + cell / 2, j * cell + cell / 2, r, 0, 7); c.fill();
     }
@@ -64,7 +67,11 @@ addEventListener('resize', dissolve);
   photo (`object-position`, an offset) until no line of text crosses a busy part.
 - Light text over dark photos: the hero sets its own ink, the primary button turns light, the
   quiet clause at about 60% white.
-- In dark mode the dots fade into the dark page; check both.
+- In dark mode the dots fade into the dark page; check both. On a light page, mix each dot's
+  color toward an ink from the palette (`color-mix` the sampled color with `--brand-700` at about
+  50%) and let the dark cells hold longest, or gray stone turns into dirty dots.
+- A calm area too short for the words: drop the photo lower and continue its sky above it with
+  the sky's own sampled color, faded at the seam.
 - No photograph and no image tool: the brand material as a canvas field of dots shaped by the
   product's own data (a waveform, a week of stock, a map), in 2–3 inks from the palette, over soft
   radial light.

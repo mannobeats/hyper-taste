@@ -3,72 +3,187 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Slow Type, Porto 2027</title>
+<title>Slow Type, Porto, 14–15 May 2027</title>
+<meta name="description" content="Two days on how letters are drawn, spaced and set, at Teatro Rivoli in Porto. €240, lunch included.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=block">
 <link rel="stylesheet" href="../tokens.css">
+<!-- The gallery shoots this page in a frame right after load, so the entrance plays only when it's opened on its own. -->
+<script>if (self === top) document.documentElement.classList.add('arrive');</script>
 <style>
-  /* A conference about drawing letters, so the first screen is a specimen sheet: the name in a
-     light weight at full width, measured by its own guide lines. Cobalt from Porto's tiles. */
-  :root { --accent-h: 262; --tint-h: 85; --tint-c: .008; --display: "Archivo", var(--font); }
-  body { overflow: hidden; }
-  nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 18px 40px; font-size: var(--text-md); color: var(--ink-2); }
-  nav .name { color: var(--ink); font-weight: 600; }
-  nav .mid { display: flex; gap: 32px; }
-  nav .btn { justify-self: end; }
+  /* Poster. A conference about drawing letters, so the name is the image: set huge in a light
+     weight on Porto's sky, measured by guide lines on Archivo's real metrics (per 1000 units:
+     ascender 723, x-height 526, descender −173; at line-height 1.04 the baseline is .854em down).
+     The Chapel of Souls' azulejo wall rises under it and breaks into cobalt dots on glaze white.
+     Photo: Aman Jhalani on Unsplash (unsplash.com/photos/ddDNOa4nsLU). */
+  :root { --accent-h: 262; --tint-h: 85; --tint-c: .008; --display: "Archivo", var(--font);
+          --gutter: clamp(20px, 4vw, 40px); }
+  :root[data-theme="dark"] { --tint-h: 262; --tint-c: .03; }
+  body { font-size: 16px; line-height: 1.5; }
+  a { text-decoration: none; }
+  .page { width: min(1520px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+  .btn { border-radius: 999px; }
+  .btn:active { transform: scale(.98); }
+  .btn.go { height: 48px; padding: 0 22px; font: 550 15.5px/1 var(--font); background: var(--strong); color: var(--on-strong); box-shadow: none; }
+  .btn.go:hover { background: var(--strong-hover); }
 
-  .sheet { position: relative; height: 380px; margin-top: -4px; }
-  .guide { position: absolute; left: 0; right: 0; height: 0; font-style: normal; border-top: 1px solid var(--accent-300); }
-  .guide.base { border-top-color: var(--accent); }
-  .guide span { position: absolute; top: -18px; font-size: 11px; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .guide span:first-child { left: 40px; } .guide span:last-child { right: 40px; }
-  h1 { position: absolute; left: 0; right: 0; top: 0; text-align: center; color: var(--ink);
-       font: 250 252px/380px var(--display); font-stretch: 100%; letter-spacing: -.035em; white-space: nowrap; }
+  /* The hero: sky for the name, the tiled chapel below it, its lower half breaking into dots. */
+  .hero { --drop: 40px; position: relative; isolation: isolate; height: 1000px; overflow: hidden; color-scheme: dark;
+    background: linear-gradient(rgb(62 111 183) calc(var(--drop) + 60px), transparent 0); /* the photo's own sky, sampled */
+    --dot: oklch(.45 .16 262);
+    --ink: oklch(.99 .004 262); --ink-2: oklch(.97 .01 262 / .92); --muted: oklch(.97 .01 262 / .84);
+    --strong: oklch(.99 .004 85); --strong-hover: oklch(.93 .01 85); --on-strong: oklch(.34 .15 262); color: var(--ink-2); }
+  :root[data-theme="dark"] .hero { --dot: oklch(.8 .08 262); }
+  .hero .photo, .hero .dissolve { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; }
+  /* The photo hangs from --drop; above it, the same sky continues as a flat fill. */
+  .hero .photo { top: var(--drop); height: calc(100% - var(--drop)); object-fit: cover; object-position: 50% 0%;
+    -webkit-mask: linear-gradient(transparent, #000 60px 72%, transparent 94%); mask: linear-gradient(transparent, #000 60px 72%, transparent 94%); }
+  .hero .dissolve { z-index: -1; }
+  .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(180deg, oklch(.27 .12 262 / .55), oklch(.27 .12 262 / .45) 50%, oklch(.27 .12 262 / 0) 74%); }
 
-  .lead { text-align: center; margin: 14px auto 0; font-size: 21px; line-height: 1.45; color: var(--ink-2); max-width: 40ch; }
+  .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 72px; font-size: 15px; }
+  .nav .name { color: var(--ink); font-weight: 600; letter-spacing: -.01em; }
+  .nav .mid { display: flex; gap: 32px; }
+  .nav .mid a { color: var(--ink-2); transition: color var(--t-fast); } .nav .mid a:hover { color: var(--ink); }
+  .nav .btn { justify-self: end; height: 40px; padding: 0 18px; font-size: 14px; font-weight: 550; background: var(--strong); color: var(--on-strong); box-shadow: none; }
 
-  /* The tiles: a band of Porto azulejo, drawn as one repeating SVG. */
-  .band { position: absolute; left: 0; right: 0; bottom: 0; height: 236px; color: oklch(.97 .01 262);
-          background: oklch(.42 .17 262) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' fill='none' stroke='white' stroke-opacity='.17' stroke-width='1.5'%3E%3Ccircle r='48'/%3E%3Ccircle cx='96' r='48'/%3E%3Ccircle cy='96' r='48'/%3E%3Ccircle cx='96' cy='96' r='48'/%3E%3Cpath d='M48 6 90 48 48 90 6 48Z'/%3E%3Ccircle cx='48' cy='48' r='16'/%3E%3Ccircle cx='48' cy='48' r='4' fill='white' fill-opacity='.17'/%3E%3C/svg%3E") 0 0 / 96px; }
-  .cols { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 40px; height: 100%; padding: 36px 40px; }
-  .cols > div { display: flex; flex-direction: column; }
-  .cols b { font: 500 30px/1.1 var(--display); letter-spacing: -.02em; color: oklch(.99 0 0); }
-  .cols p { margin-top: 10px; font-size: var(--text-md); line-height: 1.5; color: oklch(.88 .03 262); }
-  .who { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin-top: 12px; font-size: var(--text-md); }
-  .who span { color: oklch(.99 0 0); }
-  .who small { display: block; font-size: var(--text-sm); color: oklch(.82 .05 262); }
-  .buy { align-items: flex-end; text-align: right; }
-  .buy .btn { margin-top: auto; height: 50px; padding: 0 26px; font-size: 16px; border-radius: var(--r-lg); background: oklch(.98 .01 85); color: oklch(.36 .16 262); box-shadow: none; }
+  .when { margin-top: 40px; font: 500 18px/1.3 var(--font); color: var(--ink); letter-spacing: -.01em; }
+
+  /* The specimen: the name across the width, its guide lines running edge to edge. */
+  .specimen { --big: min(calc((100vw - 2 * var(--gutter)) / 4.5), 338px); --g: oklch(1 0 0 / .32); --gb: oklch(1 0 0 / .7);
+    position: relative; isolation: isolate; margin-top: 8px; padding-inline: var(--gutter); font: 250 var(--big)/1.04 var(--display); }
+  .specimen::before { content: ""; position: absolute; inset: 0; z-index: -1; transform-origin: left;
+    background: linear-gradient(transparent calc(.131em - 1px), var(--g) 0 .131em, transparent 0 calc(.328em - 1px), var(--g) 0 .328em,
+      transparent 0 calc(.854em - 1px), var(--gb) 0 .854em, transparent 0 calc(1.027em - 1px), var(--g) 0 1.027em, transparent 0) 0 0 / 100% 1.04em; }
+  .specimen h1 { font: inherit; color: var(--ink); letter-spacing: -.02em; white-space: nowrap; margin-left: -.045em; } /* the S's side bearing, so its curve meets the text edge */
+  .specimen .g { position: absolute; right: var(--gutter); top: calc(var(--y) * var(--big)); font: 450 12px/1 var(--font); color: var(--muted);
+                 font-variant-numeric: tabular-nums; display: flex; gap: 10px; translate: 0 calc(-100% - 6px); }
+  .specimen .g.below { translate: 0 6px; }
+  .specimen .g b { font-weight: 450; color: var(--ink); }
+
+  .under { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .under > * { grid-column: 2; }
+  .hero .risk { color: var(--ink); } /* quieter by size; the lower sky is too light for a dimmer ink */
+  .lede { font-size: 20px; line-height: 1.45; color: var(--ink); max-width: 30ch; }
+  .act { display: flex; align-items: center; gap: 16px; }
+  .risk { font-size: 14px; line-height: 1.4; color: var(--muted); }
+
+  /* The talks: an editorial list, each name a step heavier, like a specimen's waterfall. */
+  .talks { position: relative; z-index: 1; margin-top: -16px; padding-bottom: 32px; }
+  .talks header { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding-bottom: 24px; }
+  .talks h2 { font: 500 40px/1.05 var(--display); letter-spacing: -.035em; color: var(--ink); }
+  .talks header p { color: var(--muted); font-size: 16px; }
+  .list { list-style: none; padding: 0; box-shadow: inset 0 1px 0 var(--line-strong); }
+  .list li { display: grid; grid-template-columns: 1fr 1fr; align-items: baseline; gap: 24px; padding: 20px 0 22px; box-shadow: inset 0 -1px 0 var(--line); }
+  .list .who { font: var(--w) 52px/1 var(--display); letter-spacing: -.035em; color: var(--ink); }
+  .list .what { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; font-size: 20px; color: var(--ink-2); }
+  .list .w { font-size: 13px; color: var(--faint); font-variant-numeric: tabular-nums; }
+
+  .close { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 40px 0 64px; box-shadow: inset 0 1px 0 var(--line); }
+  .close p { font: 500 24px/1.2 var(--display); letter-spacing: -.02em; color: var(--ink); }
+  .close .risk { text-align: right; }
+
+  /* Entrance, top-level only: the guides draw across, then the name settles on them. */
+  @media (prefers-reduced-motion: no-preference) {
+    .arrive .specimen::before { animation: guides 1.4s var(--ease) both; }
+    .arrive .specimen h1 { animation: settle 1.2s var(--ease) .25s both; }
+    .arrive .enter { animation: settle 1s var(--ease) both; animation-delay: calc(400ms + var(--i, 0) * 70ms); }
+    @keyframes guides { from { transform: scaleX(0); } }
+    @keyframes settle { from { opacity: 0; transform: translateY(.06em); filter: blur(10px); } }
+  }
+
+  @media (max-width: 720px) {
+    .nav { grid-template-columns: 1fr auto; }
+    .nav .mid { display: none; }
+    .nav .btn { height: 44px; }
+    .hero { height: 1130px; --drop: 500px; }
+    .hero .photo { object-position: 22% 0%; }
+    .when { margin-top: 40px; font-size: 16px; }
+    .specimen { --big: calc((100vw - 2 * var(--gutter)) / 2.3); }
+    .specimen h1 { white-space: normal; }
+    .under { grid-template-columns: 1fr; }
+    .under > * { grid-column: auto; }
+    .lede { font-size: 18px; }
+    .act { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .talks header { grid-template-columns: 1fr; gap: 8px; }
+    .talks h2 { font-size: 32px; }
+    .list li { grid-template-columns: 1fr; gap: 6px; }
+    .list .who { font-size: 40px; }
+    .list .what { font-size: 17px; }
+    .list .w { display: none; }
+    .close { flex-direction: column; align-items: flex-start; }
+    .close .act { flex-direction: column-reverse; }
+    .close .risk { text-align: left; }
+  }
 </style>
 </head>
 <body class="bleed">
-  <nav><span class="name">Slow Type 2027</span><span class="mid"><span>Programme</span><span>Speakers</span><span>Venue</span></span><span class="btn strong">Get a ticket</span></nav>
-
-  <div class="sheet">
-    <i class="guide" style="top:92px"><span>Ascender</span><span>723</span></i>
-    <i class="guide" style="top:142px"><span>x-height</span><span>526</span></i>
-    <i class="guide base" style="top:274px"><span>Baseline</span><span>0</span></i>
-    <i class="guide" style="top:318px"><span>Descender</span><span>−173</span></i>
+<section class="hero">
+  <img class="photo" src="chapel.jpg" width="2000" height="1700" alt="" fetchpriority="high">
+  <canvas class="dissolve" aria-hidden="true"></canvas>
+  <nav class="nav page">
+    <span class="name">Slow Type 2027</span>
+    <span class="mid"><a href="#talks">Programme</a><a href="#talks">Speakers</a><a href="#venue">Venue</a></span>
+    <a class="btn" href="#ticket">Get a ticket</a>
+  </nav>
+  <p class="when page enter" style="--i:0">14–15 May 2027, Teatro Rivoli, Porto</p>
+  <div class="specimen">
     <h1>Slow Type</h1>
+    <span class="g" style="--y:.131" aria-hidden="true">Ascender <b>723</b></span>
+    <span class="g" style="--y:.328" aria-hidden="true">x-height <b>526</b></span>
+    <span class="g below" style="--y:.854" aria-hidden="true">Baseline <b>0</b></span>
+    <span class="g below" style="--y:1.027" aria-hidden="true">Descender <b>−173</b></span>
   </div>
-  <p class="lead">Two days on how letters are drawn, spaced and set, with the people who draw them.</p>
+  <div class="under page">
+    <p class="lede enter" style="--i:1">Two days on how letters are drawn, spaced and set, with the people who draw them.</p>
+    <div class="act enter" style="--i:2" id="ticket"><a class="btn go" href="#ticket">Get a ticket</a><span class="risk">€240, lunch included.<br>64 of 180 seats left.</span></div>
+  </div>
+</section>
 
-  <section class="band">
-    <div class="cols">
-      <div><b class="num">14–15 May 2027<br>Teatro Rivoli, Porto</b><p>One room, no parallel tracks, long lunches.</p></div>
-      <div><b>Speaking</b>
-        <div class="who">
-          <span>Inês Moura<small>Drawing Portuguese signage</small></span>
-          <span>Kenji Watanabe<small>Kana beside Latin</small></span>
-          <span>Amara Okoye<small>Spacing by eye</small></span>
-          <span>Liesel Brandt<small>Revivals that aren't copies</small></span>
-        </div>
-      </div>
-      <div class="buy"><b>€240, lunch included</b><p class="num">180 seats, 64 left.</p><span class="btn">Get a ticket</span></div>
-    </div>
-  </section>
+<section class="talks page" id="talks">
+  <header><h2>Four talks, one room.</h2><p>No parallel tracks, and lunch is long.</p></header>
+  <ol class="list">
+    <li><span class="who" style="--w:250">Inês Moura</span><span class="what">Drawing Portuguese signage<span class="w" aria-hidden="true">250</span></span></li>
+    <li><span class="who" style="--w:400">Kenji Watanabe</span><span class="what">Kana beside Latin<span class="w" aria-hidden="true">400</span></span></li>
+    <li><span class="who" style="--w:550">Amara Okoye</span><span class="what">Spacing by eye<span class="w" aria-hidden="true">550</span></span></li>
+    <li><span class="who" style="--w:700">Liesel Brandt</span><span class="what">Revivals that aren’t copies<span class="w" aria-hidden="true">700</span></span></li>
+  </ol>
+  <footer class="close" id="venue"><p>Friday 14 and Saturday 15 May 2027, Teatro Rivoli, Porto.</p><div class="act"><span class="risk">€240, lunch included.<br>64 of 180 seats left.</span><a class="btn go" href="#ticket">Get a ticket</a></div></footer>
+</section>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 <script src="../pair.js"></script>
+<script>
+  // The chapel breaks into dots at the bottom of the hero: each cell takes the photo's colour and
+  // shrinks toward the page, the bright cells holding on longest.
+  const hero = document.querySelector('.hero'), photo = hero.querySelector('.photo'), cv = hero.querySelector('.dissolve');
+  const grain = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+  function dissolve() {
+    const W = hero.clientWidth, H = hero.clientHeight, dpr = Math.min(2, devicePixelRatio), cell = 7;
+    const top = photo.offsetTop, from = top + (H - top) * .66, end = H * .93, light = document.documentElement.dataset.theme !== 'dark';
+    cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell), iw = photo.naturalWidth, ih = photo.naturalHeight, k = Math.max(W / iw, (H - top) / ih);
+    const o = Object.assign(document.createElement('canvas'), { width: cols, height: rows }).getContext('2d', { willReadFrequently: true });
+    const ox = parseFloat(getComputedStyle(photo).objectPosition) / 100; // the photo's object-position, x
+    o.drawImage(photo, (W - iw * k) * ox / cell, top / cell, iw * k / cell, ih * k / cell);
+    const px = o.getImageData(0, 0, cols, rows).data;
+    // The dots end in the tiles' own ink: cobalt on glaze white, or pale cobalt on the night page.
+    o.fillStyle = getComputedStyle(hero).getPropertyValue('--dot'); o.fillRect(0, 0, 1, 1); const ink = o.getImageData(0, 0, 1, 1).data;
+    for (let j = Math.floor(from / cell); j < rows; j++) {
+      const p = (j * cell + cell / 2 - from) / (end - from);
+      if (p >= 1) break;
+      for (let i = 0; i < cols; i++) {
+        const q = (j * cols + i) * 4, lum = (px[q] * .3 + px[q + 1] * .59 + px[q + 2] * .11) / 255, dens = light ? 1 - lum : lum;
+        const r = cell * .5 * Math.min(1, p * 4, (1 - p) * 5) * Math.max(0, 1 - p * (1.2 - dens * .7) - grain(i, j) * .25 * p);
+        if (r < .45) continue;
+        const t = Math.min(1, Math.max(0, (p - .05) / .45)), mix = (n) => Math.round(px[q + n] + (ink[n] - px[q + n]) * t);
+        c.fillStyle = `rgb(${mix(0)} ${mix(1)} ${mix(2)})`; c.beginPath(); c.arc(i * cell + cell / 2, j * cell + cell / 2, r, 0, 7); c.fill();
+      }
+    }
+  }
+  if (photo.complete && photo.naturalWidth) dissolve(); else photo.addEventListener('load', dissolve);
+  addEventListener('resize', dissolve);
+</script>
 </body>
 </html>

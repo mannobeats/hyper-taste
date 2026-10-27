@@ -119,7 +119,8 @@ npm run shoot -- 08-landing-product   # one pair
 ```
 
 Photographs from Unsplash: the kitchen in pair 08 by
-[Nicolas J Leclercq](https://unsplash.com/photos/KBjDo_QA1lY), the loaf in pair 10 by
+[Nicolas J Leclercq](https://unsplash.com/photos/KBjDo_QA1lY), the Chapel of Souls in pair 09 by
+[Aman Jhalani](https://unsplash.com/photos/ddDNOa4nsLU), the loaf in pair 10 by
 [Robert Stump](https://unsplash.com/photos/DNqwLdfo0b8), the motorway in pair 11 by
 [Robin Pierre](https://unsplash.com/photos/dPgPoiUIiXk). All names, businesses and numbers in the
 pairs are made up.

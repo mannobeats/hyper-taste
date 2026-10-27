@@ -4,27 +4,35 @@ Code that looks right can render wrong: a font that never loaded, a section wide
 phone, gray text on a photo, a reveal that never fires. Look like a visitor, then measure what
 eyes miss.
 
-## Which browser
+## Find your browser
 
-1. **The browser tool your harness gives you:** a browser pane, a browser MCP server, a preview
-   tool. Open, scroll, click, resize, read the console, run JavaScript in the page.
-2. **What the project already has:** a preview command in `AGENTS.md` or `package.json`, or
-   Playwright already installed. On a real site you'll iterate on, a small screenshot script per
-   section (rest state, desktop and phone) is worth keeping in the project.
-3. **One headless screenshot** from an installed Chrome, a command that exits by itself:
+Look in this order and use the first that works:
+
+1. **The browser your harness gives you:** a built-in browser, a browser or Chrome MCP server, a
+   preview tool. These are often deferred tools that stay hidden until you search, so search your
+   tools for "browser", "chrome", "preview", "screenshot" and "playwright" first. If the user
+   names a browser, use that one. Open, scroll, click, resize, read the console, run JavaScript.
+2. **What the project has:** its preview command (`AGENTS.md`, `package.json`), or Playwright
+   already in its dependencies. On a site you'll keep iterating on, a small screenshot script per
+   section (desktop and phone, light and dark) is worth keeping in the project.
+3. **Headless Chrome,** if it's installed: one command that exits by itself.
 
    ```sh
    CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"   # Linux: google-chrome or chromium
-   "$CHROME" --headless=new --hide-scrollbars --window-size=1440,900 --screenshot=shot.png "file://$PWD/index.html"
+   "$CHROME" --headless=new --hide-scrollbars --window-size=1440,900 --virtual-time-budget=2000 --screenshot=shot.png http://localhost:4321/
    ```
 
    `--window-size=390,844` for the phone; `--blink-settings=preferredColorScheme=0` for dark, `=1`
-   for light; `--virtual-time-budget=2000` lets entrances finish first. Then open the image and
-   look.
-4. **None of these:** say so, and tell the user exactly what to look at.
+   for light. Then open the image and look.
 
-Install no browser or Playwright the project doesn't have, unless the user asks: several agents
-doing it at once can freeze a machine. Close the browser and stop servers when done.
+**Serve the page over http,** with the project's dev server or `python3 -m http.server` for static
+files. A `file://` page breaks quietly: canvases can't read their images, modules and some fonts
+don't load.
+
+Only when all three fail, tell the user which ones you tried and exactly what to look at; the
+work is not done until someone has seen it. Use a browser that's already there before adding
+one, keep one session open and reuse its tab, and close it with the servers you started when
+you finish.
 
 ## What to look at
 
@@ -53,7 +61,9 @@ dots in pills, icons on tinted circles, emoji, buzzwords, habit fonts, gradient 
   const ctx = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext('2d', { willReadFrequently: true });
   const rgba = c => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = c; ctx.fillRect(0, 0, 1, 1); const d = ctx.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2], d[3] / 255]; };
   const lum = ([r, g, b]) => { const f = v => (v /= 255) <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
-  const behind = e => { for (let p = e; p; p = p.parentElement) { if (css(p, 'backgroundImage') !== 'none' || /^(IMG|VIDEO|CANVAS|PICTURE)$/.test(p.tagName)) return null; const c = rgba(css(p, 'backgroundColor')); if (c[3] > .5) return c; } return rgba(css(document.documentElement, 'backgroundColor')); };
+  const behind = e => { const r = e.getBoundingClientRect();
+    if (document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2).some(x => x !== e && (/^(IMG|VIDEO|CANVAS|PICTURE)$/.test(x.tagName) || css(x, 'backgroundImage') !== 'none'))) return null;
+    for (let p = e; p; p = p.parentElement) { if (css(p, 'backgroundImage') !== 'none' || /^(IMG|VIDEO|CANVAS|PICTURE)$/.test(p.tagName)) return null; const c = rgba(css(p, 'backgroundColor')); if (c[3] > .5) return c; } return rgba(css(document.documentElement, 'backgroundColor')); };
   const clipText = e => /text/.test(css(e, 'backgroundClip') + css(e, 'webkitBackgroundClip'));
   const pill = e => { const r = e.getBoundingClientRect(); return r.height <= 44 && r.width - r.height > 4 && parseFloat(css(e, 'borderTopLeftRadius')) >= r.height / 2 - 1 && (rgba(css(e, 'backgroundColor'))[3] > .05 || parseFloat(css(e, 'borderTopWidth')) > 0 || css(e, 'boxShadow') !== 'none'); };
 
@@ -114,7 +124,12 @@ dots in pills, icons on tinted circles, emoji, buzzwords, habit fonts, gradient 
 
 Findings are leads, not verdicts: an intentional exception is fine when you can say why. The
 check skips `aria-hidden` parts, so run it once with a playing product window's `aria-hidden`
-removed to check its contrast. On the
-phone, also check every image with text over it: the words sit on a calm area, never across the
-subject. What it can't measure is still yours to see: the obvious version, image quality,
-whether the signature lands.
+removed to check its contrast.
+
+Text on a photo is judged on the screenshot, where the scrim is part of the picture: zoom into
+each line over the photo, and where a bright patch sits behind the words, deepen the scrim on
+that side or move the photo until it doesn't. On the phone, the words sit on a calm area of
+each image, never across the subject.
+
+What the check can't measure is still yours to see: the obvious version, image quality, whether
+the signature lands.

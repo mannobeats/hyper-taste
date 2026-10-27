@@ -11,7 +11,8 @@ its job, its ratio, its source and what the phone gets.
 3. **Generated images,** if your harness has any image tool. Check before deciding it doesn't.
 4. **A free-licensed photograph** (Unsplash License or similar) downloaded into the project, its
    photographer credited in a comment and the README. The fastest beautiful backdrop when there's
-   no image tool.
+   no image tool. If `curl` gets a challenge, open the photo's page in your browser tool and
+   follow its download link to the `images.unsplash.com` file, which downloads directly.
 5. **A 3D object,** when the product's form is simple (round, flat, boxy) and turning it sells it.
 6. **Drawings in the subject's own language:** plans and sections for architecture, exploded
    diagrams for hardware, maps for travel, notation for music. Line work in SVG, in the palette.
@@ -47,8 +48,9 @@ out with ImageMagick if it's already installed (`magick in.png -fuzz 6% -transpa
 out.png`). Check `file out.png` says RGBA and look at the edges over light and dark.
 
 **Files:** saved into the project, never the tool's URL. WebP or JPEG with what's on the
-machine (`sips`, `cwebp`, `magick`), about 2400px wide for full-bleed, 2× display size for the
-rest, under ~400KB each. PNG only for layers that need alpha.
+machine (`cwebp`, `magick`, `sips`; or a canvas's `toBlob('image/jpeg', .72)` in the browser, which
+also crops), about 2000–2400px wide for full-bleed, 2× display size for the rest, under ~400KB
+each. PNG only for layers that need alpha.
 
 ## On the page
 

@@ -22,9 +22,13 @@ exact craft. Be bold in the idea and precise in the execution.
 **The user's direction wins.** A named style, a reference, their brand or an existing design
 system beats every default here. Extend what exists. Only "Never" below holds regardless.
 
-Use the tools your harness gives you: a browser to look (`references/look.md`), image
-generation for photographs, the project's own component and animation libraries. Install
-nothing the user didn't ask for, run one browser at a time, and stop every server you start.
+**You look at everything you build, in a real browser.** It finds most of the problems, and
+your harness almost always has one: a built-in browser, a browser or Chrome MCP server, a preview
+tool. Many are deferred, so search your tools for "browser", "chrome", "preview" and
+"screenshot" before deciding you have none (`references/look.md`). Run the project the way it
+runs, its own install and dev commands included. Use image generation for photographs and the
+project's component and animation libraries. At the end, close your tabs and stop the servers
+you started.
 
 ## The loop
 
@@ -40,12 +44,12 @@ Each step ends on something you can check.
    placeholder.
 4. **Make it the one.** Pages that sell: the signature and the finish from
    `references/craft.md`, starting with its backdrop (`references/visuals.md` for photography
-   and 3D). App UI: the key
-   object and the moments. Motion from `references/motion.md`. Done when you can point at the
+   and 3D). App UI: the key object and the moments. Motion from `references/motion.md`. Done when you can point at the
    moment people would screenshot, on the first screen or the first scroll.
-5. **Look.** `references/look.md`: 1440 and 390 wide, light and dark, the whole scroll, every
-   control, the page check. Done when the page check is clean or each finding has a reason, the
-   screen matches `DESIGN.md`, and you have fixed and looked again at least twice.
+5. **Look.** `references/look.md`: open it in your browser over http at 1440 and 390 wide, light
+   and dark, the whole scroll, every control, the page check. Done when you have seen screenshots
+   of all of it, the page check is clean or each finding has a reason, the screen matches
+   `DESIGN.md`, and you have fixed and looked again at least twice. Unseen is unfinished.
 6. **Finish.** Stop servers, delete temporary files, and tell the user what you made, what you
    invented (numbers, names, quotes) and what to check.
 
@@ -56,7 +60,8 @@ These are the defaults. A blueprint or the user's system replaces them.
 - **Type:** one family for UI and body; a display face only with a reason from the product's
   world. Its files go in the project (`fonts/` has Geist and Geist Mono as a fallback). Pages
   that sell: body 16–18px, display up to about 80px at line height .95–1.05, tracking −.035 to
-  −.05em at 40px and up, −.01 to −.02em below. App UI: 12 / 13 / 14 / 16 / 20 / 24px, weights
+  −.05em at 40px and up, −.01 to −.02em below. A poster sets its name far larger as the image;
+  light weights at that size want about −.02em. App UI: 12 / 13 / 14 / 16 / 20 / 24px, weights
   450 body, 500 UI, 600 headings. At most 10 sizes on a page. `tabular-nums` on numbers,
   `text-wrap: balance` on headings, sentence case everywhere.
 - **Color:** neutrals do the structure (3 surfaces, 2 lines, 4 text levels). One brand color

@@ -3,63 +3,189 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Forno Alto</title>
+<title>Forno Alto: baked at four, gone by noon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&display=block">
 <link rel="stylesheet" href="../tokens.css">
+<!-- The gallery shoots this page in a frame right after load, so the entrance plays only when it's opened on its own. -->
+<script>if (self === top) document.documentElement.classList.add('arrive');</script>
 <style>
-  /* One loaf, lit like a still life: the bread is the product, so it gets the stage.
-     Bodoni from the shop's hand-painted window lettering. Photo: Robert Stump on Unsplash (unsplash.com/photos/DNqwLdfo0b8). */
-  :root { --accent-h: 70; --tint-h: 60; --tint-c: .012; --cream: oklch(.95 .025 85); --display: "Bodoni Moda", serif; }
-  body { overflow: hidden; background: oklch(.13 .006 60); color: var(--cream); }
-  .stage { position: relative; height: 760px; overflow: hidden; }
-  .stage img { position: absolute; left: 50%; bottom: -20px; translate: -50% 0; width: 930px; max-width: none; height: 470px; object-fit: cover; object-position: 50% 30%;
-               -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 28%);
-               -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 28%); mask-composite: intersect; }
+  /* Editorial, one photograph. The loaf is the product, lit like a still life in the dark of the bakery
+     at four in the morning; its board and the spilled flour break into dots, and the shelf rises across
+     them as it stands at the till right now. Bodoni from the shop's hand-painted window lettering.
+     Cream for words, crust for what's left, nothing else.
+     Photo: Robert Stump on Unsplash (unsplash.com/photos/DNqwLdfo0b8). */
+  :root[data-theme] {
+    --bg: rgb(21 20 20); --cream: oklch(.95 .025 85); --crust: oklch(.76 .12 66);
+    --ink: var(--cream); --ink-2: oklch(.86 .02 80); --muted: oklch(.72 .02 75);
+    --line: oklch(.95 .025 85 / .12); --line-strong: oklch(.95 .025 85 / .3);
+    --strong: var(--cream); --strong-hover: oklch(.88 .03 85); --on-strong: oklch(.2 .01 60);
+    --display: "Bodoni Moda", serif; --gutter: clamp(20px, 4vw, 40px);
+  }
+  body { --ph: clamp(600px, 72vw, 900px); --lt: 360px; font-size: 16px; line-height: 1.5; }
+  a { text-decoration: none; }
+  .wrap { width: min(1200px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+  .btn { height: 48px; padding: 0 22px; border-radius: 999px; font: 550 15px/1 var(--font); background: var(--strong); color: var(--on-strong); box-shadow: none; }
+  .btn:hover { background: var(--strong-hover); }
+  .btn:active { transform: scale(.98); }
 
-  nav { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 20px 40px; font-size: var(--text-md); }
-  .logo { font: 500 26px/1 var(--display); letter-spacing: -.01em; }
-  nav .links { display: flex; gap: 32px; color: oklch(.86 .02 80); }
-  nav .btn { justify-self: end; height: 38px; padding: 0 16px; background: none; color: var(--cream); box-shadow: inset 0 0 0 1px oklch(.95 .02 85 / .35); }
+  /* The first screen: the photograph's own dark is the page. --ph is the photo's height, --lt where the loaf's top sits. */
+  .hero { position: relative; isolation: isolate; overflow: hidden;
+          height: calc(var(--lt) + .76 * var(--ph)); }
+  .hero .photo { position: absolute; z-index: -2; top: calc(var(--lt) - .15 * var(--ph)); left: 50%; translate: -57% 0;
+    height: var(--ph); width: auto; max-width: none; filter: sepia(.25) contrast(1.06);
+    -webkit-mask: linear-gradient(transparent, #000 12% 70%, transparent 86%), linear-gradient(90deg, transparent, #000 14% 86%, transparent);
+    -webkit-mask-composite: source-in;
+    mask: linear-gradient(transparent, #000 12% 70%, transparent 86%), linear-gradient(90deg, transparent, #000 14% 86%, transparent);
+    mask-composite: intersect; }
+  /* The dots lie under the photo, so they only show where it fades. */
+  .hero .dissolve { position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; }
 
-  .words { position: relative; z-index: 1; text-align: center; margin-top: 40px; }
-  h1 { color: var(--cream); font: 400 108px/.98 var(--display); font-variation-settings: "opsz" 96; letter-spacing: -.015em; }
-  /* The story and the action stand either side of the loaf, on the dark. */
-  .side { position: absolute; z-index: 1; bottom: 108px; width: 250px; }
-  .side.l { left: 40px; font-size: var(--text-md); line-height: 1.55; color: oklch(.84 .02 80); }
-  .side.r { right: 40px; display: grid; justify-items: end; gap: 12px; text-align: right; }
-  .side .btn { height: 50px; padding: 0 26px; font-size: 16px; border-radius: var(--r-full); background: var(--cream); color: oklch(.18 .01 60); box-shadow: none; }
-  .side small { font-size: var(--text-sm); color: oklch(.76 .02 80); }
+  .nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 72px; font-size: 14px; color: var(--ink-2); }
+  .logo { color: var(--ink); font: 500 26px/1 var(--display); letter-spacing: -.01em; }
+  .nav .links { display: flex; gap: 32px; }
+  .nav .links a { transition: color var(--t-fast); }
+  .nav .links a:hover { color: var(--ink); }
+  .nav .btn { justify-self: end; height: 40px; padding: 0 16px; font-size: 14px; background: none; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .nav .btn:hover { background: oklch(.95 .025 85 / .08); }
 
-  /* What's on the shelf right now, like the chalkboard by the till. */
-  .shelf { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 36px; height: 60px; padding: 0 40px;
-           border-top: 1px solid oklch(1 0 0 / .14); background: oklch(.1 .005 60 / .72); font-size: var(--text-sm); color: oklch(.9 .02 80); }
-  .shelf .when { color: oklch(.74 .02 80); }
-  .shelf b { font-weight: var(--w-ui); color: var(--cream); margin-right: 6px; }
-  .shelf .gone { color: oklch(.66 .02 80); text-decoration: line-through; }
-  .shelf .gone b { color: inherit; }
-  .shelf .where { margin-left: auto; color: oklch(.8 .02 80); }
+  /* The claim left. Right of it, where and when on its first line, the story and the action on its last. */
+  .head { display: grid; grid-template-columns: auto 1fr; gap: 48px; padding-top: 28px; }
+  h1 { color: var(--ink); font: 400 clamp(3.25rem, 1rem + 7vw, 7rem)/.96 var(--display); font-variation-settings: "opsz" 96; letter-spacing: -.015em; }
+  .side { justify-self: end; display: grid; grid-template-rows: auto 1fr auto; gap: 16px; width: min(440px, 100%); padding: 8px 0 4px; }
+  .facts { display: flex; gap: 40px; font-size: 14px; color: var(--muted); }
+  .facts b { display: block; color: var(--ink); font-weight: 500; }
+  .story { grid-row: 3; }
+  .lede { font-size: 18px; color: var(--ink-2); }
+  .act { display: flex; align-items: center; gap: 16px; margin-top: 24px; }
+  .act small { font-size: 14px; color: var(--muted); }
+
+  /* The shelf as it stands at the till, rising across the flour. */
+  .shelf { position: relative; z-index: 1; margin-top: -64px; border-radius: 24px; overflow: hidden;
+    background: oklch(.2 .008 60 / .55); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+    box-shadow: inset 0 0 0 .5px oklch(.95 .025 85 / .2), 0 50px 100px -40px oklch(0 0 0 / .8); }
+  .shelf header { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; padding: 22px 28px 0; }
+  .shelf h2 { font: 500 26px/1.1 var(--display); letter-spacing: -.01em; }
+  .shelf header p { font-size: 14px; color: var(--muted); }
+  .items { display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 4px 4px; }
+  .item { padding: 16px 24px 22px; }
+  .item + .item { box-shadow: inset .5px 0 0 var(--line); }
+  .item b { display: block; color: var(--ink); font-weight: 500; }
+  .item small { display: block; margin-top: 2px; font-size: 14px; color: var(--muted); }
+  .left { position: relative; height: 3px; margin: 18px 0 10px; border-radius: 2px; background: oklch(.95 .025 85 / .14); }
+  .left i { position: absolute; inset: 0 auto 0 0; width: calc(var(--n) / var(--of) * 100%); border-radius: inherit; background: var(--crust); }
+  .count { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+  .count span:last-child { color: var(--ink-2); }
+  .count em { font-style: normal; color: var(--ink); }
+  .gone b { color: var(--muted); }
+
+  footer { display: flex; justify-content: space-between; gap: 24px; padding: 40px 0 32px; font-size: 14px; color: var(--muted); }
+  footer nav { display: flex; gap: 24px; }
+
+  /* Narrow: one column. The words first, then the loaf, then the shelf as a list. */
+  @media (max-width: 1080px) {
+    body { --ph: clamp(340px, 66vw, 720px); }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr); height: auto; padding-inline: var(--gutter); }
+    .hero .wrap, .head, .side { display: contents; }
+    .nav { order: 0; grid-template-columns: 1fr auto; }
+    .nav .links { display: none; }
+    h1 { order: 1; margin-top: 16px; font-size: clamp(3rem, .5rem + 11vw, 5.5rem); }
+    .story { order: 2; margin-top: 20px; }
+    .act { flex-wrap: wrap; gap: 12px 16px; margin-top: 20px; }
+    .facts { order: 3; margin-top: 28px; gap: 28px; }
+    .hero .photo { order: 4; position: relative; top: auto; justify-self: start; margin-top: calc(-.06 * var(--ph)); }
+    .shelf { margin-top: calc(-.14 * var(--ph)); }
+    .shelf header { flex-direction: column; gap: 6px; padding: 22px 20px 0; }
+    .items { grid-template-columns: 1fr; padding: 8px 0 0; }
+    .item { padding: 16px 20px 18px; }
+    .item + .item { box-shadow: inset 0 .5px 0 var(--line); }
+    .left { margin: 14px 0 8px; }
+    footer { flex-direction: column; padding: 40px 0 32px; }
+  }
+  @media (max-width: 560px) {
+    .logo { padding-block: 9px; }
+    footer nav a { padding-block: 12px; }
+    .nav .btn { height: 44px; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .arrive .enter { animation: enter-fade .6s var(--ease) both, enter-rise 1s var(--ease) both; animation-delay: calc(80ms + var(--i, 0) * 60ms); }
+    @keyframes enter-fade { from { opacity: 0; filter: blur(12px); } }
+    @keyframes enter-rise { from { transform: translateY(24px); } }
+  }
 </style>
 </head>
 <body class="bleed">
-  <section class="stage">
-    <img src="https://images.unsplash.com/photo-1714735655425-3ba510c2f8f7?w=2400&q=80" alt="A loaf of sourdough cut open on a floured wooden board">
-    <nav><span class="logo">Forno Alto</span><span class="links"><span>Today's bake</span><span>Wholesale</span><span>Visit</span></span><span class="btn">Reserve a loaf</span></nav>
-    <div class="words">
-      <h1>Baked at four,<br>gone by noon.</h1>
-    </div>
-    <p class="side l">Three bakers, one wood oven and a starter we've fed since 1998. Reserve before ten and your loaf waits at the counter.</p>
-    <div class="side r"><span class="btn">Reserve a loaf</span><small>Pay when you collect.</small></div>
-    <div class="shelf num">
-      <span class="when">On the shelf at 10:40</span>
-      <span><b>Country sourdough</b>14 left</span>
-      <span><b>Rye with caraway</b>6 left</span>
-      <span class="gone"><b>Pastel de nata</b>sold out</span>
-      <span class="where">Rua do Almada 112, Porto. Tuesday to Sunday from 7am</span>
+<section class="hero">
+  <img class="photo" src="loaf.jpg" width="2000" height="1299" alt="A sourdough loaf cut open on a floured cork board" fetchpriority="high">
+  <canvas class="dissolve" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="logo" href="#">Forno Alto</a>
+      <span class="links"><a href="#">Today’s bake</a><a href="#">Wholesale</a><a href="#">Visit</a></span>
+      <a class="btn" href="#">Reserve a loaf</a>
+    </nav>
+    <header class="head">
+      <h1 class="enter" style="--i:0">Baked at four,<br>gone by noon.</h1>
+      <div class="side">
+        <div class="facts enter" style="--i:1"><p><b>Rua do Almada 112</b>Porto, one street from Aliados</p><p><b>Tuesday to Sunday</b>7am until it’s gone</p></div>
+        <div class="story">
+          <p class="lede enter" style="--i:2">One wood oven and a starter we’ve fed since 1998.</p>
+          <div class="act enter" style="--i:3"><a class="btn" href="#">Reserve a loaf</a><small>Before ten. Pay when you collect.</small></div>
+        </div>
+      </div>
+    </header>
+  </div>
+</section>
+
+<div class="wrap">
+  <section class="shelf enter" style="--i:4" aria-labelledby="shelf">
+    <header><h2 id="shelf">On the shelf at 10:40</h2><p>On Sunday the last loaf went at 11:52.</p></header>
+    <div class="items num">
+      <div class="item"><b>Country sourdough</b><small>1 kg, 36-hour rise</small>
+        <div class="left" style="--n:14; --of:48"><i></i></div><div class="count"><span><em>14</em> of 48 left</span><span>€5.80</span></div></div>
+      <div class="item"><b>Rye with caraway</b><small>750 g, 40% rye</small>
+        <div class="left" style="--n:6; --of:24"><i></i></div><div class="count"><span><em>6</em> of 24 left</span><span>€5.20</span></div></div>
+      <div class="item"><b>Broa de milho</b><small>Corn and rye, 900 g</small>
+        <div class="left" style="--n:11; --of:30"><i></i></div><div class="count"><span><em>11</em> of 30 left</span><span>€3.90</span></div></div>
+      <div class="item"><b>Focaccia</b><small>Rosemary and sea salt</small>
+        <div class="left" style="--n:9; --of:20"><i></i></div><div class="count"><span><em>9</em> of 20 left</span><span>€3.40</span></div></div>
+      <div class="item gone"><b>Pastel de nata</b><small>Sold out at 9:50</small>
+        <div class="left" style="--n:0; --of:120"><i></i></div><div class="count"><span>Tomorrow from 7</span><span>€1.30</span></div></div>
     </div>
   </section>
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-<script src="../pair.js"></script>
+  <footer><span>Forno Alto, Rua do Almada 112, Porto</span><nav aria-label="Footer"><a href="#">Today’s bake</a><a href="#">Wholesale</a><a href="#">Instagram</a></nav></footer>
+</div>
+
+<script>
+  // The board and the spilled flour break into dots: each cell takes the photo's colour and shrinks
+  // toward the page, the bright crumb and flour holding on longest. Reads the photo wherever it's drawn.
+  const hero = document.querySelector('.hero'), photo = hero.querySelector('.photo'), cv = hero.querySelector('.dissolve');
+  const grain = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+  function dissolve() {
+    const W = hero.clientWidth, H = hero.clientHeight, dpr = Math.min(2, devicePixelRatio), cell = 7;
+    const hr = hero.getBoundingClientRect(), pr = photo.getBoundingClientRect(), x0 = pr.left - hr.left, y0 = pr.top - hr.top;
+    const from = y0 + pr.height * .64, to = y0 + pr.height * .92;
+    cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell);
+    const o = Object.assign(document.createElement('canvas'), { width: cols, height: rows }).getContext('2d', { willReadFrequently: true });
+    o.filter = 'sepia(.25) contrast(1.06)';
+    o.drawImage(photo, x0 / cell, y0 / cell, pr.width / cell, pr.height / cell);
+    const px = o.getImageData(0, 0, cols, rows).data;
+    for (let j = Math.floor(from / cell); j < Math.min(rows, to / cell); j++) {
+      const p = (j * cell + cell / 2 - from) / (to - from);
+      for (let i = 0; i < cols; i++) {
+        const q = (j * cols + i) * 4, lum = (px[q] * .3 + px[q + 1] * .59 + px[q + 2] * .11) / 255;
+        const x = i * cell + cell / 2, edge = Math.min(1, (x - x0) / (pr.width * .1), (x0 + pr.width - x) / (pr.width * .1));
+        const r = cell * .5 * Math.min(1, p * 4, (1 - p) * 3) * edge * Math.max(0, 1 - p * (1.1 - lum * .8) - grain(i, j) * .25 * p);
+        if (r < .45 || lum < .1) continue;
+        c.fillStyle = `rgb(${px[q]} ${px[q + 1]} ${px[q + 2]})`; c.beginPath(); c.arc(x, j * cell + cell / 2, r, 0, 7); c.fill();
+      }
+    }
+  }
+  if (photo.complete && photo.naturalWidth) dissolve(); else photo.addEventListener('load', dissolve);
+  addEventListener('resize', dissolve);
+</script>
 </body>
 </html>

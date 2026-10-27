@@ -69,18 +69,18 @@
     "title": "Landing page: type as big as the idea",
     "rule": "references/landing.md, references/words.md",
     "before": "A tracked-out label, half the headline in a gradient, a ticking countdown and a row of big numbers.",
-    "after": "A specimen sheet: the name in a light weight across the full width, measured by guide lines on the font's real metrics, over a band of Porto's cobalt tiles with the facts and speakers.",
+    "after": "The name set huge in a light weight on Porto's sky and measured by guide lines on Archivo's real metrics, the Chapel of Souls rising beneath it and breaking into cobalt halftone dots, with the four speakers below as a specimen waterfall.",
     "layout": "stack",
-    "height": 800
+    "height": 1250
   },
   {
     "id": "10-landing-photo",
     "title": "Landing page: the product as a still life",
     "rule": "references/visuals.md, references/words.md",
     "before": "A pastel gradient, emoji in the logo, a welcome headline, a paragraph about passion and three icon cards.",
-    "after": "One loaf lit like a still life under a serif headline, the story and the action on the dark either side, and what's on the shelf right now along the bottom.",
+    "after": "A sourdough cut open on its floured board fills the dark first screen under a Bodoni headline, with the address, hours and action beside it; the board breaks into halftone dots, and today's shelf rises across them with how many are left and what they cost.",
     "layout": "stack",
-    "height": 760,
+    "height": 1250,
     "dark": true
   },
   {

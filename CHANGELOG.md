@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.2.0] - 2026-10-27
+
+ui-director 2.2.0. agents-md is unchanged at 1.1.0.
+
+- **ui-director, agents look at their work again.** The skill's first words about tools were
+  three prohibitions ("install nothing", "one browser", "stop every server"), `look.md` offered
+  "say so" as an easy exit, and nothing said that browser tools are often deferred and only
+  appear after a tool search. Agents concluded they had no browser and skipped the look. Now
+  `SKILL.md` opens with "You look at everything you build, in a real browser", tells the agent to
+  search for its browser, counts running the project's own install and dev commands as part of
+  the job, and step 5 isn't done until the screenshots were seen ("Unseen is unfinished").
+  `look.md` starts with finding the browser, serves pages over http (a `file://` page breaks
+  canvases and modules quietly), and only allows giving up after naming what was tried.
+- **ui-director, the backdrop recipe:** the dots map from the photo's real `object-position`, sit
+  under the photo so they show only where it fades, taper out at the end, and on a light page
+  take an ink from the palette. A photo that is the product gets its live piece (today's shelf,
+  the booking form) across the seam, and a short sky can be continued with its own color.
+- **ui-director, page check:** text over a sibling photo or canvas is now caught and sent to a
+  look on the screenshot instead of being measured against the plain page.
+- **Pairs:** all four landing pages stand on photographs that dissolve into the page: the type
+  conference under Porto's Chapel of Souls and the bakery's loaf on its floured board join the
+  kitchen and the motorway.
+
 ## [2.1.0] - 2026-10-27
 
 ui-director 2.1.0. agents-md is unchanged at 1.1.0.
