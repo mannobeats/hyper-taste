@@ -9,10 +9,13 @@ its job, its ratio, its source and what the phone gets.
 1. **The user's assets:** their photos, brand library, real screenshots.
 2. **The real product,** for software: rebuilt in code or screenshotted.
 3. **Generated images,** if your harness has any image tool. Check before deciding it doesn't.
-4. **A 3D object,** when the product's form is simple (round, flat, boxy) and turning it sells it.
-5. **Drawings in the subject's own language:** plans and sections for architecture, exploded
+4. **A free-licensed photograph** (Unsplash License or similar) downloaded into the project, its
+   photographer credited in a comment and the README. The fastest beautiful backdrop when there's
+   no image tool.
+5. **A 3D object,** when the product's form is simple (round, flat, boxy) and turning it sells it.
+6. **Drawings in the subject's own language:** plans and sections for architecture, exploded
    diagrams for hardware, maps for travel, notation for music. Line work in SVG, in the palette.
-6. **A labeled slot** carrying its prompt: `<img src="hero.webp" data-prompt="…" alt="…">`, and
+7. **A labeled slot** carrying its prompt: `<img src="hero.webp" data-prompt="…" alt="…">`, and
    tell the user which images to make.
 
 Never hot-link stock photos.

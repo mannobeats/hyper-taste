@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0] - 2026-10-27
+
+ui-director 2.1.0. agents-md is unchanged at 1.1.0.
+
+- **ui-director, the backdrop:** a page that sells now stands on a backdrop with depth and light,
+  the way the reference sites do: a photograph from the product's world, full-bleed and graded,
+  breaking into halftone dots that fade into the page while the product window rises across the
+  seam. `craft.md` carries the recipe (scrim, mask, a canvas dissolve that samples the photo),
+  `landing.md` checks for it, and a flat first screen joins the obvious version.
+- **ui-director, images:** a free-licensed photograph, saved into the project and credited, is a
+  source for backdrops when there's no image tool.
+- **Pairs:** the Pantry landing stands in a working kitchen and the Seam landing on a motorway at
+  night, both dissolving into the page.
+
 ## [2.0.0] - 2026-10-27
 
 ui-director 2.0.0 and agents-md 1.1.0.

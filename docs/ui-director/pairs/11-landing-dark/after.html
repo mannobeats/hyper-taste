@@ -10,7 +10,8 @@
   /* Direction. Dark because it lives next to a terminal, graphite with no accent hue: light is kept
      for the one thing that should glow, the write traffic. The signature is the hole the migration
      punches in it. Red only for that hole and what it blocks, green only when it's gone.
-     Brand material: writes as a field of thin ticks (the logo, the window, the week strip). */
+     Brand material: writes as a field of thin ticks (the logo, the window, the week strip).
+     Photo: Robin Pierre on Unsplash (unsplash.com/photos/dPgPoiUIiXk). */
   :root[data-theme] {
     --bg: #050506; --panel: #09090b; --surface: #111113; --fill: #18181b; --hover: #212125; --press: #2a2a2f;
     --line: rgb(244 244 246 / .08); --line-strong: rgb(244 244 246 / .14);
@@ -41,6 +42,18 @@
   .nav .end { justify-self: end; display: flex; align-items: center; gap: 6px; }
   .nav .btn { height: 36px; padding: 0 14px; font-size: 14px; }
 
+  /* The backdrop: a motorway at night, writes as light. White trails flow, red ones are held.
+     Its lower half breaks into dots and fades into the page; the report rises across the seam. */
+  body { position: relative; }
+  main { position: relative; z-index: 1; }
+  .backdrop { position: absolute; inset: 190px 0 auto; height: 1000px; z-index: 0; overflow: hidden; pointer-events: none; }
+  .backdrop > * { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .backdrop .photo { object-fit: cover; object-position: 50% 30%; filter: saturate(1.05);
+    -webkit-mask: linear-gradient(transparent, #000 14% 52%, transparent 80%); mask: linear-gradient(transparent, #000 14% 52%, transparent 80%); }
+  
+  .film .plate { max-width: 1060px; margin-inline: auto; background: rgb(244 244 246 / .035); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3); }
+  .film .plate::after { display: none; }
+
   /* first screen */
   .hero { padding-top: 44px; }
   .fact { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px; font: 500 14px/1 var(--font);
@@ -55,7 +68,7 @@
   .actions small { font-size: 13px; color: var(--muted); }
 
   /* the film: Seam's report on a lit plate */
-  .film { margin-top: 48px; }
+  .film { margin-top: 150px; }
   .plate { position: relative; isolation: isolate; overflow: hidden; border-radius: 28px; padding: 8px; box-shadow: var(--hair);
     background: radial-gradient(70% 55% at 50% 0%, rgb(244 244 246 / .1), transparent 70%),
                 radial-gradient(50% 40% at 100% 100%, rgb(244 244 246 / .03), transparent 70%), var(--panel); }
@@ -224,6 +237,7 @@
 </style>
 </head>
 <body class="bleed">
+  <div class="backdrop" aria-hidden="true"><img class="photo" src="trails.jpg" width="2000" height="1333" alt="" fetchpriority="high"><canvas class="dissolve"></canvas></div>
   <header class="nav">
     <a class="logo" href="#"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M2 15V9M4.75 15V6.5M7.5 15V10M12.5 15V3.5M15.25 15V7M18 15V9.5"/></svg>Seam</a>
     <nav class="mid" aria-label="Main"><a href="#">How it works</a><a href="#">Docs</a><a href="#">Pricing</a><a href="#">Changelog</a></nav>
@@ -396,6 +410,30 @@
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 <script src="../pair.js"></script>
 <script>
+  // The night breaks into dots: each cell takes the photo's colour and shrinks toward the page,
+  // the bright trails holding on longest.
+  const back = document.querySelector('.backdrop'), photo = back.querySelector('.photo'), cv = back.querySelector('.dissolve');
+  const grain = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+  function dissolve() {
+    const W = back.clientWidth, H = back.clientHeight, dpr = Math.min(2, devicePixelRatio), cell = 7, from = H * .46;
+    cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell), iw = photo.naturalWidth, ih = photo.naturalHeight, k = Math.max(W / iw, H / ih);
+    const off = Object.assign(document.createElement('canvas'), { width: cols, height: rows }), o = off.getContext('2d', { willReadFrequently: true });
+    o.drawImage(photo, (W - iw * k) * .5 / cell, (H - ih * k) * .3 / cell, iw * k / cell, ih * k / cell);
+    const px = o.getImageData(0, 0, cols, rows).data;
+    for (let j = Math.floor(from / cell); j < rows; j++) {
+      const p = (j * cell + cell / 2 - from) / (H - from);
+      for (let i = 0; i < cols; i++) {
+        const q = (j * cols + i) * 4, lum = (px[q] * .3 + px[q + 1] * .59 + px[q + 2] * .11) / 255;
+        const r = cell * .5 * Math.min(1, p * 4) * Math.max(0, 1 - p * (1.15 - lum * .8) - grain(i, j) * .25 * p);
+        if (r < .45 || lum < .04) continue;
+        c.fillStyle = `rgb(${px[q]} ${px[q + 1]} ${px[q + 2]})`; c.beginPath(); c.arc(i * cell + cell / 2, j * cell + cell / 2, r, 0, 7); c.fill();
+      }
+    }
+  }
+  if (photo.complete && photo.naturalWidth) dissolve(); else photo.addEventListener('load', dissolve);
+  addEventListener('resize', dissolve);
+
   const nav = document.querySelector('.nav');
   addEventListener('scroll', () => nav.toggleAttribute('data-scrolled', scrollY > 8), { passive: true });
 

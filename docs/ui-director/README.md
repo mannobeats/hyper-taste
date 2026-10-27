@@ -94,7 +94,7 @@ installed the bundle):
 
 | | |
 |---|---|
-| ![Before and after: a landing page where the product plays its own week](gallery/08-landing-product.png) | ![Before and after: a landing page with the bread as a still life](gallery/10-landing-photo.png) |
+| ![Before and after: a kitchen photograph that dissolves into the product playing its own week](gallery/08-landing-product.png) | ![Before and after: a landing page with the bread as a still life](gallery/10-landing-photo.png) |
 | ![Before and after: dissolving nested cards](gallery/07-dissolve.png) | ![Before and after: a table on a phone](gallery/19-phone.png) |
 | ![Before and after: a sailing club's home screen with the day's wind drawn hour by hour](gallery/20-home.png) | ![Before and after: a paywall with one plan and a timeline of the trial](gallery/22-paywall.png) |
 
@@ -118,6 +118,8 @@ npm run shoot                     # every pair, light and dark
 npm run shoot -- 08-landing-product   # one pair
 ```
 
-Photograph from Unsplash: the loaf in pair 10 by
-[Robert Stump](https://unsplash.com/photos/DNqwLdfo0b8). All names, businesses and numbers in the
+Photographs from Unsplash: the kitchen in pair 08 by
+[Nicolas J Leclercq](https://unsplash.com/photos/KBjDo_QA1lY), the loaf in pair 10 by
+[Robert Stump](https://unsplash.com/photos/DNqwLdfo0b8), the motorway in pair 11 by
+[Robin Pierre](https://unsplash.com/photos/dPgPoiUIiXk). All names, businesses and numbers in the
 pairs are made up.

@@ -5,6 +5,70 @@ content come from your direction, and you use the pieces your grammar needs. Var
 are the roles from `system.md`; with no brand hue (graphite, light only on what glows), use the
 ink at low alpha where they use `--brand-*`. Motion timings are in `motion.md`.
 
+## The backdrop
+
+The first screen stands on a backdrop, never a flat color: a photograph from the product's
+world, graded to the palette, large and full-bleed. A sky for a browser, a kitchen at the pass
+for an inventory tool, a motorway at night for write traffic. The words sit on its calm area
+(add a scrim from their side), the product window rises across its lower edge, and the
+photograph breaks into halftone dots that fade into the page, so the hero and the page are one
+surface. Without a photograph, the brand material below plays the same part as a live field.
+
+```html
+<section class="hero">
+  <img class="photo" src="kitchen.jpg" width="2000" height="1333" alt="" fetchpriority="high">
+  <canvas class="dissolve" aria-hidden="true"></canvas>
+  <!-- nav, chip, headline, line, action -->
+</section>
+<div class="film">…the window, pulled up across the seam with a negative margin…</div>
+```
+```css
+.hero { position: relative; isolation: isolate; height: 880px; overflow: hidden; }
+.hero .photo, .hero .dissolve { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; }
+.hero .photo { object-fit: cover; object-position: 50% 40%;
+  -webkit-mask: linear-gradient(#000 50%, transparent 76%); mask: linear-gradient(#000 50%, transparent 76%); }
+.hero .dissolve { z-index: -1; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; /* scrim behind the words */
+  background: radial-gradient(52% 42% at 50% 34%, oklch(.14 .02 55 / .55), transparent),
+              linear-gradient(180deg, oklch(.16 .02 55 / .7), transparent 74%); }
+.film { position: relative; z-index: 1; margin-top: -330px; }
+```
+```js
+// The photograph breaks into dots: each cell takes the photo's color and shrinks toward the page,
+// bright cells holding on longest. Serve the page over http: a file:// image can't be read back.
+const hero = document.querySelector('.hero'), photo = hero.querySelector('.photo'), cv = hero.querySelector('.dissolve');
+const grain = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+function dissolve() {
+  const W = hero.clientWidth, H = hero.clientHeight, dpr = Math.min(2, devicePixelRatio), cell = 7, from = H * .44;
+  cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell), iw = photo.naturalWidth, ih = photo.naturalHeight, k = Math.max(W / iw, H / ih);
+  const o = Object.assign(document.createElement('canvas'), { width: cols, height: rows }).getContext('2d', { willReadFrequently: true });
+  o.drawImage(photo, (W - iw * k) * .5 / cell, (H - ih * k) * .4 / cell, iw * k / cell, ih * k / cell); // match object-position
+  const px = o.getImageData(0, 0, cols, rows).data;
+  for (let j = Math.floor(from / cell); j < rows; j++) {
+    const p = (j * cell + cell / 2 - from) / (H - from);
+    for (let i = 0; i < cols; i++) {
+      const q = (j * cols + i) * 4, lum = (px[q] * .3 + px[q + 1] * .59 + px[q + 2] * .11) / 255;
+      const r = cell * .5 * Math.min(1, p * 4) * Math.max(0, 1 - p * (1.2 - lum * .7) - grain(i, j) * .25 * p);
+      if (r < .45) continue;
+      c.fillStyle = `rgb(${px[q]} ${px[q + 1]} ${px[q + 2]})`; c.beginPath(); c.arc(i * cell + cell / 2, j * cell + cell / 2, r, 0, 7); c.fill();
+    }
+  }
+}
+if (photo.complete && photo.naturalWidth) dissolve(); else photo.addEventListener('load', dissolve);
+addEventListener('resize', dissolve);
+```
+
+- Choose the photograph for its calm area and its light: a dark or open sky above, the subject
+  low or to the side, the light from the product's world. Look at the first screen and move the
+  photo (`object-position`, an offset) until no line of text crosses a busy part.
+- Light text over dark photos: the hero sets its own ink, the primary button turns light, the
+  quiet clause at about 60% white.
+- In dark mode the dots fade into the dark page; check both.
+- No photograph and no image tool: the brand material as a canvas field of dots shaped by the
+  product's own data (a waveform, a week of stock, a map), in 2–3 inks from the palette, over soft
+  radial light.
+
 ## Type set like a studio
 
 ```css
@@ -161,8 +225,8 @@ show(0); run();
 
 ## The brand material
 
-One material from the product's world, made once and reused: the hero's ground, the plates
-behind product states, the film's poster, the footer. A halftone field drawn from a voice's
+One material from the product's world, made once and reused: the backdrop, the plates behind
+product states, the film's poster, the footer. A halftone field drawn from a voice's
 waveform, the product's own wallpaper photograph zoomed to a different point for each card, a
 blueprint grid, paper grain. It may drift as the page's one live canvas (paused offscreen,
 still under reduced motion), and it can share a value with the film: the grain falls away as

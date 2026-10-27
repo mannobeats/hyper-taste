@@ -39,7 +39,8 @@ Each step ends on something you can check.
    (`references/words.md`) and one coherent sample world. Done when nothing is missing or
    placeholder.
 4. **Make it the one.** Pages that sell: the signature and the finish from
-   `references/craft.md` (`references/visuals.md` for photography and 3D). App UI: the key
+   `references/craft.md`, starting with its backdrop (`references/visuals.md` for photography
+   and 3D). App UI: the key
    object and the moments. Motion from `references/motion.md`. Done when you can point at the
    moment people would screenshot, on the first screen or the first scroll.
 5. **Look.** `references/look.md`: 1440 and 390 wide, light and dark, the whole scroll, every
@@ -120,8 +121,8 @@ keep one only when the product's world gives the reason.
 What any model builds when nothing was chosen. Each piece is fine alone and on purpose; name the
 obvious version in your direction, then leave it.
 
-- A first screen with the headline left and the picture right, or a centered headline over a
-  framed screenshot on a soft glow.
+- A first screen on a flat white or black ground, with the headline left and the picture right,
+  or a centered headline over a framed screenshot on a soft glow.
 - Hero, logo strip, three feature cards, testimonials, pricing, FAQ, dark closing band, in that
   order.
 - The category's stock palette: violet for AI, navy for finance, green for climate, cream and

@@ -90,6 +90,10 @@ these show. Decide what carries the screen:
 Then place the words: centered over or above the visual, anchored to a bottom corner of a
 full-bleed image, running full width with the product breaking into it, or after the visual.
 
+Whatever carries it, the first screen stands on a backdrop with depth and light: a photograph
+from the product's world, or the brand material as a live field (`craft.md`). A flat white or
+black first screen with a product shot under the headline is the obvious version.
+
 ## Order by the visitor's questions
 
 Order the sections by what this visitor asks next, and drop what they don't ask:
@@ -136,6 +140,8 @@ items each, what's free and how billing works.
 - [ ] The first screen next to the obvious version you wrote: different. Another model given
       this brief wouldn't build it.
 - [ ] The signature is on the first screen or first scroll, and you can point at it.
+- [ ] The first screen stands on a backdrop (a photograph or a live field), not a flat color,
+      and it flows into the page instead of ending on a hard edge.
 - [ ] The first screen says what it is and what you get; one action, one label, in reach.
 - [ ] Every image has a job; the set looks like one shoot or one product.
 - [ ] Sections change form and pace; the peak is the biggest moment; the ending holds.

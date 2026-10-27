@@ -60,7 +60,7 @@
     "title": "Landing page: the product plays its own week",
     "rule": "references/landing.md, references/craft.md",
     "before": "A badge, gradient text, a paragraph of buzzwords, three buttons and three icon cards. It could be selling anything.",
-    "after": "The claim in two tones, then Pantry's own week playing as a film on a plate of lit perforated steel: basil runs out at 9 pm, its truck comes Tuesday, and at 5:02 Pantry offers to order it from Verde Farms.",
+    "after": "A working kitchen at the pass fills the first screen behind a two-tone claim, then breaks into halftone dots as Pantry's own week rises across it and plays as a film: basil runs out at 9 pm, its truck comes Tuesday, and at 5:02 Pantry offers to order it.",
     "layout": "stack",
     "height": 1200
   },
@@ -88,9 +88,9 @@
     "title": "Landing page: dark, the product's report as the film",
     "rule": "references/landing.md, references/craft.md",
     "before": "A purple glow, a glowing pill, gradient text, glass cards and claims anyone could make.",
-    "after": "Seam's own report, rebuilt as a film under a two-tone headline: Friday's write traffic replayed with the 38-second hole the migration punches in it, then the lock behind it, the fix and a clean re-run.",
+    "after": "A motorway at night, white trails flowing and red ones held, rushes out from behind Seam's own report and dissolves into the dark page; the report replays Friday's writes with the 38-second hole the migration punches in them.",
     "layout": "stack",
-    "height": 1176,
+    "height": 1290,
     "dark": true
   },
   {

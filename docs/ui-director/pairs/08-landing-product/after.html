@@ -11,7 +11,8 @@
   /* Live product. The hero is Pantry's own week, playing one Friday at Osteria Sal as a film:
      basil runs out at 9 pm, its truck is Tuesday, Pantry asks at 5:02 and Verde Farms drops it at 6.
      Basil green on kitchen paper. The material is a hotel pan's perforated steel, lit by basil.
-     Red only for what runs out before its truck. */
+     Red only for what runs out before its truck.
+     Photo: Nicolas J Leclercq on Unsplash (unsplash.com/photos/KBjDo_QA1lY). */
   :root { --accent-h: 148; --accent-c: .8; --tint-h: 80; --tint-c: .01;
           --gutter: clamp(20px, 4vw, 40px);
           --hair: inset 0 0 0 .5px color-mix(in oklch, var(--ink) 14%, transparent);
@@ -164,6 +165,32 @@
     @keyframes enter { from { opacity: 0; transform: translateY(24px); filter: blur(12px); } }
   }
 
+  /* The hero: a working kitchen at the pass, graded warm. Its bottom breaks into dots and fades
+     into the page, and Pantry's window rises across the seam. */
+  .hero { position: relative; isolation: isolate; height: 880px; overflow: hidden; color-scheme: dark;
+    --ink: oklch(.985 .006 80); --ink-2: oklch(.93 .012 80); --muted: oklch(.86 .015 80); --line-strong: oklch(1 0 0 / .28);
+    --strong: oklch(.985 .006 80); --strong-hover: oklch(.92 .01 80); --on-strong: oklch(.22 .02 60); }
+  .hero .photo, .hero .dissolve { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; }
+  .hero .photo { object-fit: cover; object-position: 50% 40%; filter: saturate(.92) contrast(1.04);
+    -webkit-mask: linear-gradient(#000 50%, transparent 76%); mask: linear-gradient(#000 50%, transparent 76%); }
+  .hero .dissolve { z-index: -1; }
+  .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(52% 42% at 50% 34%, oklch(.14 .02 55 / .55), transparent 100%),
+                linear-gradient(180deg, oklch(.16 .02 55 / .7), oklch(.16 .02 55 / .45) 42%, oklch(.16 .02 55 / .2) 56%, transparent 74%); }
+  .hero .logo svg { color: oklch(.86 .12 140); }
+  .hero .head { grid-template-columns: 1fr; justify-items: center; text-align: center; padding-top: 52px; }
+  .hero h1 { max-width: 19ch; margin-inline: auto; font-size: clamp(2.5rem, 1rem + 3vw, 3.5rem); }
+  .hero .quiet { color: oklch(.985 .006 80 / .62); }
+  .hero .lede { margin: 20px auto 0; color: oklch(.95 .01 80 / .82); max-width: 46ch; }
+  .hero .act { justify-content: center; }
+  .hero .risk { color: oklch(.95 .01 80 / .78); }
+  .hero .fact { color: var(--ink); background: oklch(1 0 0 / .1); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .film { position: relative; z-index: 1; margin-top: -330px; }
+  .film .plate { max-width: 1040px; margin-inline: auto; }
+  .film .plate { margin-top: 0; padding: 0; background: none; box-shadow: none; overflow: visible; }
+  .film .plate::after { display: none; }
+  .window { box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .35), 0 60px 120px -40px oklch(.2 .04 50 / .55), 0 0 0 1px oklch(0 0 0 / .04); }
+
   @media (max-width: 720px) {
     .links, .nav .ghost { display: none; }
     .head { grid-template-columns: 1fr; row-gap: 20px; padding-top: 24px; }
@@ -175,7 +202,10 @@
 </style>
 </head>
 <body class="bleed">
-<div class="page">
+<section class="hero">
+  <img class="photo" src="kitchen.jpg" width="2000" height="1333" alt="" fetchpriority="high">
+  <canvas class="dissolve" aria-hidden="true"></canvas>
+  <div class="page">
   <nav class="nav">
     <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="18.5" cy="17" r="1.6" fill="currentColor" stroke="none"/></svg>Pantry</span>
     <span class="links"><span>How it works</span><span>Suppliers</span><span>Pricing</span></span>
@@ -192,6 +222,9 @@
       <div class="act enter" style="--i:3"><a class="btn go" href="#">Try it free</a><span class="risk">14 days free, no card.</span></div>
     </div>
   </header>
+  </div>
+</section>
+<div class="page">
 
   <section class="film enter" style="--i:5; --hold: 4200ms" data-film aria-label="One Friday at Osteria Sal, in Pantry">
     <div class="plate">
@@ -263,6 +296,30 @@
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 <script src="../pair.js"></script>
 <script>
+  // The kitchen breaks into dots at the bottom of the hero: each cell takes the photo's colour, and
+  // shrinks toward the page, the bright cells holding on longest.
+  const hero = document.querySelector('.hero'), photo = hero.querySelector('.photo'), cv = hero.querySelector('.dissolve');
+  const grain = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+  function dissolve() {
+    const W = hero.clientWidth, H = hero.clientHeight, dpr = Math.min(2, devicePixelRatio), cell = 7, from = H * .44;
+    cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cols = Math.ceil(W / cell), rows = Math.ceil(H / cell), iw = photo.naturalWidth, ih = photo.naturalHeight, k = Math.max(W / iw, H / ih);
+    const off = Object.assign(document.createElement('canvas'), { width: cols, height: rows }), o = off.getContext('2d', { willReadFrequently: true });
+    o.drawImage(photo, (W - iw * k) * .5 / cell, (H - ih * k) * .4 / cell, iw * k / cell, ih * k / cell);
+    const px = o.getImageData(0, 0, cols, rows).data;
+    for (let j = Math.floor(from / cell); j < rows; j++) {
+      const p = (j * cell + cell / 2 - from) / (H - from);
+      for (let i = 0; i < cols; i++) {
+        const q = (j * cols + i) * 4, lum = (px[q] * .3 + px[q + 1] * .59 + px[q + 2] * .11) / 255;
+        const r = cell * .5 * Math.min(1, p * 4) * Math.max(0, 1 - p * (1.2 - lum * .7) - grain(i, j) * .25 * p);
+        if (r < .45) continue;
+        c.fillStyle = `rgb(${px[q]} ${px[q + 1]} ${px[q + 2]})`; c.beginPath(); c.arc(i * cell + cell / 2, j * cell + cell / 2, r, 0, 7); c.fill();
+      }
+    }
+  }
+  if (photo.complete && photo.naturalWidth) dissolve(); else photo.addEventListener('load', dissolve);
+  addEventListener('resize', dissolve);
+
   // The film runs on its own clock; the window's CSS reads [data-chapter].
   const film = document.querySelector('[data-film]'), steps = [...film.querySelectorAll('[data-step]')], caps = [...film.querySelectorAll('.captions > p')];
   const toggle = film.querySelector('[data-pause]'), hold = parseFloat(getComputedStyle(film).getPropertyValue('--hold'));
