@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Gold example: copy its structure and its craft, replace its world. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · Tally</title>
+<style>
+  /* Tally, a business account for a small studio. No sidebar: a top bar with four places, and one
+     centered column, because people come here to check one number and do one thing. The balance is
+     the headline, its month drawn under it; then the accounts, what's coming, what happened. Warm
+     paper neutrals, graphite for action, green and red only for money in and out. Light and dark. */
+  @font-face { font-family: "Geist"; src: url("../fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+  :root {
+    --font: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --bg: oklch(.975 .005 80); --surface: oklch(1 0 0); --fill: oklch(.955 .006 80); --hover: oklch(.94 .007 80);
+    --line: oklch(.915 .006 80); --line-2: oklch(.86 .008 80);
+    --ink: oklch(.2 .01 70); --ink-2: oklch(.36 .01 70); --muted: oklch(.52 .012 70); --faint: oklch(.7 .01 70);
+    --strong: oklch(.22 .01 70); --on-strong: oklch(.98 .004 80);
+    --in: oklch(.5 .12 155); --out: oklch(.53 .17 30); --chart: oklch(.35 .02 70);
+    --shadow: 0 0 0 .5px oklch(.2 .02 70 / .1), 0 1px 2px oklch(.2 .02 70 / .05), 0 12px 32px -18px oklch(.2 .02 70 / .18);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: oklch(.155 .005 70); --surface: oklch(.195 .006 70); --fill: oklch(.225 .007 70); --hover: oklch(.25 .008 70);
+    --line: oklch(.26 .007 70); --line-2: oklch(.33 .009 70);
+    --ink: oklch(.96 .004 80); --ink-2: oklch(.84 .006 80); --muted: oklch(.66 .01 80); --faint: oklch(.5 .01 80);
+    --strong: oklch(.95 .004 80); --on-strong: oklch(.18 .006 70); --in: oklch(.75 .13 155); --out: oklch(.72 .15 30); --chart: oklch(.85 .01 80);
+    --shadow: 0 0 0 .5px oklch(1 0 0 / .08); color-scheme: dark; } }
+  *, *::before, *::after { box-sizing: border-box; } * { margin: 0; }
+  body { font: 450 14px/1.45 var(--font); color: var(--ink-2); background: var(--bg); -webkit-font-smoothing: antialiased; }
+  svg { display: block; flex: none; } button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; } a { color: inherit; text-decoration: none; }
+  .num { font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 8px; }
+  .col { max-width: 1120px; margin: 0 auto; padding-inline: 32px; }
+
+  /* The top bar: the name, four places, search, the person. It stays, and frosts as you scroll. */
+  .top { position: sticky; top: 0; z-index: 10; background: color-mix(in oklch, var(--bg) 82%, transparent); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); box-shadow: 0 1px 0 var(--line); }
+  .top .col { display: flex; align-items: center; gap: 28px; height: 64px; }
+  .mark { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); font: 650 18px/1 var(--font); letter-spacing: -.035em; }
+  .mark svg { width: 22px; height: 22px; }
+  .tabs { display: flex; gap: 4px; }
+  .tabs a { display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 10px; font-weight: 500; line-height: 1; color: var(--muted); transition: background-color 120ms, color 120ms; }
+  .tabs a:hover { color: var(--ink); background: var(--hover); }
+  .tabs a[aria-current] { color: var(--ink); background: var(--surface); box-shadow: var(--shadow); }
+  .top .end { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .find { display: flex; align-items: center; gap: 8px; width: 240px; height: 36px; padding: 0 10px; border-radius: 10px; background: var(--fill); color: var(--muted); line-height: 1; }
+  .find svg { width: 15px; height: 15px; } .find kbd { margin-left: auto; font: 500 11px/1 var(--font); padding: 4px 6px; border-radius: 5px; background: var(--surface); box-shadow: var(--shadow); }
+  .me { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; font-size: 12px; font-weight: 600; line-height: 1; color: oklch(.4 .08 40); background: oklch(.9 .05 40); }
+
+  /* The balance is the headline */
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 32px; padding-top: 48px; }
+  .engrave { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hero small { font-size: 14px; color: var(--muted); font-weight: 500; }
+  .bal { margin-top: 8px; font: 620 clamp(2.75rem, 1.5rem + 3.4vw, 4.25rem)/1 var(--font); letter-spacing: -.045em; color: var(--ink); }
+  .bal span { color: var(--muted); }
+  .delta { margin-top: 12px; color: var(--muted); } .delta b { color: var(--in); font-weight: 600; }
+  .acts { display: flex; gap: 8px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; font-weight: 550; line-height: 1; background: var(--surface); color: var(--ink); box-shadow: var(--shadow); transition: background-color 120ms; }
+  .btn:hover { background: var(--hover); } .btn svg { width: 16px; height: 16px; }
+  .btn.strong { background: var(--strong); color: var(--on-strong); box-shadow: none; }
+
+  .month { margin-top: 28px; padding: 20px 20px 12px; border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); }
+  .month svg { width: 100%; height: 180px; }
+  .month .line { fill: none; stroke: var(--chart); stroke-width: 2; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .month .area { fill: url(#shade); }
+  .month .base { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .month .pay { fill: var(--out); } .month .got { fill: var(--in); }
+  .marks { position: relative; height: 20px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .marks span { position: absolute; left: var(--x); translate: -50% 0; white-space: nowrap; } .marks span:first-child { translate: 0; } .marks span:last-child { translate: -100% 0; }
+
+  h2 { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .sec { display: flex; justify-content: space-between; align-items: baseline; margin: 40px 0 14px; }
+  .sec a { font-size: 13px; color: var(--muted); } .sec a:hover { color: var(--ink); }
+
+  .accounts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .acct { position: relative; overflow: hidden; padding: 20px; border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); }
+  .acct > :not(.engrave) { position: relative; }
+  /* The reserve is the one account the product fills for you, so it gets the plate: inked, engraved, like the card. */
+  .acct.reserve { background: var(--ink); box-shadow: 0 24px 40px -24px oklch(.2 .03 70 / .5); }
+  .acct.reserve header b, .acct.reserve p { color: var(--bg); }
+  .acct.reserve header small, .acct.reserve .note { color: color-mix(in oklch, var(--bg) 72%, var(--ink)); }
+  .acct.reserve .bar { background: color-mix(in oklch, var(--bg) 16%, var(--ink)); } .acct.reserve .bar i { background: var(--bg); }
+  .acct header { display: flex; justify-content: space-between; align-items: baseline; }
+  .acct header b { color: var(--ink); font-weight: 600; } .acct header small { font-size: 12.5px; color: var(--muted); }
+  .acct p { margin-top: 18px; font-size: 26px; font-weight: 620; letter-spacing: -.03em; color: var(--ink); line-height: 1.1; }
+  .acct .note { margin-top: 6px; font-size: 13px; color: var(--muted); font-weight: 450; letter-spacing: 0; }
+  .acct .bar { height: 6px; margin-top: 16px; border-radius: 3px; background: var(--fill); overflow: hidden; } .acct .bar i { display: block; height: 100%; width: var(--w); border-radius: 3px; background: var(--chart); }
+
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; }
+  .list { border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); padding: 4px 0; }
+  .day { padding: 14px 20px 4px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+  .tx { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 10px 20px; }
+  .tx + .tx { box-shadow: inset 0 1px 0 var(--line); }
+  .tx .ic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--fill); color: var(--ink-2); }
+  .tx .ic svg { width: 17px; height: 17px; }
+  .tx b { display: block; color: var(--ink); font-weight: 550; } .tx small { font-size: 12.5px; color: var(--muted); }
+  .tx .amt { text-align: right; font-weight: 600; color: var(--ink); } .tx .amt.in { color: var(--in); }
+  .tx .amt small { display: block; font-weight: 450; }
+  .coming { border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); padding: 6px 20px; }
+  .bill { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 14px 0; }
+  .bill + .bill { box-shadow: inset 0 1px 0 var(--line); }
+  .bill .date { display: grid; justify-items: center; line-height: 1; } .bill .date b { font-size: 18px; font-weight: 620; color: var(--ink); } .bill .date small { margin-top: 3px; font-size: 11px; color: var(--muted); }
+  .bill strong { display: block; color: var(--ink); font-weight: 550; } .bill span small { font-size: 12.5px; color: var(--muted); }
+  .bill .amt { font-weight: 600; color: var(--ink); }
+  .foot { height: 64px; }
+
+  @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } .find { width: 44px; justify-content: center; padding: 0; } .find span, .find kbd { display: none; } }
+  @media (max-width: 760px) {
+    .col { padding-inline: 16px; }
+    .top .col { gap: 12px; } .tabs { display: none; } .find { width: 44px; height: 44px; } .me { width: 44px; height: 44px; }
+    .hero { grid-template-columns: 1fr; padding-top: 28px; gap: 20px; }
+    .acts .btn { flex: 1; justify-content: center; height: 44px; }
+    .accounts { grid-template-columns: 1fr; }
+    .month svg { height: 140px; }
+    .marks span:not(:first-child):not(:last-child) { display: none; }
+    .sec a { display: inline-flex; align-items: center; min-height: 44px; margin-block: -12px; line-height: 1; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="col">
+    <a class="mark" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5v14M10 5v14M15 5v14M3 15.5 21 8.5"/></svg>Tally</a>
+    <nav class="tabs" aria-label="Main"><a href="#home" aria-current="page">Home</a><a href="#payments">Payments</a><a href="#cards">Cards</a><a href="#accounting">Accounting</a></nav>
+    <div class="end">
+      <button class="find"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><span>Search payments</span><kbd>⌘K</kbd></button>
+      <a class="me" href="#you" aria-label="Ines Duarte">ID</a>
+    </div>
+  </div>
+</header>
+
+<main class="col" id="home">
+  <section class="hero">
+    <div>
+      <small>Atelier Duarte · all accounts</small>
+      <p class="bal num">€84,210<span>.40</span></p>
+      <p class="delta num"><b>+€6,830</b> since 1 November, after payroll and rent.</p>
+    </div>
+    <div class="acts">
+      <a class="btn strong" href="#send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>Send</a>
+      <a class="btn" href="#request"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 7 7 17M16 17H7V8"/></svg>Request</a>
+      <a class="btn" href="#move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>Move</a>
+    </div>
+  </section>
+
+  <figure class="month" role="img" aria-label="The balance through November: it starts at €77,380, drops on the 1st for rent and on the 5th for payroll, and climbs as three clients pay, ending at €84,210.">
+    <svg viewBox="0 0 1000 180" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="oklch(.5 .02 70 / .14)"/><stop offset="1" stop-color="oklch(.5 .02 70 / 0)"/></linearGradient></defs>
+      <path class="base" d="M0 179.5H1000"/>
+      <path class="area" d="M0 96 L40 96 L48 128 L150 126 L160 150 L300 146 L330 112 L470 108 L500 82 L640 78 L680 60 L800 58 L840 40 L1000 34 V180 H0Z"/>
+      <path class="line" d="M0 96 L40 96 L48 128 L150 126 L160 150 L300 146 L330 112 L470 108 L500 82 L640 78 L680 60 L800 58 L840 40 L1000 34"/>
+      <circle class="pay" cx="48" cy="128" r="4"/><circle class="pay" cx="160" cy="150" r="4"/>
+      <circle class="got" cx="330" cy="112" r="4"/><circle class="got" cx="500" cy="82" r="4"/><circle class="got" cx="680" cy="60" r="4"/><circle class="got" cx="840" cy="40" r="4"/>
+    </svg>
+    <div class="marks num" aria-hidden="true"><span style="--x:0%">1 Nov</span><span style="--x:16%">Rent and payroll</span><span style="--x:50%">Northwind paid</span><span style="--x:84%">Halvorsen paid</span><span style="--x:100%">Today</span></div>
+  </figure>
+
+  <div class="sec"><h2>Accounts</h2><a href="#accounts">Open an account</a></div>
+  <div class="accounts num">
+    <div class="acct"><header><b>Main</b><small>DE89 ···· 4410</small></header><p>€52,630.10</p><p class="note">Spending, payroll, cards</p><div class="bar"><i style="--w:62%"></i></div></div>
+    <div class="acct reserve"><canvas class="engrave" data-engrave="reserve" aria-hidden="true"></canvas><header><b>Tax reserve</b><small>Auto, 22% of income</small></header><p>€24,180.30</p><p class="note">Q4 payment due 10 Jan</p><div class="bar"><i style="--w:81%"></i></div></div>
+    <div class="acct"><header><b>Equipment</b><small>Goal €12,000</small></header><p>€7,400.00</p><p class="note">New plotter by March</p><div class="bar"><i style="--w:62%"></i></div></div>
+  </div>
+
+  <div class="split">
+    <section>
+      <div class="sec"><h2>Recent</h2><a href="#payments">All payments</a></div>
+      <div class="list num">
+        <p class="day">Today</p>
+        <div class="tx"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"/></svg></span><span><b>Halvorsen Arkitekter</b><small>Invoice 2026-041 · paid</small></span><span class="amt in">+€9,400.00</span></div>
+        <div class="tx"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16v11H4zM8 8V5h8v3"/></svg></span><span><b>Papier Studio</b><small>Card ·· 0912 · Materials</small></span><span class="amt">−€318.60</span></div>
+        <p class="day">Yesterday</p>
+        <div class="tx"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M3 10h18"/></svg></span><span><b>Software subscriptions</b><small>4 payments, grouped</small></span><span class="amt">−€212.00</span></div>
+        <div class="tx"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"/></svg></span><span><b>Northwind Ferries</b><small>Invoice 2026-038 · paid</small></span><span class="amt in">+€5,250.00</span></div>
+        <div class="tx"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg></span><span><b>Rua das Flores 12</b><small>Studio rent · standing order</small></span><span class="amt">−€2,400.00</span></div>
+      </div>
+    </section>
+    <aside>
+      <div class="sec"><h2>Coming up</h2><a href="#scheduled">Scheduled</a></div>
+      <div class="coming num">
+        <div class="bill"><span class="date"><b>15</b><small>Nov</small></span><span><strong>VAT return</strong><small>From Tax reserve</small></span><span class="amt">€6,120.00</span></div>
+        <div class="bill"><span class="date"><b>28</b><small>Nov</small></span><span><strong>Payroll, 4 people</strong><small>From Main</small></span><span class="amt">€14,800.00</span></div>
+        <div class="bill"><span class="date"><b>1</b><small>Dec</small></span><span><strong>Studio rent</strong><small>Standing order</small></span><span class="amt">€2,400.00</span></div>
+      </div>
+    </aside>
+  </div>
+  <div class="foot"></div>
+</main>
+<script>
+  // Tally's material, the banknote guilloche from the card: two families of wavy rings, phase-shifted so they weave.
+  // Only the reserve wears it. Drawn once per resize and theme.
+  const clamp = (v) => Math.max(0, Math.min(1, v)), smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+  function engrave(canvas, o) {
+    const dpr = Math.min(2, devicePixelRatio || 1), w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    const g = canvas.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h); g.lineWidth = .7;
+    for (let fam = 0; fam < 2; fam++) for (let R = o.rMin, i = 0; R < o.rMax; R += o.gap, i++) {
+      const a = o.amp * (.65 + .35 * Math.sin(i * .45)), ph = (fam ? -1 : 1) * i * .2 + fam * Math.PI, alpha = o.alpha(R); if (alpha < .004) continue;
+      g.strokeStyle = `rgba(${o.rgb}, ${alpha.toFixed(3)})`; g.beginPath();
+      for (let s = 0; s <= 900; s++) { const t = s / 900 * Math.PI * 2, r = R + a * Math.sin(o.lobes * t + ph); const x = o.cx + r * Math.cos(t), y = o.cy + r * Math.sin(t); s ? g.lineTo(x, y) : g.moveTo(x, y); }
+      g.stroke();
+    }
+  }
+  const darkQ = matchMedia('(prefers-color-scheme: dark)');
+  function draw() {
+    const theme = document.documentElement.dataset.theme, dark = theme ? theme === 'dark' : darkQ.matches;
+    const card = document.querySelector('[data-engrave=reserve]'), cw = card.clientWidth;
+    engrave(card, { cx: cw * 1.08, cy: card.clientHeight * -.3, rMin: cw * .2, rMax: cw * 1.3, gap: 7, amp: 4, lobes: 30, rgb: dark ? '60, 48, 32' : '255, 248, 235',
+      alpha: (R) => (dark ? .12 : .09) * (1 - smooth(cw * .7, cw * 1.3, R)) });
+  }
+  let rs; addEventListener('resize', () => { clearTimeout(rs); rs = setTimeout(draw, 120); });
+  darkQ.addEventListener('change', draw); document.fonts.ready.then(draw); draw();
+</script>
+</body>
+</html>

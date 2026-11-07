@@ -9,7 +9,7 @@
   /* A plant care app. Instead of slides of claims, onboarding asks the one thing that changes the
      first screen: how much light the plants get. Each answer is drawn as the window it describes. */
   :root { --accent-h: 152; --tint-h: 152; --sun: oklch(.80 .15 75); }
-  body { display: flex; flex-direction: column; place-content: normal; padding: 0 16px max(env(safe-area-inset-bottom), 24px);
+  body { display: flex; flex-direction: column; place-content: normal; align-items: stretch; padding: 0 16px max(env(safe-area-inset-bottom), 24px);
          background: var(--surface); min-height: 100dvh; }
 
   .top { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; column-gap: 12px; height: 44px; margin-top: 50px; }
@@ -41,7 +41,7 @@
   .win .frame { fill: none; stroke: var(--ink-2); stroke-width: 1.75; stroke-linecap: round; }
   .win .sun { fill: var(--sun); }
 
-  .unsure { display: inline-flex; align-items: center; gap: 8px; height: 44px; margin-top: 8px; color: var(--link); font-size: var(--text-md); font-weight: var(--w-ui); line-height: 1; text-decoration: none; }
+  .unsure { display: inline-flex; align-items: center; gap: 8px; height: 44px; margin-top: 8px; color: var(--accent-ink); font-size: var(--text-md); font-weight: var(--w-ui); line-height: 1; text-decoration: none; }
   .unsure svg.lucide { width: 18px; height: 18px; }
 
   .go { display: flex; align-items: center; justify-content: center; height: 52px; margin-top: auto; border-radius: var(--r-full);

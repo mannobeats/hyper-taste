@@ -6,8 +6,9 @@ of what reads as quality, and tokens are how it survives the next hundred change
 A token names a job, never a look: `--ink-3` is secondary text, `--gray-500` is a color. Components
 use roles only, which is what lets a theme, a brand change or dark mode change everything at once.
 
-There is no stylesheet to copy. Write the tokens below in the project's own format and names, so
-nothing clashes with its framework and no two products look the same.
+Write the tokens below in the project's own format and names, so nothing clashes with its
+framework and no two products look the same. Every gold example in `examples/` defines its
+tokens at the top of its `<style>`: read them to see the roles in use, then write your own.
 
 ## The roles
 
@@ -245,9 +246,9 @@ Put it at the project root, and one line in `AGENTS.md` (or `CLAUDE.md`, `.curso
 <Who uses it and what they come to do, in one line.> Flavor: <…>. Built with ui-director.
 
 ## Direction
-The direction block from landing.md or app-ui.md, kept as written and updated when the design
-changes: the obvious version, the blueprint, the directions, the pick, the signature, palette,
-type, images, the sample world, first screen.
+The direction block from landing.md, app-ui.md or mobile.md, kept as written and updated when
+the design changes: the obvious version, the directions, the pick and its gold, the signature,
+palette, type, images, the sample world, first screen.
 
 ## Tokens
 Source: `<path>`. Components never use raw colors, sizes, fonts or shadows.
@@ -260,7 +261,11 @@ Where: `<folder>`. Variants: <list>. Pages own margin, width and placement; comp
 ui-director's "Never" list holds. Approved exceptions: none yet.
 
 ## Done means
-Looked at in a browser at 1440 and 390 wide, light and dark; the page check is clean or explained.
+Looked at in a browser at 1440, 820 and 390 wide, light and dark; `scripts/check.mjs` passes.
+
+## Check
+
+The gold, the check's last line, the reviewer's findings and what was not checked (`look.md`).
 ```
 
 List only the exceptions the user approved.

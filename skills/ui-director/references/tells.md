@@ -1,14 +1,16 @@
 # Tells: reviewing and redesigning
 
-For reviews, redesigns and "it looks off". Look at the page first (`look.md`), then read it
-against "Never" and "The obvious version" in `SKILL.md`, and this list of what to do instead.
+For reviews, redesigns and "it looks off". Run the check and look at the screenshots first
+(`look.md`), then read the page against "Never", "The obvious version" and "Faults that come
+back" in `SKILL.md`, and this list of what to do instead. Each small problem has a before and
+after pair in `teaching/`: open the pair that looks like the page.
 
 ## Layout
 
 - **Everything centered** → left-align what people read in order; center only a short headline
   with its line and action, or a statement section.
 - **Sections in cards, cards in cards** → one surface split by lines and headings.
-- **Three equal feature cards** → product states on lit plates, sized by importance (`craft.md`).
+- **Three equal feature cards** → a grid of product states: one hero tile, a number, a component, an object (`product-shots.md`).
 - **The same composition section after section** → change form and pace: full-bleed, a tight
   list, one huge number, a quiet pause.
 - **A crowded first screen** (label, headline, paragraph, three buttons, stats, logos) → headline,
@@ -24,7 +26,9 @@ against "Never" and "The obvious version" in `SKILL.md`, and this list of what t
   feels too big, then pull back a little.
 - **White page, gray text, one blue button** → the palette from the product's world.
 - **Images small, boxed and centered** → full-bleed, bleeding off an edge, overlapping.
-- **A screenshot in a frame on a glow** → the product window, playing (`craft.md`).
+- **A screenshot in a frame on a glow** → the product rebuilt in code at real size, 80% of the content width, rising from the fold (`product-shots.md`).
+- **A paragraph under the headline, a sentence on every tile** → the word budget in `words.md`.
+- **A window over the headline, words cut by a crop, a phone that is the desktop shrunk** → `product-shots.md`, Framing and On a phone-width page.
 - **Only fade-ups** → motion that acts out the product: the film, a scene, something to try.
 - **The signature is a chart or a list** → something only this product can show.
 

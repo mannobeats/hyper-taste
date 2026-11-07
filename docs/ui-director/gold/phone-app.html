@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Today · Tempo</title>
+<style>
+  /* Tempo, a running app. The screen after a run answers "how did it go?" in its first line, then
+     draws the run itself: the route colored by pace, cool where it was easy, hot where it was fast.
+     The same pace scale colors the splits. Dark, because it's opened in the hallway at 7 am with
+     the lights off. Open it at 390 wide; wider, it sits in a phone column. */
+  @font-face { font-family: "Geist"; src: url("../../../skills/ui-director/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+  :root {
+    --font: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --bg: oklch(.14 .006 60); --card: oklch(.19 .007 60); --card-2: oklch(.225 .008 60); --line: oklch(.27 .008 60);
+    --ink: oklch(.97 .004 80); --ink-2: oklch(.84 .006 80); --muted: oklch(.66 .01 80); --faint: oklch(.5 .01 80);
+    --slow: oklch(.74 .11 195); --mid: oklch(.8 .14 95); --fast: oklch(.7 .19 35); --on-fast: oklch(.18 .03 40);
+    --safe-t: max(env(safe-area-inset-top), 54px); --safe-b: max(env(safe-area-inset-bottom), 20px);
+    --ease: cubic-bezier(.16, 1, .3, 1); color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  html { background: oklch(.1 .005 60); }
+  body { max-width: 430px; min-height: 100dvh; margin: 0 auto; padding: var(--safe-t) 0 calc(84px + var(--safe-b) + 24px); font: 450 16px/1.4 var(--font);
+         color: var(--ink-2); background: var(--bg); -webkit-font-smoothing: antialiased; }
+  svg { display: block; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  header { display: flex; align-items: flex-end; justify-content: space-between; padding: 6px 20px 0; }
+  header small { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--muted); line-height: 1; }
+  h1 { font-size: 34px; font-weight: 700; letter-spacing: -.03em; line-height: 1; color: var(--ink); }
+  .me { display: grid; place-items: center; width: 44px; height: 44px; margin: 0 -4px -4px 0; border-radius: 50%; }
+  .me span { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; font-size: 13px; font-weight: 600; color: oklch(.85 .08 35); background: oklch(.3 .06 35); line-height: 1; }
+
+  .answer { padding: 20px 20px 0; font-size: 22px; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; color: var(--ink); text-wrap: balance; }
+  .answer span { color: var(--muted); font-weight: 500; }
+
+  /* The run, drawn: a street grid, the river, the route in pace colors, start and finish */
+  .map { position: relative; margin: 20px 16px 0; aspect-ratio: 1 / .86; border-radius: 24px; overflow: hidden; background: var(--card);
+         box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .07); }
+  .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .map .street { stroke: oklch(1 0 0 / .055); stroke-width: 1; fill: none; }
+  .map .road { stroke: oklch(1 0 0 / .09); stroke-width: 2.5; fill: none; }
+  .map .river { fill: oklch(.24 .03 230); }
+  .map .park { fill: oklch(.22 .03 150); }
+  .map .route { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .map .glow { fill: none; stroke-width: 14; stroke-linecap: round; opacity: .18; filter: blur(4px); }
+  .map .km { font: 600 9px var(--font); fill: var(--bg); }
+  .stats { position: absolute; left: 12px; right: 12px; bottom: 12px; display: grid; grid-template-columns: repeat(3, 1fr); padding: 12px 4px; border-radius: 16px;
+           background: oklch(.16 .006 60 / .72); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .1); }
+  .stats div { padding: 0 12px; } .stats div + div { box-shadow: inset .5px 0 0 oklch(1 0 0 / .12); }
+  .stats b { display: block; font-size: 20px; font-weight: 650; letter-spacing: -.02em; color: var(--ink); line-height: 1.1; }
+  .stats small { font-size: 12px; color: var(--muted); }
+  @media (prefers-reduced-motion: no-preference) { .map .route, .map .glow { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: draw 2.2s var(--ease) .3s forwards; } @keyframes draw { to { stroke-dashoffset: 0; } } }
+
+  section { margin: 28px 20px 0; }
+  .sh { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .sh h2 { font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .sh span { font-size: 13px; color: var(--muted); }
+
+  /* Splits: one bar per km in the same pace colors, the fastest named */
+  .splits { display: grid; gap: 8px; }
+  .split { display: grid; grid-template-columns: 38px 1fr 52px; align-items: center; gap: 12px; font-size: 15px; }
+  .split > span:first-child { color: var(--muted); }
+  .split .bar { height: 12px; border-radius: 6px; background: var(--card-2); overflow: hidden; }
+  .split .bar i { display: block; height: 100%; width: var(--w); border-radius: 6px; background: var(--c); }
+  .split b { text-align: right; font-weight: 600; color: var(--ink); }
+  .split.best b { color: var(--fast); }
+  .legend { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; color: var(--muted); }
+  .legend i { flex: 1; height: 4px; margin: 6px 10px 0; border-radius: 2px; background: linear-gradient(90deg, var(--slow), var(--mid), var(--fast)); }
+
+  .next { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 16px; padding: 18px; border-radius: 20px; background: var(--card); box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .07); }
+  .next small { font-size: 13px; color: var(--muted); } .next b { display: block; margin-top: 2px; font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .next p { grid-column: 1; font-size: 14px; color: var(--muted); }
+  .next .add { grid-row: 1 / span 2; grid-column: 2; display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 999px; font-size: 15px; font-weight: 600; line-height: 1;
+               background: var(--fast); color: var(--on-fast); }
+
+  nav.tabs { position: fixed; left: 50%; bottom: 0; translate: -50% 0; width: min(430px, 100%); display: grid; grid-template-columns: repeat(4, 1fr); height: calc(64px + var(--safe-b)); padding: 8px 8px var(--safe-b);
+             background: oklch(.14 .006 60 / .78); -webkit-backdrop-filter: blur(24px) saturate(1.6); backdrop-filter: blur(24px) saturate(1.6); box-shadow: inset 0 .5px 0 oklch(1 0 0 / .1); }
+  nav.tabs a { display: grid; justify-items: center; align-content: start; gap: 4px; padding-top: 2px; font-size: 11px; font-weight: 600; line-height: 1; color: var(--muted); }
+  nav.tabs svg { width: 26px; height: 26px; }
+  nav.tabs a[aria-current] { color: var(--ink); }
+</style>
+</head>
+<body>
+<header>
+  <div><small>Morning run · Riverside loop</small><h1>Thursday</h1></div>
+  <a class="me" href="#you" aria-label="You"><span>EV</span></a>
+</header>
+
+<p class="answer num">10.2 km at 4:51 a km. <span>Your fastest ten this year.</span></p>
+
+<figure class="map" role="img" aria-label="The route: a loop along the river and back through the park, easy for the first three kilometres, fastest between kilometres seven and nine.">
+  <svg viewBox="0 0 358 308" aria-hidden="true" data-map>
+    <defs>
+      <linearGradient id="pace" gradientUnits="userSpaceOnUse" x1="74" y1="198" x2="314" y2="8">
+        <stop offset="0" stop-color="oklch(.74 .11 195)"/><stop offset=".45" stop-color="oklch(.8 .14 95)"/><stop offset=".8" stop-color="oklch(.7 .19 35)"/><stop offset="1" stop-color="oklch(.76 .15 60)"/>
+      </linearGradient>
+    </defs>
+    <path class="street" d="M0 40h358M0 92h358M0 150h358M0 204h358M0 262h358M44 0v308M110 0v308M176 0v308M238 0v308M304 0v308M0 120 120 0M140 308 358 90"/>
+    <path class="park" d="M196 168c30-18 74-14 96 6 18 17 14 46-8 58-30 16-74 12-96-6-18-16-14-44 8-58Z"/>
+    <path class="river" d="M-10 214c40-10 70-34 102-34s52 24 94 24 70-40 104-52 52-4 78 6v28c-26-10-46-14-76-4s-62 50-106 50-62-24-94-24-60 22-102 34Z"/>
+    <path class="road" d="M0 120 120 0M140 308 358 90M0 150h358"/>
+    <g transform="translate(14 -52)">
+    <path class="glow" stroke="url(#pace)" d="M62 252c18-26 30-60 58-74s60-4 92-20 46-52 74-66 32 14 24 34-28 34-34 58 12 42-6 58-48 4-72-2-62 8-84 18-40 24-52-6Z"/>
+    <path class="route" stroke="url(#pace)" d="M62 252c18-26 30-60 58-74s60-4 92-20 46-52 74-66 32 14 24 34-28 34-34 58 12 42-6 58-48 4-72-2-62 8-84 18-40 24-52-6Z"/>
+    <circle cx="62" cy="252" r="7" fill="oklch(.97 .004 80)"/><circle cx="62" cy="252" r="3" fill="oklch(.14 .006 60)"/>
+    </g>
+  </svg>
+  <div class="stats num" aria-hidden="true"><div><b>52:31</b><small>Time</small></div><div><b>148</b><small>Avg bpm</small></div><div><b>86 m</b><small>Climb</small></div></div>
+</figure>
+
+<section>
+  <div class="sh"><h2>Splits</h2><span>Fastest km 8</span></div>
+  <div class="splits num">
+    <div class="split"><span>1</span><span class="bar"><i style="--w:58%;--c:var(--slow)"></i></span><b>5:18</b></div>
+    <div class="split"><span>2</span><span class="bar"><i style="--w:62%;--c:var(--slow)"></i></span><b>5:09</b></div>
+    <div class="split"><span>3</span><span class="bar"><i style="--w:70%;--c:color-mix(in oklch, var(--slow), var(--mid))"></i></span><b>4:58</b></div>
+    <div class="split"><span>4</span><span class="bar"><i style="--w:74%;--c:var(--mid)"></i></span><b>4:52</b></div>
+    <div class="split"><span>5</span><span class="bar"><i style="--w:72%;--c:var(--mid)"></i></span><b>4:54</b></div>
+    <div class="split"><span>6</span><span class="bar"><i style="--w:80%;--c:color-mix(in oklch, var(--mid), var(--fast))"></i></span><b>4:44</b></div>
+    <div class="split"><span>7</span><span class="bar"><i style="--w:88%;--c:var(--fast)"></i></span><b>4:36</b></div>
+    <div class="split best"><span>8</span><span class="bar"><i style="--w:94%;--c:var(--fast)"></i></span><b>4:29</b></div>
+    <div class="split"><span>9</span><span class="bar"><i style="--w:86%;--c:var(--fast)"></i></span><b>4:38</b></div>
+    <div class="split"><span>10</span><span class="bar"><i style="--w:76%;--c:var(--mid)"></i></span><b>4:50</b></div>
+  </div>
+  <p class="legend" aria-hidden="true"><span>Easy</span><i></i><span>Fast</span></p>
+</section>
+
+<section>
+  <div class="next">
+    <div><small>Tomorrow</small><b>Easy 30 minutes</b></div>
+    <p>Your legs did the work today. Keep it under 150 bpm.</p>
+    <a class="add" href="#plan">Add to plan</a>
+  </div>
+</section>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#today" aria-current="page"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 3.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM9.6 8.3l3.4-.9a2 2 0 0 1 2.2 1l1.4 2.6 2.4.9a1 1 0 0 1-.7 1.9l-2.8-1a1.5 1.5 0 0 1-.8-.7l-.6-1.1-1 3.6 2.2 2.2c.3.3.5.7.5 1.1v4.1a1.1 1.1 0 0 1-2.2 0v-3.6l-2.5-2.4-.9 3.4a1.5 1.5 0 0 1-.7.9l-3.6 2.2a1.1 1.1 0 0 1-1.2-1.9l3.2-2 1.9-7-1.4.4-1 2.2a1.1 1.1 0 1 1-2-.9l1.2-2.7c.2-.4.5-.7 1-.8Z"/></svg>Today</a>
+  <a href="#plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Plan</a>
+  <a href="#routes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/></svg>Routes</a>
+  <a href="#you"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>You</a>
+</nav>
+
+<script>
+  // The route draws itself once, along its own length.
+  for (const p of document.querySelectorAll('[data-map] .route, [data-map] .glow')) p.style.setProperty('--len', Math.ceil(p.getTotalLength()));
+</script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 # Visuals: photographs, scroll scenes and 3D
 
 For pages where the subject is physical: a product you hold, a place, food, people, an event.
-Software shows its real interface instead (`craft.md`). Plan every image with the direction:
+Software shows its real interface instead (`product-shots.md`). Plan every image with the direction:
 its job, its ratio, its source and what the phone gets.
 
 ## Where images come from, in order

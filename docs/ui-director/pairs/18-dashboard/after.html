@@ -115,6 +115,26 @@
   table[data-filter="you"] tbody tr:not(.you) { display: none; }
   .scroll { overflow-x: auto; }
   @media (max-width: 1240px) { .lower { grid-template-columns: minmax(0, 1fr) 260px; } .plan { display: none; } }
+  /* The phone: one column. The sidebar becomes a top bar with the workspace, the numbers sit in a
+     row of three, and each failed payment is two lines: who and how much, then why. */
+  @media (max-width: 760px) {
+    :root { --pad: 16px; }
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { position: static; height: auto; flex-direction: row; align-items: center; padding: 8px 12px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .side .search, .side .nav, .side .group { display: none; }
+    .head { height: 56px; }
+    .stats { grid-template-columns: 1fr; }
+    .stats > * + * { border-left: 0 !important; border-top: 1px solid var(--line); }
+    .lower { grid-template-columns: minmax(0, 1fr); }
+    .trials { border-left: 0; border-top: 1px solid var(--line); }
+    thead, .acts, td:nth-child(3) { display: none; }
+    #queue tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    #queue td { height: auto; padding: 0; border: 0; white-space: normal; }
+    #queue td:nth-child(2) { grid-row: 2; padding: 4px 0 0 34px; color: var(--muted); }
+    #queue td.amt { grid-column: 2; grid-row: 1; }
+    .ws, .seg button, .foot .btn, .head .btn { min-height: 44px; }
+    .sec-head { flex-wrap: wrap; row-gap: 10px; } .sec-head h2 { flex-basis: 100%; } .key { flex-wrap: wrap; row-gap: 8px; }
+  }
   .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; font-size: var(--text-sm); color: var(--muted); }
   .foot .btn { margin-left: -10px; }
 

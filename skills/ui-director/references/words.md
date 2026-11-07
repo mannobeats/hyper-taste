@@ -3,13 +3,23 @@
 Copy is where "generated" shows first, and on a page that sells it's half the design. Most of
 the fix is writing less, plainly, about this one product.
 
+## The word budget
+
+- **First screen:** a headline of 3–8 words, one line of 14 words at most under it, 1–3 words on
+  each button, one chip of a few words. Nothing else.
+- **A section:** a head of 2–6 words, at most one line under it.
+- **A tile or a card:** one sentence, a bold lead and a quieter continuation.
+- If a sentence explains what the picture shows, cut the sentence, not the picture.
+
 ## Headlines
 
-- **Claims from the visitor's world, not slogans.** "Good design leaves a mark." could sell
-  anything. "Your neighbour's dog will not be on this episode." sells one audio tool to one
-  podcaster. Use a noun, a number or a situation only this product owns.
-- **Write five, keep one:** a plain statement, a number, a question, a promise, a scene. Keep
-  the one true only of this product that still makes someone look twice.
+- **Claims from the visitor's world, not slogans.** "Supercharge your inbox" could sell anything.
+  "Your inbox, mostly clear." sells one mail app. Use a noun, a number or a situation only this
+  product owns, in a voice that sounds like a person.
+- **Write ten, keep one:** a plain statement, a number, a question, a promise, a scene, a turn.
+  Keep the one true only of this product that still makes someone look twice.
+- **One metaphor, lightly:** weather for a mail app, hardware for a plugin. It shows in the
+  headline, the chip, the product's own labels and the close; nowhere else.
 - **Two tones:** a claim, then a quieter clause that finishes it ("Pay for minutes of audio.
   Nothing else."). The second half reassures, narrows or turns the first.
 - **Vary the shape across the page:** statements, questions, a number, the two-tone pair, short

@@ -1,6 +1,6 @@
-/* tokens.css: the token system behind every "after" page in docs/ui-director/pairs/.
-   The "before" pages don't use it, on purpose. The skill itself ships no CSS: projects write
-   these tokens in their own format from skills/ui-director/references/system.md.
+/* tokens.css: the token system behind every "after" page in docs/ui-director/pairs/, and behind
+   the "before" of each teaching pair, which is the same page with one fault. The skill itself ships
+   no CSS: projects write these tokens in their own format from skills/ui-director/references/system.md.
 
    Sections: 1 knobs · 2 light tokens · 3 dark tokens · 4 base · 5 primitives · 6 demo stage */
 
@@ -76,9 +76,15 @@
   --chip-bg-l: .955; --chip-bg-c: .04; --chip-fg-l: .47; --chip-fg-c: .14;
 
   /* depth: a hairline ring does the edge, soft layers do the lift. Never a black border. */
-  --shadow-xs: 0 0 0 1px oklch(0 0 0 / .08), 0 1px 2px oklch(0 0 0 / .06);
-  --shadow-sm: 0 0 0 1px oklch(0 0 0 / .05), 0 2px 4px oklch(0 0 0 / .03), 0 12px 24px oklch(0 0 0 / .04);
-  --shadow-lg: 0 0 0 1px oklch(0 0 0 / .06), 0 8px 16px oklch(0 0 0 / .06), 0 24px 48px oklch(0 0 0 / .10);
+  /* Shadows are tinted with the neutral hue and stacked: a ring for the edge, a close one for contact, a long soft one for lift. */
+  --shade: oklch(.24 .04 var(--tint-h));
+  --shadow-xs: 0 0 0 1px color-mix(in oklch, var(--shade) 11%, transparent), 0 1px 2px color-mix(in oklch, var(--shade) 7%, transparent);
+  --shadow-sm: 0 0 0 1px color-mix(in oklch, var(--shade) 7%, transparent), 0 1px 2px color-mix(in oklch, var(--shade) 5%, transparent),
+               0 8px 20px -6px color-mix(in oklch, var(--shade) 9%, transparent), 0 28px 56px -20px color-mix(in oklch, var(--shade) 14%, transparent);
+  --shadow-lg: 0 0 0 1px color-mix(in oklch, var(--shade) 8%, transparent), 0 2px 4px color-mix(in oklch, var(--shade) 6%, transparent),
+               0 18px 36px -10px color-mix(in oklch, var(--shade) 14%, transparent), 0 50px 100px -30px color-mix(in oklch, var(--shade) 26%, transparent);
+  --hi: inset 0 1px 0 oklch(1 0 0 / .7);   /* the top edge catching the light */
+  --stage-light: oklch(1 0 0 / .95);
   --focus: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent-400);
 
   /* type */
@@ -133,8 +139,10 @@
   --chart-ref: oklch(.40 .05 var(--accent-h));
   --chip-bg-l: .30; --chip-bg-c: .055; --chip-fg-l: .84; --chip-fg-c: .10;
   --shadow-xs: 0 0 0 1px var(--line);
-  --shadow-sm: 0 0 0 1px var(--line), 0 8px 24px oklch(0 0 0 / .35);
-  --shadow-lg: 0 0 0 1px var(--line-strong), 0 16px 48px oklch(0 0 0 / .55);
+  --shadow-sm: 0 0 0 1px var(--line), 0 14px 36px -10px oklch(0 0 0 / .55);
+  --shadow-lg: 0 0 0 1px var(--line-strong), 0 28px 72px -14px oklch(0 0 0 / .75);
+  --hi: inset 0 1px 0 oklch(1 0 0 / .06);  /* on dark, depth comes from a lighter top edge, not a black shadow */
+  --stage-light: oklch(.27 calc(var(--tint-c) * 2) var(--tint-h) / .7);
 }
 
 /* ---------- 4. Base ---------- */
@@ -211,18 +219,26 @@ a { color: inherit; }
 .input::placeholder { color: var(--faint); }
 .input:focus { outline: none; border-color: var(--accent-400); box-shadow: 0 0 0 3px var(--accent-100); }
 .input[aria-invalid="true"] { border-color: var(--bad); }
-@media (pointer: coarse) { .input { font-size: 16px; height: var(--touch); } .btn { min-height: var(--touch); } .btn.icon { min-width: var(--touch); } }
+@media (pointer: coarse), (max-width: 500px) { .input { font-size: 16px; height: var(--touch); } .btn { min-height: var(--touch); } .btn.icon { min-width: var(--touch); } }
 
-.checkbox { appearance: none; width: 15px; height: 15px; border-radius: var(--r-xs); background: var(--surface);
+.checkbox { appearance: none; position: relative; width: 16px; height: 16px; border-radius: var(--r-xs); background: var(--surface);
             box-shadow: inset 0 0 0 1px var(--line-strong); display: inline-grid; place-content: center; flex: none; cursor: pointer; }
 .checkbox:checked { background: var(--accent); box-shadow: none; }
 .checkbox:checked::after { content: ""; width: 8px; height: 5px; border: solid var(--on-strong); border-width: 0 0 2px 2px; transform: translateY(-1px) rotate(-45deg); }
+/* On touch, the box stays 16px and the target grows to 44: the input is the target, the box is drawn inside it. */
+@media (pointer: coarse), (max-width: 500px) {
+  .checkbox { width: var(--touch); height: var(--touch); margin: -14px; background: none; box-shadow: none; }
+  .checkbox::before { content: ""; position: absolute; inset: 14px; border-radius: var(--r-xs); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .checkbox:checked { background: none; }
+  .checkbox:checked::before { background: var(--accent); box-shadow: none; }
+  .checkbox:checked::after { position: absolute; left: 18px; top: 19px; }
+}
 
 .avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: none; background: var(--fill);
-          display: inline-grid; place-items: center; font-size: 10px; font-weight: var(--w-strong); color: var(--muted); }
+          display: inline-grid; place-items: center; font-size: 11px; font-weight: var(--w-strong); letter-spacing: -.02em; color: var(--muted); }
 .kbd { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: var(--r-xs);
        background: var(--fill); color: var(--muted); font: var(--w-ui) 11px/1 var(--font); }
-.card { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); }
+.card { background: var(--surface); border-radius: var(--r-xl); box-shadow: var(--hi), var(--shadow-sm); }
 .divider { height: 1px; background: var(--line); border: 0; }
 
 /* Tooltip: pure CSS, for icon buttons and truncated values. Content lives in data-tip. */
@@ -239,5 +255,7 @@ a { color: inherit; }
 svg.lucide { width: 16px; height: 16px; stroke-width: 1.75; flex: none; }
 
 /* ---------- 6. Demo stage: how the pair pages sit in the gallery, not part of any pattern ---------- */
-body { background: var(--panel); padding: 40px 32px; display: grid; place-content: center; }
+/* A lit studio: the panel color with light falling from above. Every component sits centered on it at real size. */
+body { min-height: 100svh; padding: clamp(24px, 5vw, 56px) 16px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+       background: radial-gradient(100% 70% at 50% -10%, var(--stage-light), transparent 72%), var(--panel); }
 body.bleed { padding: 0; display: block; place-content: normal; background: var(--bg); }

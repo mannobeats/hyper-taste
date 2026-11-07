@@ -17,10 +17,17 @@ which people now recognize on sight. UI Director fixes both: the agent writes a 
 the product's world before any code, builds the whole page, then pushes one signature moment, and
 looks at the result with its own browser before calling it done.
 
-There are no example pages and no stylesheet to copy, on purpose. Agents reproduce whatever page
-they see, and a shared stylesheet makes every product look alike and clashes with frameworks.
-The skill teaches rules, numbers and a token recipe, and the agent writes the tokens in the
-project's own format. Every product gets its own page, and every page stays consistent.
+The skill ships seven gold examples, each a finished page at the bar it asks for: three landing
+pages (a centered promise over a sky drawn in code with the app rising out of it, a dark page
+with a machined knob you can turn, a centered light page with a card that leans toward the
+pointer), three dashboards in three shells (sidebar, inset sidebar, top nav), and a running
+app's phone screen. Each passes its own check at desktop and phone width. The agent starts from the closest one, copies its structure and replaces its world: tokens,
+words, icons, sample data. "A copy that only changes the name is not done." Starting from a
+finished page is what makes the result consistent; choosing among different compositions, and a
+reviewer asking "could this be any product in its category?", is what keeps it from being the
+same page every time. A zero-dependency script looks at the result in headless Chrome and fails
+on what is never intentional: a window over the headline, words cut by a crop, a desktop layout
+shrunk onto a phone, contrast, slop.
 
 Works with any stack: plain HTML and CSS, Tailwind, shadcn, Bootstrap, MUI, CSS-in-JS, React,
 Vue, Svelte, Astro, and native apps (SwiftUI, Flutter, Compose) through the token values. Works
@@ -33,15 +40,21 @@ installs its own.
 skills/ui-director/
 ├── SKILL.md              the job router, the loop, craft numbers, layout, "Never" and the obvious version
 ├── references/           opened for the job at hand
-│   ├── landing.md        pages that sell: the direction (with a blueprint), grammar, first screen, order, conversion
-│   ├── craft.md          the finish: type, chip, buttons, hairlines, the product window, the film, lit plates, the close
+│   ├── landing.md        pages that sell: the direction, first-screen compositions, grammar, order, conversion
+│   ├── product-shots.md  the product rebuilt in code: framing, compositions, restraint, the film, state grids, phones
+│   ├── craft.md          the finish: grounds, type, chip, buttons, hairlines, nav, the close
 │   ├── visuals.md        photographs, image generation, layers, scroll scenes, real 3D
-│   ├── app-ui.md         dashboards, tables, states, controls, phones, native, and the moments people remember
+│   ├── app-ui.md         dashboards, tables, states, controls, responsive, and the moments people remember
+│   ├── mobile.md         phone apps: the answer first, anatomy and sizes, platform conventions, native
 │   ├── system.md         token recipe, stack adapters, auditing a project, DESIGN.md
 │   ├── words.md          headlines, captions, plain copy, one sample world
 │   ├── motion.md         every timing, what to animate, recipes, reduced motion
 │   ├── tells.md          reviewing and redesigning
-│   └── look.md           which browser, what to check, the page check
+│   ├── look.md           the check, what to look at, what you see and what you do
+│   └── review.md         the brief for a fresh-eye reviewer
+├── examples/             seven gold pages to start from, built from docs/ui-director/gold (npm run examples)
+├── teaching/             fourteen small before and after pairs, for diagnosing one problem
+├── scripts/              check.mjs (headless Chrome, no dependencies) and page-check.js
 └── fonts/                Geist and Geist Mono (OFL), the fallback when a product has no face
 commands/ui-director/     setup, audit and match slash commands for Claude Code
 docs/ui-director/         before/after pairs for humans: live HTML, screenshots and evals source
@@ -67,19 +80,20 @@ premium", "clean up this settings screen"). You can also ask for it by name: *"u
 
 What the agent does:
 
-1. Picks the job (a page that sells, app UI, a redesign, an audit, a design system) and opens
-   only the files for it.
-2. Writes a direction into `DESIGN.md` before any code: the obvious version, one blueprint at
-   the bar it's aiming for, three directions from the product's world, the pick, a signature on
-   the first screen, palette, type, images and one sample world. App screens name the key
-   object, the moments, what needs attention and the shell.
+1. Picks the job (a page that sells, app UI, a phone app, a redesign, an audit, a design
+   system) and opens only the files for it.
+2. Writes a direction into `DESIGN.md` before any code: the obvious version, three directions
+   from the product's world in three different compositions, the pick and the gold example it
+   starts from, a signature on the first screen, palette, type and one sample world. App and
+   phone screens name the key object, the moments and what needs attention.
 3. Writes the tokens in the project's own format (CSS variables, Tailwind, shadcn, Bootstrap,
    MUI, native), or audits an existing project and puts it on tokens.
 4. Builds the whole page with real content, then spends its time on the signature and the
    finish: for software, the product rebuilt in code and playing its job as a film; for
    physical things, photographs, layered scenes and 3D.
-5. Looks at the result with the browser its harness provides, at desktop and phone widths, in
-   light and dark, runs the page check, and fixes what it sees, two passes at least.
+5. Runs `scripts/check.mjs`, opens every screenshot (desktop and phone, light and dark), puts
+   its first screen beside the gold's, asks a fresh-eye reviewer, and fixes what it sees until
+   the check passes, two passes at least.
 
 In Claude Code you can also call the modes directly (the prefix is `hyper-taste:` when you
 installed the bundle):
@@ -102,11 +116,18 @@ installed the bundle):
 
 Each pair in [`pairs/`](pairs) is two standalone pages, `before.html` and `after.html`, about one
 rule from the skill. The "after" pages share [`pairs/tokens.css`](pairs/tokens.css), the token
-system from `references/system.md` written as CSS; the "before" pages have no system on purpose.
+system from `references/system.md` written as CSS. In the fourteen teaching pairs the "before" is
+the same page with the same tokens and one fault, so the pair teaches exactly one thing; the older
+landing and phone pairs keep a "before" with no system at all.
 [`pairs.json`](pairs.json) holds each pair's title, rule and captions, and feeds the live page,
 the screenshots and the [evals](../../evals/ui-director).
 
-The pairs live here, outside the skill folder, on purpose: agents copy whatever page they're shown.
+The pages in [`gold/`](gold) are built into the skill's `examples/`, and the small pairs into
+`teaching/`, by `npm run examples`, which points the fonts at the skill and inlines the pairs'
+tokens. Every picture in the gold pages is drawn in code, so the skill ships no photographs. Edit the pages here, never the built
+copies. Some of the framing rules, the review brief and several detectors in the check are
+adapted from [Stageshow](https://github.com/benjitaylor/skills/tree/main/stageshow) by Benji
+Taylor (MIT).
 
 To regenerate the screenshots in [`gallery/`](gallery) after changing a pair (uses your installed
 Chrome):

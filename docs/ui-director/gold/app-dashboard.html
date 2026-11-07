@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview · Hangar</title>
+<style>
+  /* Hangar, where a small team deploys its apps. The overview answers one question in its title:
+     is everything running? Then only what needs you, then every app as one cell in its live state,
+     so twenty-three running apps read as one calm band and the failed one is the only red thing on
+     the screen. Blue-gray neutrals, one orange that means Deploy, Geist and Geist Mono. */
+  @font-face { font-family: "Geist"; src: url("../../../skills/ui-director/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+  @font-face { font-family: "Geist Mono"; src: url("../../../skills/ui-director/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+  :root {
+    --font: "Geist", ui-sans-serif, system-ui, sans-serif; --mono: "Geist Mono", ui-monospace, monospace;
+    --bg: oklch(.985 .002 255); --side: oklch(.97 .004 255); --surface: oklch(1 0 0); --fill: oklch(.955 .005 255); --hover: oklch(.94 .006 255);
+    --line: oklch(.915 .005 255); --line-2: oklch(.86 .007 255);
+    --ink: oklch(.2 .015 260); --ink-2: oklch(.36 .015 260); --muted: oklch(.52 .014 260); --faint: oklch(.68 .01 260);
+    --run: oklch(.62 .14 152); --run-soft: oklch(.93 .05 152); --build: oklch(.75 .15 75); --fail: oklch(.58 .2 27); --fail-ink: oklch(.5 .18 27); --fail-soft: oklch(.965 .025 25); --stop: oklch(.82 .008 260);
+    --deploy: oklch(.56 .2 37); --on-deploy: oklch(.99 0 0);
+    --shadow: 0 0 0 .5px oklch(.2 .02 260 / .1), 0 1px 2px oklch(.2 .02 260 / .05);
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: oklch(.165 .008 260); --side: oklch(.145 .008 260); --surface: oklch(.195 .009 260); --fill: oklch(.23 .01 260); --hover: oklch(.25 .011 260);
+    --line: oklch(.255 .01 260); --line-2: oklch(.32 .012 260);
+    --ink: oklch(.95 .005 260); --ink-2: oklch(.82 .008 260); --muted: oklch(.65 .012 260); --faint: oklch(.5 .012 260);
+    --run: oklch(.7 .14 152); --run-soft: oklch(.3 .05 152); --build: oklch(.8 .14 78); --fail: oklch(.66 .19 27); --fail-ink: oklch(.78 .13 27); --fail-soft: oklch(.27 .05 25); --stop: oklch(.4 .01 260);
+    --shadow: 0 0 0 .5px oklch(1 0 0 / .08); color-scheme: dark; } }
+  :root[data-theme="dark"] { color-scheme: dark; }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  body { font: 450 13.5px/1.45 var(--font); color: var(--ink-2); background: var(--bg); -webkit-font-smoothing: antialiased; }
+  svg { display: block; flex: none; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: var(--mono); font-size: 12.5px; letter-spacing: -.01em; }
+  .num { font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid var(--deploy); outline-offset: 2px; border-radius: 6px; }
+
+  .app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
+
+  /* The sidebar: the organization, search, six places, the person */
+  .side { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 2px; padding: 12px 10px; background: var(--side); box-shadow: inset -1px 0 0 var(--line); }
+  .org { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 8px; border-radius: 8px; color: var(--ink); font-weight: 600; line-height: 1; text-align: left; }
+  .org:hover { background: var(--hover); }
+  .org .logo { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--ink); color: var(--bg); }
+  .org .logo svg { width: 14px; height: 14px; }
+  .org > svg { margin-left: auto; width: 14px; height: 14px; color: var(--muted); }
+  .find { display: flex; align-items: center; gap: 8px; height: 34px; margin: 8px 0 14px; padding: 0 8px 0 10px; border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); color: var(--muted); line-height: 1; }
+  .find svg { width: 15px; height: 15px; } .find kbd { margin-left: auto; font: 500 11px/1 var(--font); padding: 4px 6px; border-radius: 5px; background: var(--fill); color: var(--muted); }
+  .side nav { display: grid; gap: 1px; }
+  .side nav a { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px; border-radius: 8px; font-weight: 500; line-height: 1; color: var(--ink-2); transition: background-color 120ms; }
+  .side nav a svg { width: 16px; height: 16px; color: var(--muted); }
+  .side nav a:hover { background: var(--hover); }
+  .side nav a[aria-current] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+  .side nav a[aria-current] svg { color: var(--ink); }
+  .side nav a .n { margin-left: auto; font-size: 12px; color: var(--fail-ink); font-weight: 600; }
+  .side .bottom { margin-top: auto; }
+  .me { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; color: var(--ink); font-weight: 500; line-height: 1; }
+  .face { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; font-weight: 600; line-height: 1; flex: none;
+          color: oklch(.4 .1 var(--h)); background: oklch(.9 .05 var(--h)); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .face { color: oklch(.85 .08 var(--h)); background: oklch(.32 .06 var(--h)); } }
+
+  /* Main */
+  main { min-width: 0; }
+  .bar { display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 32px; box-shadow: inset 0 -1px 0 var(--line); }
+  .crumbs { display: flex; align-items: center; gap: 8px; color: var(--muted); line-height: 1; } .crumbs b { color: var(--ink); font-weight: 500; }
+  .bar .spacer { flex: 1; }
+  /* Freshness, said precisely: when the data last changed, and a ring that fills until the next check. */
+  .sync { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-radius: 8px; color: var(--muted); font-size: 12.5px; line-height: 1; }
+  .sync svg { width: 14px; height: 14px; transform: rotate(-90deg); }
+  .sync .rest { stroke: var(--line-2); } .sync .fill { stroke: var(--ink-2); transition: stroke-dashoffset 1s linear; }
+  .sync b { color: var(--ink-2); font-weight: 500; }
+  .btn { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 8px; font-weight: 500; line-height: 1; white-space: nowrap; transition: background-color 120ms; }
+  .btn svg { width: 15px; height: 15px; }
+  .btn.plain { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); } .btn.plain:hover { background: var(--hover); }
+  .btn.deploy { background: var(--deploy); color: var(--on-deploy); } .btn.deploy:hover { background: oklch(.51 .19 36); }
+  .btn.quiet { color: var(--ink-2); } .btn.quiet:hover { background: var(--hover); }
+
+  .page { max-width: 1240px; margin: 0 auto; padding: 40px 40px 72px; } /* centered in whatever width the main area has */
+  h1 { font-size: 26px; font-weight: 620; letter-spacing: -.025em; line-height: 1.15; color: var(--ink); text-wrap: balance; }
+  h1 span { color: var(--muted); font-weight: 520; }
+  .since { margin-top: 8px; color: var(--muted); }
+  .since b { color: var(--ink-2); font-weight: 500; }
+
+  /* Needs you: only what does, in red */
+  .needs { margin-top: 28px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 14px 14px 14px 18px; border-radius: 12px;
+           background: var(--fail-soft); box-shadow: inset 0 0 0 .5px color-mix(in oklch, var(--fail) 35%, transparent); }
+  .needs > svg { width: 18px; height: 18px; color: var(--fail); }
+  .needs b { color: var(--ink); font-weight: 600; } .needs p { color: var(--ink-2); }
+  .needs p .mono { color: var(--fail-ink); }
+  .needs .acts { display: flex; gap: 6px; }
+
+  h2 { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -.005em; }
+  .sec-h { display: flex; align-items: baseline; justify-content: space-between; margin: 40px 0 12px; }
+  .sec-h a { color: var(--muted); font-size: 12.5px; } .sec-h a:hover { color: var(--ink); }
+
+  /* The fleet: every app one cell, in its live state */
+  .fleet { border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+  .proj { display: grid; grid-template-columns: 220px minmax(0, 1fr) 150px; align-items: center; gap: 24px; min-height: 76px; padding: 14px 20px; }
+  .proj + .proj { box-shadow: inset 0 1px 0 var(--line); }
+  .proj .who b { display: block; color: var(--ink); font-weight: 600; } .proj .who small { font-size: 12px; color: var(--muted); }
+  .envs { display: flex; flex-wrap: wrap; gap: 10px 28px; }
+  .env { display: grid; gap: 6px; } .env > span { font-size: 11.5px; color: var(--muted); }
+  .cells { display: flex; gap: 4px; }
+  .cell { position: relative; width: 26px; height: 26px; border-radius: 7px; background: var(--run); transition: transform 160ms var(--ease); }
+  .cell:hover { transform: scale(1.12); z-index: 2; }
+  .cell[data-s="build"] { background: var(--build); }
+  .cell[data-s="fail"] { background: var(--fail); box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--fail); }
+  .cell[data-s="stop"] { background: var(--stop); }
+  .cell::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); translate: -50% 4px; padding: 6px 8px; border-radius: 6px; white-space: nowrap;
+                 font: 500 12px/1 var(--font); color: var(--surface); background: var(--ink); opacity: 0; scale: 0; pointer-events: none; transition: opacity 120ms, translate 160ms var(--ease); }
+  .cell:hover::after, .cell:focus-visible::after { opacity: 1; scale: 1; translate: -50% 0; }
+  @media (prefers-reduced-motion: no-preference) { .cell[data-s="build"] { animation: pulse 1.6s ease-in-out infinite; } @keyframes pulse { 50% { opacity: .55; } } }
+  .proj .last { justify-self: end; text-align: right; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+  .proj .last b { display: block; color: var(--ink-2); font-weight: 500; }
+  .key { display: flex; gap: 18px; margin-top: 12px; font-size: 12px; color: var(--muted); }
+  .key span { display: inline-flex; align-items: center; gap: 6px; } .key i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
+
+  /* Recent deploys and compute */
+  .lower { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; }
+  .deploys { border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+  .dep { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 12px 18px; }
+  .dep + .dep { box-shadow: inset 0 1px 0 var(--line); }
+  .dep .what { min-width: 0; } .dep .what b { color: var(--ink); font-weight: 600; } .dep .what b span { color: var(--muted); font-weight: 450; }
+  .dep .what p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-2); }
+  .dep .st { font-size: 12.5px; font-weight: 500; text-align: right; } .dep .st.ok { color: var(--muted); } .dep .st.fail { color: var(--fail-ink); } .dep .st.build { color: var(--ink); }
+  .dep time { width: 64px; text-align: right; font-size: 12.5px; color: var(--muted); }
+  .compute { border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); padding: 6px 18px; }
+  .srv { padding: 14px 0; } .srv + .srv { box-shadow: inset 0 1px 0 var(--line); }
+  .srv header { display: flex; justify-content: space-between; align-items: baseline; }
+  .srv header b { color: var(--ink); font-weight: 600; } .srv header small { font-size: 12px; color: var(--muted); }
+  .meter { display: grid; grid-template-columns: 52px 1fr 40px; align-items: center; gap: 10px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+  .meter .track { height: 6px; border-radius: 3px; background: var(--fill); overflow: hidden; }
+  .meter .track i { display: block; height: 100%; width: var(--v); border-radius: 3px; background: var(--ink-2); }
+  .meter .track i.hot { background: var(--build); }
+  .meter b { text-align: right; color: var(--ink-2); font-weight: 500; }
+
+  /* Tablet: the sidebar folds to a rail of icons, so the page keeps its width and its spacing. */
+  @media (max-width: 1180px) and (min-width: 761px) {
+    .app { grid-template-columns: 64px minmax(0, 1fr); }
+    .side { align-items: center; padding: 12px 8px; }
+    .org { width: 44px; justify-content: center; padding: 0; } .org > :not(.logo), .side nav a > :not(svg), .find > :not(svg), .me > :not(.face) { display: none; }
+    .find { width: 44px; justify-content: center; padding: 0; } .side nav a { width: 44px; justify-content: center; padding: 0; } .me { width: 44px; justify-content: center; padding: 0; }
+    .side nav a .n { display: none; }
+    .page { padding: 32px 32px 64px; }
+  }
+  @media (max-width: 1180px) { .lower { grid-template-columns: 1fr; } .proj { grid-template-columns: 200px minmax(0, 1fr) auto; } }
+  @media (max-width: 900px) { .needs { grid-template-columns: auto 1fr; } .needs .acts { grid-column: 2; } .proj { grid-template-columns: 1fr auto; } .proj .envs { grid-column: 1 / -1; grid-row: 2; } .proj .last { grid-row: 1; grid-column: 2; } }
+  /* The phone: the sidebar becomes a top bar, every block one column, each project two lines. */
+  @media (max-width: 760px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { position: static; height: auto; flex-direction: row; align-items: center; padding: 8px 12px; box-shadow: inset 0 -1px 0 var(--line); }
+    .side .find, .side nav, .side .bottom { display: none; }
+    .org { min-height: 44px; }
+    .bar { padding: 0 16px; } .bar .sync, .bar .plain span { display: none; }
+    .btn { min-height: 44px; }
+    .page { padding: 28px 16px 48px; }
+    h1 { font-size: 23px; }
+    .needs .acts { grid-column: 1 / -1; }
+    .proj { gap: 12px; } .proj .last { font-size: 12px; }
+    .dep { grid-template-columns: 24px minmax(0, 1fr) auto; } .dep time { display: none; }
+    .sec-h a { display: inline-flex; align-items: center; min-height: 44px; margin-block: -13px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <button class="org" aria-label="Switch organization"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 5l9 6M6 9.5V19h12V9.5M10 19v-5h4v5"/></svg></span><span>Larkspur Labs</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></svg></button>
+    <button class="find"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><span>Search</span><kbd>⌘K</kbd></button>
+    <nav aria-label="Main">
+      <a href="#overview" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z"/></svg><span>Overview</span></a>
+      <a href="#projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.5h6l2 2h9v9.5h-17z"/></svg><span>Projects</span></a>
+      <a href="#deploys"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"/></svg><span>Deployments</span></a>
+      <a href="#servers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v6H4zM4 13h16v6H4z"/><path d="M7.5 8h.01M7.5 16h.01" stroke-linecap="round" stroke-width="2.4"/></svg><span>Servers</span></a>
+      <a href="#alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16.5V11a6 6 0 1 1 12 0v5.5l1.5 2h-15zM10 21h4"/></svg><span>Alerts</span><span class="n">1</span></a>
+      <a href="#settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>Settings</span></a>
+    </nav>
+    <div class="bottom"><a class="me" href="#me"><span class="face" style="--h:30">NO</span><span>Noor Okafor</span></a></div>
+  </aside>
+
+  <main id="overview">
+    <div class="bar">
+      <div class="crumbs"><b>Overview</b></div>
+      <span class="spacer"></span>
+      <span class="sync num" data-sync title="Hangar checks every app every 10 seconds"><svg viewBox="0 0 16 16" fill="none" stroke-width="2" aria-hidden="true"><circle class="rest" cx="8" cy="8" r="6"/><circle class="fill" cx="8" cy="8" r="6" stroke-dasharray="37.7" stroke-dashoffset="37.7"/></svg><span>Checked <b data-ago>4 s</b> ago</span></span>
+      <a class="btn plain" href="#new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>New project</span></a>
+    </div>
+
+    <div class="page">
+      <h1>23 of 24 apps are running. <span>One failed to build 12 minutes ago.</span></h1>
+      <p class="since num">Last change went live <b>4 min ago</b>: storefront on main, by Joon Park.</p>
+
+      <div class="needs" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16.5h.01"/></svg>
+        <p><b>worker failed to build</b> in Larkspur API · Production. Step 4 of 6, <span class="mono">pnpm install</span> exited with code 1.</p>
+        <div class="acts"><a class="btn plain" href="#logs">View logs</a><a class="btn deploy" href="#redeploy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m0 0-5 5m5-5 5 5"/></svg>Redeploy</a></div>
+      </div>
+
+      <div class="sec-h" id="projects"><h2>Projects</h2><a href="#projects">All 4 projects</a></div>
+      <div class="fleet">
+        <div class="proj">
+          <div class="who"><b>Larkspur API</b><small class="mono">fra-1 · 2 environments</small></div>
+          <div class="envs">
+            <div class="env"><span>Production</span><div class="cells"><i class="cell" tabindex="0" data-tip="api · running"></i><i class="cell" tabindex="0" data-s="fail" data-tip="worker · build failed"></i><i class="cell" tabindex="0" data-tip="scheduler · running"></i><i class="cell" tabindex="0" data-tip="queue · running"></i><i class="cell" tabindex="0" data-tip="mailer · running"></i><i class="cell" tabindex="0" data-tip="search · running"></i><i class="cell" tabindex="0" data-tip="postgres · running"></i></div></div>
+            <div class="env"><span>Staging</span><div class="cells"><i class="cell" tabindex="0" data-tip="api · running"></i><i class="cell" tabindex="0" data-tip="worker · running"></i><i class="cell" tabindex="0" data-s="stop" data-tip="scheduler · stopped"></i><i class="cell" tabindex="0" data-tip="postgres · running"></i></div></div>
+          </div>
+          <div class="last num"><b>12 min ago</b>worker, failed</div>
+        </div>
+        <div class="proj">
+          <div class="who"><b>Storefront</b><small class="mono">ams-2 · 2 environments</small></div>
+          <div class="envs">
+            <div class="env"><span>Production</span><div class="cells"><i class="cell" tabindex="0" data-tip="web · running"></i><i class="cell" tabindex="0" data-tip="images · running"></i><i class="cell" tabindex="0" data-tip="checkout · running"></i><i class="cell" tabindex="0" data-tip="redis · running"></i></div></div>
+            <div class="env"><span>Preview · pr-412</span><div class="cells"><i class="cell" tabindex="0" data-s="build" data-tip="web · building, 1 min"></i><i class="cell" tabindex="0" data-tip="images · running"></i></div></div>
+          </div>
+          <div class="last num"><b>4 min ago</b>web, live</div>
+        </div>
+        <div class="proj">
+          <div class="who"><b>Analytics</b><small class="mono">fra-1 · 1 environment</small></div>
+          <div class="envs"><div class="env"><span>Production</span><div class="cells"><i class="cell" tabindex="0" data-tip="collector · running"></i><i class="cell" tabindex="0" data-tip="dashboard · running"></i><i class="cell" tabindex="0" data-tip="clickhouse · running"></i></div></div></div>
+          <div class="last num"><b>Yesterday</b>dashboard, live</div>
+        </div>
+        <div class="proj">
+          <div class="who"><b>Docs</b><small class="mono">ams-2 · 1 environment</small></div>
+          <div class="envs"><div class="env"><span>Production</span><div class="cells"><i class="cell" tabindex="0" data-tip="site · running"></i><i class="cell" tabindex="0" data-tip="search · running"></i></div></div></div>
+          <div class="last num"><b>3 days ago</b>site, live</div>
+        </div>
+      </div>
+      <div class="key" aria-hidden="true"><span style="--c:var(--run)"><i></i>Running</span><span style="--c:var(--build)"><i></i>Building</span><span style="--c:var(--fail)"><i></i>Failed</span><span style="--c:var(--stop)"><i></i>Stopped</span></div>
+
+      <div class="lower">
+        <section>
+          <div class="sec-h" id="deploys"><h2>Recent deployments</h2><a href="#deploys">All deployments</a></div>
+          <div class="deploys">
+            <div class="dep"><span class="face" style="--h:250">JP</span><div class="what"><b>storefront <span>· web · main</span></b><p>Cache product images at the edge <span class="mono">a41f9c2</span></p></div><span class="st ok">Live, 48 s</span><time class="num">4 min</time></div>
+            <div class="dep"><span class="face" style="--h:30">NO</span><div class="what"><b>larkspur-api <span>· worker · main</span></b><p>Bump sharp to 0.34 <span class="mono">7c0e113</span></p></div><span class="st fail">Failed at install</span><time class="num">12 min</time></div>
+            <div class="dep"><span class="face" style="--h:150">AS</span><div class="what"><b>storefront <span>· web · pr-412</span></b><p>New checkout summary <span class="mono">e92b4d0</span></p></div><span class="st build">Building, 1 min</span><time class="num">1 min</time></div>
+            <div class="dep"><span class="face" style="--h:250">JP</span><div class="what"><b>larkspur-api <span>· api · main</span></b><p>Rate-limit the export endpoint <span class="mono">3d18aa7</span></p></div><span class="st ok">Live, 1 m 12 s</span><time class="num">2 h</time></div>
+            <div class="dep"><span class="face" style="--h:90">MR</span><div class="what"><b>analytics <span>· dashboard · main</span></b><p>Weekly retention chart <span class="mono">b77c0f1</span></p></div><span class="st ok">Live, 2 m 03 s</span><time class="num">1 d</time></div>
+          </div>
+        </section>
+        <section>
+          <div class="sec-h" id="servers"><h2>Compute</h2><a href="#servers">3 servers</a></div>
+          <div class="compute">
+            <div class="srv"><header><b>fra-1</b><small class="mono">8 vCPU · 32 GB</small></header>
+              <div class="meter num"><span>CPU</span><span class="track"><i style="--v:38%"></i></span><b>38%</b></div>
+              <div class="meter num"><span>Memory</span><span class="track"><i style="--v:61%"></i></span><b>61%</b></div>
+              <div class="meter num"><span>Disk</span><span class="track"><i class="hot" style="--v:84%"></i></span><b>84%</b></div></div>
+            <div class="srv"><header><b>ams-2</b><small class="mono">4 vCPU · 16 GB</small></header>
+              <div class="meter num"><span>CPU</span><span class="track"><i style="--v:22%"></i></span><b>22%</b></div>
+              <div class="meter num"><span>Memory</span><span class="track"><i style="--v:47%"></i></span><b>47%</b></div>
+              <div class="meter num"><span>Disk</span><span class="track"><i style="--v:31%"></i></span><b>31%</b></div></div>
+            <div class="srv"><header><b>build-1</b><small class="mono">16 vCPU · builds only</small></header>
+              <div class="meter num"><span>CPU</span><span class="track"><i class="hot" style="--v:91%"></i></span><b>91%</b></div>
+              <div class="meter num"><span>Memory</span><span class="track"><i style="--v:54%"></i></span><b>54%</b></div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+  // The freshness line ticks every second; the ring fills toward the next check and the count resets when it lands.
+  const sync = document.querySelector('[data-sync]'), ago = sync.querySelector('[data-ago]'), ring = sync.querySelector('.fill');
+  let s = 4;
+  const show = () => { ago.textContent = s === 0 ? 'just now' : `${s} s`; ago.nextSibling.textContent = s === 0 ? '' : ' ago'; ring.style.strokeDashoffset = 37.7 * (1 - s / 10); };
+  show(); setInterval(() => { s = (s + 1) % 10; show(); }, 1000);
+</script>
+</body>
+</html>

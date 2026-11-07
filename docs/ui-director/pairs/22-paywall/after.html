@@ -14,7 +14,8 @@
 
   .top { display: flex; justify-content: space-between; align-items: center; height: 44px; margin-top: 50px; }
   .top a { display: inline-flex; align-items: center; height: 44px; color: var(--muted); font-size: var(--text-md); font-weight: var(--w-ui); line-height: 1; text-decoration: none; }
-  .x { display: grid; place-items: center; width: 32px; height: 32px; margin-right: -2px; border-radius: 50%; background: var(--fill); color: var(--ink-2); }
+  .x { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -8px; border-radius: 50%; color: var(--ink-2);
+       background: radial-gradient(circle closest-side, var(--fill) calc(100% - 6.5px), transparent calc(100% - 6px)); } /* a 32px circle in a 44px target */
   .x svg.lucide { width: 16px; height: 16px; stroke-width: 2.25; }
 
   /* The product, shown: a song heard offline and named */
@@ -47,7 +48,7 @@
 </style>
 </head>
 <body>
-  <div class="top"><a href="#">Restore purchase</a><span class="x" aria-label="Close"><i data-lucide="x"></i></span></div>
+  <div class="top"><a href="#">Restore purchase</a><button class="x" aria-label="Close"><i data-lucide="x"></i></button></div>
 
   <figure class="song">
     <header><b>Blackcap</b><small>0:00–0:04</small></header>

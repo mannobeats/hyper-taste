@@ -22,6 +22,20 @@ eye; on a page that sells it also shows what the product does.
 - **Content never waits:** everything shows without JavaScript, the headline is legible within
   about 400ms, and reduced motion keeps color and opacity feedback and drops movement.
 
+## Changing values and neighbors
+
+- **Content that changes moves; it never swaps in one frame.** A label or number rolls: the old
+  one leaves as the new one arrives, in a slot sized to the longer of the two. A button keeps
+  its width and changes its own label.
+- **Animate the relationship, not just the object.** A new row carries the rows below it (animate
+  the list's height with the row); an icon that appears opens its width and gap together while
+  its label travels; a resizing surface moves size, position and content as one transition, and
+  its text never stretches.
+- **Exits get their time:** keep what leaves mounted for its exit, then remove it.
+- **Interrupted motion retargets** from where it is; re-keying an entrance restarts it.
+- **A changing state has a cause:** data never rewinds in view without one, and a loop ends where
+  it began or resets with a visible cause.
+
 ## Pages that sell
 
 1. **Feedback on every control,** a pressed state at `scale(.98)`.
@@ -35,7 +49,7 @@ eye; on a page that sells it also shows what the product does.
 4. **Reveals that act out the content** where they explain it: bars grow from the baseline, a
    line types itself (2 characters per 25ms), a list fills a row at a time, a number counts up
    once over 1.2–1.8s in tabular figures (real numbers only).
-5. **The signature:** the film or scene (`craft.md`, `visuals.md`), the most ambitious motion on
+5. **The signature:** the film, the control to try or the scene (`product-shots.md`, `visuals.md`), the most ambitious motion on
    the page. Pointer effects: at most one per screen, eased toward the pointer, fine pointers
    only.
 

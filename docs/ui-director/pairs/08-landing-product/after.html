@@ -198,6 +198,26 @@
     .window { border-radius: 14px; padding: 4px; } .screen { border-radius: 10px; }
     .film-bar { flex-direction: column; align-items: start; gap: 4px; }
     .btn, .steps .pause { height: 44px; }
+
+    /* The phone gets its own composition, not the desktop window shrunk: the same week at a
+       400px design width, each ingredient on two lines (name and status, then its days). */
+    .hero { height: auto; padding-bottom: 200px; }
+    .film { margin-top: -150px; }
+    .screen { aspect-ratio: auto; }
+    .nav { grid-template-columns: 1fr auto; }
+    .ui { --u: calc(100cqw / 380); height: auto; padding-bottom: calc(8 * var(--u)); }
+    .top { grid-template-columns: 1fr auto; padding: 0 calc(16 * var(--u)); }
+    .tabs, .who > :first-child, .title .range, .src, .lanes, .r > :nth-child(2) { display: none; }
+    .title { flex-wrap: wrap; height: auto; row-gap: calc(8 * var(--u)); padding: calc(16 * var(--u)) calc(16 * var(--u)) calc(8 * var(--u)); }
+    .table { padding: 0 calc(16 * var(--u)); }
+    .r { grid-template-columns: 1fr auto; row-gap: calc(10 * var(--u)); height: auto; padding: calc(14 * var(--u)) 0; }
+    .r > .track { grid-column: 1 / -1; grid-row: 2; height: calc(24 * var(--u)); }
+    .r > .st { grid-column: 2; grid-row: 1; justify-items: end; text-align: right; }
+    .r.th { height: auto; padding: calc(8 * var(--u)) 0; }
+    .r.th .days { grid-column: 1 / -1; grid-row: 2; }
+    .r.th .days > * { font-size: calc(11 * var(--u)); }
+    .table > .r:nth-of-type(n + 8) { display: none; }
+    .toast { left: calc(16 * var(--u)); right: calc(16 * var(--u)); width: auto; bottom: calc(16 * var(--u)); }
   }
 </style>
 </head>

@@ -1,29 +1,62 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bandwidth</title>
+<link rel="stylesheet" href="../tokens.css">
 <style>
-  body { margin: 0; padding: 40px 32px; display: grid; place-items: center; background: #000; font: 500 13px/1.4 Inter, system-ui, sans-serif; color: #fff; }
-  .card { width: 340px; padding: 14px; border-radius: 16px; background: #000; border: 1px solid #111; display: grid; gap: 10px; }
-  .t { font-size: 14px; font-weight: 700; }
-  .row { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: #050505; border: 1px solid #141414; }
-  .bar { height: 6px; border-radius: 3px; background: #111; overflow: hidden; } .bar i { display: block; width: 92%; height: 100%; background: #ff0000; }
-  .btn { height: 36px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; background: #5b3cf6; color: #fff; }
-  .note { color: #fff; font-size: 12px; }
-  .btn { line-height: 1; }
+  /* The same card. The one fault: dark as inverted light. Pure black on black, white for every word, and red at full strength. */
+  :root { --accent-h: 275; }
+  .usage { width: min(100%, 400px); padding: 20px; display: grid; gap: 14px; }
+  .top { display: flex; align-items: baseline; justify-content: space-between; }
+  .top h1 { font-size: var(--text-md); color: var(--ink-2); font-weight: var(--w-ui); }
+  .top span { font-size: var(--text-xs); color: var(--muted); }
+  .n { font-size: 30px; font-weight: var(--w-strong); color: var(--ink); letter-spacing: -.03em; line-height: 1.1; }
+  .n small { font-size: var(--text-sm); color: var(--muted); font-weight: var(--w-body); letter-spacing: 0; }
+  .days { display: flex; align-items: flex-end; gap: 3px; height: 44px; }
+  .days i { flex: 1; border-radius: 2px; background: var(--line-strong); }
+  .days i.hi { background: var(--warn); }
+  .bar { height: 6px; border-radius: 3px; background: var(--fill); overflow: hidden; }
+  .bar i { display: block; width: 92%; height: 100%; background: var(--warn); border-radius: 3px; }
+  .note { display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--muted); margin-top: -6px; }
+  .note b { color: var(--warn-ink); font-weight: var(--w-ui); }
+  .rows { border-radius: 12px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); }
+  .row { display: flex; justify-content: space-between; align-items: center; min-height: 40px; padding: 0 14px; font-size: var(--text-sm); }
+  .row + .row { border-top: 1px solid var(--line); }
+  .row span:first-child { color: var(--ink-2); }
+  .row span:last-child { color: var(--muted); }
+  .usage .btn { width: 100%; }
+  body { background: #000; }
+  .card { background: #000; box-shadow: 0 0 0 1px #111; }
+  .top h1, .top span, .n, .n small, .note, .row span:first-child, .row span:last-child { color: #fff !important; }
+  .days i { background: #222; } .days i.hi { background: #ff0000; }
+  .bar { background: #111; } .bar i { background: #ff0000; }
+  .note b { color: #ff0000; }
+  .rows { background: #050505; box-shadow: inset 0 0 0 1px #141414; } .row + .row { border-top-color: #141414; }
+  .usage .btn { background: #5b3cf6; color: #fff; }
 </style>
 </head>
 <body>
-  <div class="card">
-    <div class="t">Bandwidth this month</div>
+  <section class="card usage">
+    <div class="top"><h1>Bandwidth this month</h1><span>Resets Nov 1</span></div>
+    <div class="n num">1.84 TB <small>of 2 TB</small></div>
+    <div class="days" role="img" aria-label="Daily use, rising in the last week">
+      <i style="height:30%"></i><i style="height:34%"></i><i style="height:28%"></i><i style="height:40%"></i><i style="height:36%"></i><i style="height:32%"></i><i style="height:38%"></i>
+      <i style="height:35%"></i><i style="height:42%"></i><i style="height:39%"></i><i style="height:44%"></i><i style="height:41%"></i><i style="height:37%"></i><i style="height:46%"></i>
+      <i style="height:43%"></i><i style="height:48%"></i><i style="height:45%"></i><i style="height:50%"></i><i style="height:47%"></i><i style="height:52%"></i><i style="height:49%"></i>
+      <i class="hi" style="height:70%"></i><i class="hi" style="height:78%"></i><i class="hi" style="height:74%"></i><i class="hi" style="height:88%"></i><i class="hi" style="height:84%"></i><i class="hi" style="height:96%"></i><i class="hi" style="height:100%"></i>
+    </div>
     <div class="bar"><i></i></div>
-    <div class="note">1.84 TB of 2 TB used</div>
-    <div class="row"><span>Website</span><span>1.02 TB</span></div>
-    <div class="row"><span>API</span><span>610 GB</span></div>
-    <div class="row"><span>Downloads</span><span>210 GB</span></div>
-    <div class="btn">Raise the limit</div>
-  </div>
+    <div class="note num"><span>92% used, 3 days to go</span><b>160 GB left</b></div>
+    <div class="rows num">
+      <div class="row"><span>Website</span><span>1.02 TB</span></div>
+      <div class="row"><span>API</span><span>610 GB</span></div>
+      <div class="row"><span>Downloads</span><span>210 GB</span></div>
+    </div>
+    <button class="btn accent lg" type="button">Raise the limit</button>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
 </body>
 </html>

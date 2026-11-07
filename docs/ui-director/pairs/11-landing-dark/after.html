@@ -233,6 +233,26 @@
     .actions { justify-items: start; }
     .film-bar { flex-direction: column; align-items: flex-start; height: auto; padding: 14px 8px 4px; gap: 4px; }
     .foot { flex-direction: column; }
+    .foot nav { flex-wrap: wrap; gap: 0 24px; } .foot nav a { display: inline-flex; align-items: center; min-height: 44px; line-height: 1; }
+    .nav a, .nav .btn, .hero .fact, .steps [data-pause] { min-height: 44px; display: inline-flex; align-items: center; line-height: 1; }
+
+    /* The phone gets its own composition, not the desktop report shrunk: the chart, the lock
+       and the statements at a 400px design width; the side panel goes. */
+    .window { aspect-ratio: auto; }
+    .w { --u: calc(100cqw / 360); height: auto; grid-template-rows: auto; grid-template-columns: minmax(0, 1fr); }
+    .w-head b { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .w-addr { height: calc(30 * var(--u)); }
+    .w-head { height: calc(52 * var(--u)); }
+    .w-head .crumb, .w-head .by, .w-side, .lanes { display: none; }
+    .w-body { grid-template-columns: 1fr; }
+    .w-main { padding: calc(16 * var(--u)) calc(20 * var(--u)) calc(24 * var(--u)); }
+    .hole-band p { left: auto; right: calc(100% + 6 * var(--u)); text-align: right; white-space: nowrap; }
+    .x span:last-child { translate: -100% 0; }
+    .c-head { flex-direction: column; gap: calc(4 * var(--u)); }
+    .stmt { flex-direction: column; gap: calc(4 * var(--u)); } .stmt code { white-space: normal; }
+    .glass { left: calc(12 * var(--u)); right: calc(12 * var(--u)); bottom: calc(12 * var(--u)); }
+    .g-head { flex-wrap: wrap; } .g-head span:not(.w-btn) { display: none; }
+    .diff code { white-space: normal; }
   }
 </style>
 </head>

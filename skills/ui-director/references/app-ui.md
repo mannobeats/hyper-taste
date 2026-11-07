@@ -1,8 +1,11 @@
-# App UI: dashboards, tools and phone apps
+# App UI: dashboards, tools, and the states every app needs
 
-For admin panels, analytics, CRMs, tables, settings, detail pages, phone apps, and an app's
-onboarding, waits, paywalls, success and failure. The layout comes from the job this product
-does; the template (greeting, four stat cards, a chart, a table) is the obvious version.
+For admin panels, analytics, CRMs, tables, settings and detail pages, and every app's waits,
+success and failure. Phone apps also read `mobile.md`. The layout comes from the job this
+product does; the template (greeting, four stat cards, a chart, a table) is the obvious version.
+The golds are three shells: `examples/app-dashboard.html` (sidebar), `app-analytics.html`
+(inset sidebar on a tinted ground) and `app-finance.html` (top nav, one centered column). The
+page column is centered in the main area; the sidebar folds to a rail of icons on tablets.
 
 ## The direction block
 
@@ -15,6 +18,7 @@ Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
 Needs attention: <what must jump out, and the one color it gets>.
 Actions: primary "<label>"; frequent <…>; rare <…>; destructive <…>.
 Density: <calm | standard | dense>, because <…>. Shell: <sidebar | top tabs | queue and detail | canvas>.
+Gold: <the example you start from>.
 Obvious version: <the screen any model builds for this>.
 Directions, each from one thing in the user's world (a ledger, a board, a score, a map):
   A. <the thing>: <what the first screen shows and how> / <palette> / <type>
@@ -98,8 +102,13 @@ belongs to its product.
 
 Most "it looks off" is here. Check each in the browser at every width, light and dark.
 
-- **Nothing touches its edge:** text at least 10px inside any pill, button or highlight, never
-  under an icon. A label that doesn't fit gets shorter, never clipped.
+- **Nothing touches its edge:** text at least 10px inside any pill, button or highlight, 12px
+  inside a card, row or panel, never under an icon. A label that doesn't fit gets shorter, never
+  clipped.
+- **Stacks read as one item:** a title over its subtitle 4–6px of ink apart, the row's padding
+  carrying the air; a list fills its pane with more rows, not taller ones.
+- **No near-tangents:** edges 1–3px apart read as an accident. Line them up or part them by 8px
+  or more.
 - **Centered labels:** single-line controls get `line-height: 1` and `align-items: center`; an
   inherited body line height sits the text a pixel high.
 - **Segmented controls** size options to their labels; the highlight sits exactly on its option.
@@ -122,25 +131,14 @@ Most "it looks off" is here. Check each in the browser at every width, light and
   headings at 500–600 (heavier looks muddy on dark).
 - A wide table scrolls inside its own wrapper; grid children get `min-width: 0`.
 
-## Phones and responsive
+## Responsive
 
 - Design at 1440, check 1024, 768 and 390 as you go.
-- Below about 720px every multi-column layout becomes one column, in the same component.
-- Tables become two-line rows: who and how much, then date and status as plain text.
-- The sidebar becomes a drawer; nothing important is hover-only.
-- Body and inputs 16px with the right `type` and `inputmode`; `min-height: 100dvh`; side
-  padding 16px; targets 44×44px; primary actions in the bottom third; fixed bars respect
-  `env(safe-area-inset-*)`.
-- **Patterns:** a tab bar for 3–5 sections (outlined icons, filled when active); stack
-  navigation whose back button names the previous screen; large titles that collapse; sheets
-  with a grabber for secondary tasks; lists with 56–64px rows. One platform language per app.
-- **Native** (SwiftUI, Compose, React Native): the system pieces first (`TabView`,
-  `NavigationStack`, `.sheet`, SF Symbols; Material 3), restyled with the tokens. Springs with
-  no bounce in UI (`.smooth`, `.snappy`; Compose `dampingRatio = 1f`), a drag handing its
-  velocity to the spring. Sheets with medium and large detents. Haptics on confirm, success and
-  error only. Check the largest Dynamic Type size.
-
-If text feels small, the screen isn't finished: cut or split it, don't shrink the text.
+- Below about 760px every multi-column layout becomes one column, in the same component: the
+  sidebar becomes a top bar or a drawer, stats stack, the side panel moves under the main one.
+- Tables become two-line rows: who and how much, then the detail as plain text
+  (`examples/app-dashboard.html` at 390). Nothing important is hover-only.
+- Controls grow to 44px on touch; body and inputs 16px. Phone apps proper: `mobile.md`.
 
 ## Moments
 
@@ -171,5 +169,5 @@ People remember an app by its best moment and how it ends. Write the moments int
 - [ ] Nothing from the obvious version or "Never" in `SKILL.md`.
 - [ ] Every control has hover, focus, active, disabled; every list has empty, loading, error.
 - [ ] The peak, the end and the screen they return to are designed.
-- [ ] Phone (390): no sideways scroll, two-line rows, 44px targets, 16px inputs.
-- [ ] Dark is designed and checked; the page check in `look.md` is clean or explained.
+- [ ] Phone (390): its own layout, no sideways scroll, two-line rows, 44px targets, 16px inputs.
+- [ ] Dark is designed and checked; `scripts/check.mjs` ends `check passed`.

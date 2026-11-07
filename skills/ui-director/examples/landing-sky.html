@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Gold example: copy its structure and its craft, replace its world. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cirrus: your inbox, mostly clear</title>
+<meta name="description" content="Cirrus sorts mail by who sent it, so mornings take minutes. Free for Mac.">
+<style>
+  /* Cirrus, mail for Mac. One idea carried everywhere: the inbox as a weather report.
+     The first screen is a sky drawn in code (soft clouds under a halftone of dots, three layers
+     that part as you scroll), a centered promise of five words, and the app rising out of the
+     sky until it fills the screen. Light page, one blue, Geist. */
+  @font-face { font-family: "Geist"; src: url("../fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+  :root {
+    --font: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --ground: oklch(.975 .006 240); --panel: oklch(.955 .008 240); --surface: oklch(1 0 0);
+    --ink: oklch(.21 .02 255); --ink-2: oklch(.36 .02 255); --muted: oklch(.5 .018 255); --faint: oklch(.7 .012 255);
+    --line: oklch(.9 .008 245); --line-2: oklch(.84 .01 245);
+    --blue: oklch(.55 .16 252); --blue-ink: oklch(.45 .15 254); --blue-soft: oklch(.95 .03 245);
+    --sky-1: oklch(.5 .15 254); --sky-2: oklch(.66 .13 242); --sky-3: oklch(.84 .07 232);
+    --ease: cubic-bezier(.16, 1, .3, 1); --gutter: clamp(20px, 4vw, 40px);
+    --hair: inset 0 0 0 .5px oklch(.2 .03 255 / .12);
+    color-scheme: light;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  body { font: 450 16px/1.5 var(--font); color: var(--ink-2); background: var(--ground); -webkit-font-smoothing: antialiased; }
+  img, svg, canvas { display: block; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+  .num { font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: var(--gutter); }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 48px; padding: 0 24px; border-radius: 999px;
+         font: 550 15px/1 var(--font); line-height: 1; letter-spacing: -.012em; white-space: nowrap; transition: transform 140ms var(--ease), background-color 140ms, box-shadow 140ms; }
+  .btn:active { transform: scale(.98); }
+  .btn svg { width: 17px; height: 17px; }
+  .btn.white { background: #fff; color: var(--ink); box-shadow: 0 1px 2px oklch(.2 .05 255 / .2), 0 8px 24px -8px oklch(.2 .08 255 / .45); }
+  .btn.white:hover { background: oklch(.97 .01 240); }
+  .btn.glass { color: #fff; background: oklch(.32 .1 255 / .28); box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .45); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); }
+  .btn.glass:hover { background: oklch(.32 .1 255 / .4); }
+  .btn.ink { background: var(--ink); color: #fff; }
+  .btn.ink:hover { background: oklch(.3 .02 255); }
+  .btn.soft { background: var(--surface); color: var(--ink); box-shadow: var(--hair), 0 1px 2px oklch(.2 .03 255 / .06); }
+
+  /* ---------- The nav, clear over the sky ---------- */
+  /* The nav stays with you. Clear and white over the sky; once the page turns light under it, it
+     becomes a frosted bar with ink text, so it is always readable and always there. */
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 20; transition: background-color 300ms, box-shadow 300ms, -webkit-backdrop-filter 300ms, backdrop-filter 300ms; }
+  .nav[data-solid] { background: oklch(.975 .006 240 / .78); -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6); box-shadow: 0 .5px 0 var(--line); }
+  .nav[data-solid] .mark { color: var(--ink); }
+  .nav[data-solid] .links a { color: var(--muted); } .nav[data-solid] .links a:hover { color: var(--ink); }
+  .nav[data-solid] .btn.white { background: var(--ink); color: #fff; box-shadow: none; }
+  .mark, .links a, .nav .btn { transition: color 300ms, background-color 300ms; }
+  .nav .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 72px; }
+  .mark { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; color: #fff; font: 640 19px/1 var(--font); letter-spacing: -.035em; }
+  .mark svg { width: 26px; height: 26px; }
+  .links { display: flex; gap: 32px; font-size: 15px; font-weight: 500; }
+  .links a { color: oklch(1 0 0 / .82); line-height: 1; } .links a:hover { color: #fff; }
+  .nav .end { justify-self: end; }
+  .nav .btn { height: 40px; padding: 0 18px; font-size: 14px; }
+
+  /* ---------- The scene: the sky, the promise, the app rising ---------- */
+  /* On a tall screen the window stops growing at 720px and leaves sky under it; the next section
+     rises over that sky, so the gap after the scene is always one section spacing. */
+  .scene { position: relative; height: 230svh; background: var(--ground); margin-bottom: calc(-1 * max(0px, 100svh - 864px)); }
+  .scene + main { position: relative; }
+  .stage { --p: 0; position: sticky; top: 0; height: 100svh; min-height: 680px; overflow: hidden; isolation: isolate;
+           background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 46%, var(--sky-3) 100%); }
+  .stage canvas { position: absolute; left: -10%; top: -6%; width: 120%; height: 112%; pointer-events: none; will-change: transform; }
+  .stage .far { opacity: .9; transform: translate3d(0, calc(var(--p) * -40px), 0); }
+  .stage .soft { opacity: .85; filter: blur(14px); transform: translate3d(0, calc(var(--p) * -90px), 0) scale(calc(1 + var(--p) * .06)); }
+  .stage .near { transform: translate3d(0, calc(var(--p) * -170px), 0) scale(calc(1 + var(--p) * .12)); }
+  /* The sky pales into the page as the scene ends, so there is no seam. */
+  .stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: calc(var(--p) * 1.15 - .15);
+                  background: linear-gradient(180deg, transparent 0%, oklch(.975 .006 240 / .7) 60%, var(--ground) 100%); }
+
+  .copy { position: absolute; z-index: 3; top: calc(72px + clamp(28px, 7svh, 88px)); left: 50%; width: min(calc(100% - var(--gutter) * 2), 1100px);
+          display: flex; flex-direction: column; align-items: center; text-align: center; color: #fff;
+          opacity: calc(1 - var(--p) * 2.2); transform: translate(-50%, calc(var(--p) * -90px)); }
+  .copy::before { content: ""; position: absolute; inset: -14% -10% -24%; z-index: -1; pointer-events: none;
+                  background: radial-gradient(closest-side, oklch(.38 .12 254 / .26), transparent); }
+  .forecast { display: inline-flex; align-items: center; gap: 10px; height: 34px; padding: 0 15px 0 12px; border-radius: 999px; font-size: 13px; font-weight: 500;
+              background: oklch(1 0 0 / .14); box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .4); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); line-height: 1; }
+  .forecast svg { width: 16px; height: 16px; }
+  .forecast span { opacity: .78; }
+  h1 { margin-top: 26px; font: 640 clamp(3rem, 1.2rem + 5.4vw, 6.4rem)/.94 var(--font); letter-spacing: -.055em; text-wrap: balance; }
+  h1 .soft-line { display: block; color: oklch(.97 .03 235 / .66); }
+  .lede { margin-top: 24px; max-width: 38rem; font-size: clamp(1.06rem, .96rem + .35vw, 1.28rem); line-height: 1.45; letter-spacing: -.012em; color: oklch(1 0 0 / .86); text-wrap: balance; }
+  .acts { display: flex; gap: 12px; margin-top: 34px; }
+
+  /* The app. Real size: every number is the app's own pixels. It starts low, under the buttons,
+     and rises and grows with the scroll until it fills the screen. */
+  /* It starts one gap (64px) under the actions (--top0 is measured from the copy) and ends one gap
+     under the nav, its foot 48px above the stage's: the same spacing wherever the scroll stops. */
+  .window { position: absolute; z-index: 2; left: 50%; top: 0; width: min(1180px, calc(100% - var(--gutter) * 2)); height: min(720px, calc(100svh - 144px));
+            transform: translate(-50%, calc(var(--top0, 640px) - var(--p) * (var(--top0, 640px) - 96px))) scale(calc(.94 + var(--p) * .06)); transform-origin: 50% 0;
+            display: grid; grid-template-columns: 224px 340px 1fr; border-radius: 20px; overflow: hidden; color: var(--ink-2); font-size: 13.5px; line-height: 1.35;
+            background: oklch(1 0 0 / .5); box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .7), 0 0 0 .5px oklch(.25 .08 255 / .2), 0 50px 100px -30px oklch(.25 .1 255 / .5), 0 18px 36px -18px oklch(.25 .1 255 / .35); }
+  .side { padding: 14px 12px; background: oklch(1 0 0 / .42); -webkit-backdrop-filter: blur(40px) saturate(1.6); backdrop-filter: blur(40px) saturate(1.6); box-shadow: inset -.5px 0 0 oklch(.3 .05 255 / .14); }
+  .lights { display: flex; gap: 8px; height: 22px; align-items: center; padding-left: 4px; }
+  .lights i { width: 12px; height: 12px; border-radius: 50%; background: oklch(.3 .05 255 / .18); }
+  .acct { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 6px 8px; color: var(--ink); font-weight: 600; line-height: 1; }
+  .acct img, .face { width: 26px; height: 26px; border-radius: 50%; flex: none; }
+  .face { display: grid; place-items: center; font-size: 10.5px; font-weight: 600; color: oklch(.38 .1 var(--h)); background: oklch(.9 .05 var(--h)); line-height: 1; }
+  .side nav { display: grid; gap: 1px; margin-top: 14px; }
+  .side nav a { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px; border-radius: 8px; color: var(--ink-2); font-weight: 500; line-height: 1; }
+  .side nav a svg { width: 16px; height: 16px; color: var(--muted); }
+  .side nav a b { margin-left: auto; font-weight: 500; color: var(--muted); font-size: 12.5px; }
+  .side nav a.on { background: oklch(1 0 0 / .75); color: var(--ink); box-shadow: 0 .5px 1px oklch(.3 .05 255 / .12); }
+  .side nav a.on svg { color: var(--blue); }
+  .side h4 { margin: 20px 10px 6px; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .side .tag { display: flex; align-items: center; gap: 10px; height: 30px; padding: 0 10px; color: var(--ink-2); line-height: 1; }
+  .side .tag i { width: 8px; height: 8px; border-radius: 3px; background: var(--c); }
+
+  .list { background: oklch(.99 .003 240 / .92); box-shadow: inset -.5px 0 0 var(--line); min-width: 0; }
+  .bar { display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 16px; box-shadow: inset 0 -.5px 0 var(--line); }
+  .bar h3 { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .bar .wx { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--blue-ink); background: var(--blue-soft); line-height: 1; }
+  .bar .wx svg { width: 14px; height: 14px; }
+  .grp { display: flex; justify-content: space-between; padding: 14px 16px 6px; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .msg { display: grid; grid-template-columns: 26px 1fr auto; column-gap: 12px; padding: 12px 16px; margin: 0 6px; border-radius: 10px; }
+  .msg .face { grid-row: span 2; margin-top: 1px; }
+  .msg b { color: var(--ink); font-weight: 600; } .msg time { font-size: 12px; color: var(--muted); }
+  .msg p { grid-column: 2 / -1; margin-top: 3px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .msg.on { background: var(--blue); } .msg.on b, .msg.on p { color: #fff; } .msg.on time { color: oklch(1 0 0 / .78); }
+  .skim { display: flex; align-items: center; gap: 12px; margin: 6px; padding: 12px 10px; border-radius: 10px; background: var(--panel); }
+  .skim .stack { display: flex; } .skim .stack span { width: 22px; height: 22px; margin-left: -6px; border-radius: 6px; box-shadow: 0 0 0 2px var(--panel); background: oklch(.85 .06 var(--h)); }
+  .skim .stack span:first-child { margin-left: 0; }
+  .skim div:last-child { line-height: 1.3; } .skim b { color: var(--ink); font-weight: 600; display: block; } .skim small { font-size: 12px; color: var(--muted); }
+
+  .read { background: var(--surface); padding: 0 32px; min-width: 0; }
+  .read .bar { padding: 0; gap: 4px; }
+  .read .bar button { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; color: var(--muted); }
+  .read .bar button svg { width: 17px; height: 17px; }
+  .read .bar .search { margin-left: auto; display: flex; align-items: center; gap: 8px; width: 220px; height: 32px; padding: 0 10px; border-radius: 8px; background: var(--panel); color: var(--muted); font-size: 13px; line-height: 1; }
+  .read .bar .search svg { width: 15px; height: 15px; } .read .bar kbd { margin-left: auto; font: 500 11px/1 var(--font); padding: 4px 6px; border-radius: 5px; background: var(--surface); box-shadow: var(--hair); }
+  .read h2 { margin-top: 30px; font-size: 24px; font-weight: 600; letter-spacing: -.025em; line-height: 1.15; color: var(--ink); }
+  .from { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+  .from .face { width: 36px; height: 36px; font-size: 13px; }
+  .from b { color: var(--ink); font-weight: 600; display: block; } .from small { font-size: 12.5px; color: var(--muted); }
+  .from time { margin-left: auto; font-size: 12.5px; color: var(--muted); }
+  .body { margin-top: 22px; max-width: 520px; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+  .body p + p { margin-top: 12px; }
+  .ticket { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 16px; max-width: 420px; margin-top: 22px; padding: 16px 18px; border-radius: 14px; background: var(--panel); box-shadow: var(--hair); }
+  .ticket small { font-size: 12px; color: var(--muted); } .ticket b { color: var(--ink); font-weight: 600; font-size: 15px; }
+  .ticket .t { grid-row: span 2; text-align: right; font-size: 22px; font-weight: 600; letter-spacing: -.02em; color: var(--ink); }
+  .reply { display: flex; align-items: center; gap: 10px; max-width: 520px; height: 44px; margin-top: 28px; padding: 0 14px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--faint); }
+
+  /* ---------- Sections ---------- */
+  /* One rhythm: every section is the same distance from the next. */
+  section.band { padding-block: clamp(80px, 10vw, 136px); }
+  .head { max-width: 680px; }
+  .head h2 { font: 640 clamp(2.25rem, 1.3rem + 2.8vw, 3.75rem)/1.02 var(--font); letter-spacing: -.04em; color: var(--ink); text-wrap: balance; }
+  .head h2 span { display: block; color: oklch(.6 .015 255); }
+  .head p { margin-top: 18px; max-width: 34rem; font-size: 18px; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
+
+  .grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; margin-top: 56px; }
+  .tile { display: grid; grid-template-rows: 1fr auto; overflow: hidden; border-radius: 28px; background: var(--surface); box-shadow: var(--hair), 0 1px 2px oklch(.2 .03 255 / .04); }
+  .tile.full { grid-column: 1 / -1; grid-template-columns: .85fr 1.15fr; grid-template-rows: auto; }
+  .tile.full .pic { order: 2; }
+  .pic { position: relative; isolation: isolate; display: grid; place-items: center; min-height: 340px; padding: 40px 28px; overflow: hidden; border-radius: 20px; margin: 8px 8px 0;
+         background: linear-gradient(180deg, var(--a), var(--b)); }
+  .tile.full .pic { margin: 8px 8px 8px 0; }
+  .pic canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .cap { padding: 22px 28px 26px; font-size: 17px; line-height: 1.45; color: var(--muted); }
+  .cap b { color: var(--ink); font-weight: 600; }
+  .tile.full .cap { align-self: center; padding: 40px; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; }
+
+  .pane { width: 100%; max-width: 380px; padding: 8px; border-radius: 20px; color: var(--ink-2); font-size: 14px; line-height: 1.3;
+           background: oklch(1 0 0 / .62); -webkit-backdrop-filter: blur(24px) saturate(1.6); backdrop-filter: blur(24px) saturate(1.6);
+           box-shadow: inset 0 0 0 .5px oklch(1 0 0 / .8), 0 24px 50px -20px oklch(.25 .1 255 / .45); }
+  .pane header { display: flex; justify-content: space-between; padding: 10px 12px 8px; font-size: 12.5px; color: var(--muted); }
+  .pane header b { color: var(--ink); font-weight: 600; }
+  .door { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; }
+  .door + .door { box-shadow: inset 0 .5px 0 oklch(.3 .05 255 / .1); }
+  .door .face { width: 30px; height: 30px; font-size: 11px; }
+  .door b { display: block; color: var(--ink); font-weight: 600; } .door small { font-size: 12.5px; color: var(--muted); }
+  .door .yes { display: flex; gap: 6px; }
+  .door .yes span { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; line-height: 1; background: oklch(1 0 0 / .8); box-shadow: var(--hair); color: var(--ink); }
+  .door .yes span.in { background: var(--ink); color: #fff; box-shadow: none; }
+  .paper { padding: 6px 12px 10px; }
+  .paper div { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; }
+  .paper div + div { box-shadow: inset 0 .5px 0 oklch(.3 .05 255 / .1); }
+  .paper b { color: var(--ink); font-weight: 600; } .paper small { grid-column: 1 / -1; color: var(--muted); font-size: 13px; } .paper i { font-style: normal; font-size: 12px; color: var(--muted); }
+  .when { display: grid; gap: 2px; padding: 4px; }
+  .when span { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px; border-radius: 12px; color: var(--ink); font-weight: 500; line-height: 1; }
+  .when span svg { width: 17px; height: 17px; color: var(--muted); }
+  .when span em { margin-left: auto; font-style: normal; font-size: 12.5px; color: var(--muted); }
+  .when span.on { background: var(--blue); color: #fff; } .when span.on svg, .when span.on em { color: oklch(1 0 0 / .8); }
+
+  /* The number and its sentence share one centre line, with the same space above and below. */
+  .stat { display: grid; grid-template-columns: auto minmax(0, 26rem); justify-content: space-between; align-items: center; gap: 48px; padding: 56px 72px; border-radius: 28px; color: #fff; position: relative; isolation: isolate; overflow: hidden;
+          background: linear-gradient(180deg, var(--sky-1), oklch(.4 .14 258)); }
+  .stat canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: .5; }
+  .stat .n { font: 640 clamp(9rem, 4rem + 13vw, 16rem)/.74 var(--font); letter-spacing: -.05em; text-box: trim-both cap alphabetic; }
+  .stat p { max-width: 22ch; font-size: 24px; letter-spacing: -.015em; line-height: 1.4; color: oklch(1 0 0 / .8); } .stat p b { color: #fff; font-weight: 600; }
+
+  /* Every action is one key: press them, they light. */
+  .keys { text-align: center; }
+  .keys .head, .keys .head h2, .keys .head p { margin-inline: auto; } .keys .head h2 { max-width: 14ch; }
+  .caps { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; margin-top: 56px; }
+  .cap-k { display: grid; justify-items: center; gap: 14px; }
+  .cap-k kbd { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 20px; font: 600 30px/1 var(--font); color: var(--ink);
+               background: linear-gradient(180deg, #fff, oklch(.965 .006 240)); box-shadow: inset 0 -3px 0 oklch(.88 .01 245), 0 0 0 .5px oklch(.2 .03 255 / .16), 0 12px 24px -12px oklch(.2 .05 255 / .3);
+               transition: transform 120ms var(--ease), box-shadow 120ms, background-color 120ms, color 120ms; }
+  .cap-k kbd[data-down] { transform: translateY(2px); background: var(--blue); color: #fff; box-shadow: inset 0 -1px 0 oklch(.4 .15 255), 0 0 0 .5px var(--blue), 0 6px 14px -8px oklch(.4 .15 255 / .6); }
+  .cap-k span { font-size: 15px; font-weight: 500; color: var(--muted); }
+
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 880px; margin-top: 48px; }
+  .plan { padding: 30px; border-radius: 28px; background: var(--surface); box-shadow: var(--hair); }
+  .plan.pick { box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .plan h3 { font-size: 17px; font-weight: 600; color: var(--ink); }
+  .plan .price { margin-top: 14px; font: 640 44px/1 var(--font); letter-spacing: -.045em; color: var(--ink); }
+  .plan .price small { margin-left: 4px; font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+  .plan ul { margin: 22px 0 26px; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 15px; }
+  .plan li { display: flex; gap: 10px; } .plan li svg { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--ink); }
+  .plan .btn { height: 44px; font-size: 15px; }
+
+  /* The close: the sky again, at dusk */
+  .close { position: relative; isolation: isolate; overflow: hidden; padding: clamp(96px, 11vw, 160px) 0; text-align: center; color: #fff;
+           background: linear-gradient(180deg, oklch(.42 .12 268), oklch(.62 .12 320) 62%, oklch(.8 .1 55)); }
+  .close canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: .75; }
+  .close h2 { font: 640 clamp(3rem, 1.4rem + 5vw, 6rem)/.94 var(--font); letter-spacing: -.055em; text-wrap: balance; }
+  .close h2 span { display: block; color: oklch(1 0 0 / .62); }
+  .close .acts { justify-content: center; }
+  .close p { margin-top: 18px; font-size: 15px; color: oklch(1 0 0 / .78); }
+  footer { padding-block: 32px 44px; font-size: 14px; color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 24px; }
+  footer nav { display: flex; gap: 24px; } footer nav a:hover { color: var(--ink); }
+
+  /* Reveals below the fold, once */
+  [data-reveal] { transition: opacity 1s var(--ease), transform 1.2s var(--ease), filter 1s var(--ease); transition-delay: calc(var(--i, 0) * 80ms); }
+  [data-reveal].pending { opacity: 0; transform: translateY(28px); filter: blur(8px); }
+  @media (prefers-reduced-motion: no-preference) {
+    .enter { animation: enter-f .7s var(--ease) both, enter-r 1.1s var(--ease) both; animation-delay: calc(var(--i, 0) * 80ms); }
+    @keyframes enter-f { from { opacity: 0; filter: blur(12px); } }
+    @keyframes enter-r { from { transform: translateY(28px); } }
+    .stage .far { animation: drift 140s linear infinite alternate; }
+    /* The window arrives on its own property (translate), so it never fights the transform that places it. */
+    .window { animation: win-in 1.3s var(--ease) both .32s; }
+    @keyframes win-in { from { opacity: 0; translate: 0 56px; } }
+    @keyframes drift { to { translate: -6% 0; } }
+  }
+
+  /* No scroll scene under reduced motion or on a phone: the same picture, at rest, in flow. */
+  @media (prefers-reduced-motion: reduce), (max-width: 860px) {
+    .scene { height: auto; margin-bottom: 0; }
+    .stage { position: relative; height: auto; min-height: 0; padding-bottom: 0; }
+    .stage::after { display: none; }
+    .copy { position: relative; top: auto; left: auto; transform: none; opacity: 1; margin: 0 auto; padding-top: calc(72px + 48px); }
+    .window { position: relative; left: auto; top: auto; transform: none; margin: 64px auto 0; }
+    .stage { padding-bottom: 64px; }
+    .scene + * { margin-top: 0; }
+  }
+  /* The phone: its own composition. The inbox alone, as the phone app shows it. */
+  @media (max-width: 860px) {
+    .links { display: none; }
+    .nav .wrap { grid-template-columns: 1fr auto; }
+    .nav .btn { height: 44px; }
+    h1 { font-size: clamp(3rem, 13vw, 4.25rem); }
+    .acts { flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; margin-inline: auto; }
+    .window { width: calc(100% - var(--gutter) * 2); height: auto; grid-template-columns: 1fr; border-radius: 22px; margin-top: 48px; }
+    .stage { padding-bottom: 48px; } .list { padding-bottom: 6px; }
+    .side, .read { display: none; }
+    .msg p { white-space: normal; }
+    .grid, .tile.full, .plans { grid-template-columns: 1fr; }
+    .tile.full .pic { margin: 8px 8px 0; }
+    .tile.full .cap { padding: 22px 28px 26px; }
+    .pic { min-height: 300px; padding: 28px 16px; }
+    .stat { grid-template-columns: 1fr; justify-content: start; gap: 28px; padding: 40px 28px; } .stat p { font-size: 20px; }
+    .tile.full .pic { order: 0; margin: 8px 8px 0; } .tile.full .cap { font-size: 17px; }
+    .cap-k kbd { width: 68px; height: 68px; font-size: 24px; }
+    footer .wrap { flex-direction: column; } footer nav { flex-wrap: wrap; gap: 0 24px; } footer nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M9 22.5h13.2a5.3 5.3 0 0 0 .7-10.56A7 7 0 0 0 9.6 13.6 4.5 4.5 0 0 0 9 22.5Z" fill="currentColor"/><path d="M6 26.5h20" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55"/></svg>Cirrus</a>
+    <nav class="links" aria-label="Main"><a href="#people">How it sorts</a><a href="#keys">Shortcuts</a><a href="#pricing">Pricing</a></nav>
+    <div class="end"><a class="btn white" href="#download">Download</a></div>
+  </div>
+</header>
+
+<div class="scene" id="top">
+  <div class="stage" data-stage>
+    <canvas class="far" data-sky="far" aria-hidden="true"></canvas>
+    <canvas class="soft" data-sky="soft" aria-hidden="true"></canvas>
+    <canvas class="near" data-sky="near" aria-hidden="true"></canvas>
+
+    <div class="copy">
+      <p class="forecast enter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="3.2"/><path d="M9 2.5v1.3M2.5 9h1.3M4.4 4.4l.9.9M13.6 4.4l-.9.9M8 20.5h9a3.5 3.5 0 0 0 .4-6.98 4.8 4.8 0 0 0-8.8 1.4A2.8 2.8 0 0 0 8 20.5Z"/></svg>Today’s forecast <span>4 from people, 12 to skim</span></p>
+      <h1 class="enter" style="--i:1">Your inbox, <span class="soft-line">mostly clear.</span></h1>
+      <p class="lede enter" style="--i:2">Cirrus sorts mail by who sent it, so mornings take minutes.</p>
+      <div class="acts enter" style="--i:3">
+        <a class="btn white" href="#download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg>Download for Mac</a>
+        <a class="btn glass" href="#people">See how it sorts</a>
+      </div>
+    </div>
+
+    <figure class="window" role="img" aria-label="Cirrus on a Mac: Maya's inbox. Four messages from people at the top, twelve newsletters folded into one line to skim, and Jonas's message about Saturday's ferry open beside them.">
+      <div class="side" aria-hidden="true">
+        <div class="lights"><i></i><i></i><i></i></div>
+        <div class="acct"><span class="face" style="--h:20">ML</span>Maya Lindqvist</div>
+        <nav>
+          <a class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3.5 13.5 6 5.5h12l2.5 8v5h-17v-5Zm0 0H9l1 2h4l1-2h5.5"/></svg>Inbox<b>4</b></a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>People</a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5.5h14M5 10.5h14M5 15.5h9M5 20h6"/></svg>Skim<b>12</b></a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg>Later<b>2</b></a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m4 12 16-7-6 16-2.5-6.5L4 12Z"/></svg>Sent</a>
+          <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7.5h16v-3H4v3Zm1.5 0V19h13V7.5M10 11.5h4"/></svg>Archive</a>
+        </nav>
+        <h4>Labels</h4>
+        <span class="tag" style="--c:oklch(.7 .13 150)"><i></i>Cabin</span>
+        <span class="tag" style="--c:oklch(.7 .13 60)"><i></i>Studio</span>
+        <span class="tag" style="--c:oklch(.65 .13 300)"><i></i>Taxes 2026</span>
+      </div>
+      <div class="list" aria-hidden="true">
+        <div class="bar"><h3>Inbox</h3><span class="wx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21"/></svg>Mostly clear</span></div>
+        <div class="grp"><span>From people</span><span>4 new</span></div>
+        <div class="msg on"><span class="face" style="--h:200">JB</span><b>Jonas Berg</b><time>8:12</time><p>Saturday’s ferry is at 9:40, not 10</p></div>
+        <div class="msg"><span class="face" style="--h:40">AO</span><b>Amara Okafor</b><time>7:58</time><p>Final cut of the studio tour, 2 min</p></div>
+        <div class="msg"><span class="face" style="--h:150">PL</span><b>Per Lindqvist</b><time>Yesterday</time><p>Photos from the cabin, the good ones</p></div>
+        <div class="msg"><span class="face" style="--h:300">LH</span><b>Lena Holm</b><time>Yesterday</time><p>One form left to sign before Friday</p></div>
+        <div class="grp"><span>To skim</span><span>12</span></div>
+        <div class="skim"><span class="stack"><span style="--h:20"></span><span style="--h:90"></span><span style="--h:250"></span></span><div><b>12 newsletters and receipts</b><small>One page, about 3 minutes</small></div></div>
+      </div>
+      <div class="read" aria-hidden="true">
+        <div class="bar">
+          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 7.5h16v-3H4v3Zm1.5 0V19h13V7.5M10 11.5h4"/></svg></button>
+          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg></button>
+          <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 8 4 13l5.5 5M4.5 13H15a5 5 0 0 0 5-5V6"/></svg></button>
+          <span class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Search mail<kbd>⌘K</kbd></span>
+        </div>
+        <h2>Saturday’s ferry is at 9:40, not 10</h2>
+        <div class="from"><span class="face" style="--h:200">JB</span><div><b>Jonas Berg</b><small>to Maya, Per</small></div><time>Today, 8:12</time></div>
+        <div class="body"><p>They moved the morning boat. If we leave the flat at 8:50 we make it with time for coffee on board.</p><p>Tickets are below. Bring the big cooler, Per has the small one.</p></div>
+        <div class="ticket"><small>Skärgård Ferries · Stockholm to Mariehamn</small><span class="t num">9:40</span><b>Saturday 14 Nov · 3 adults</b></div>
+        <div class="reply">Reply to Jonas…</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+<main>
+  <section class="band" id="people">
+    <div class="wrap">
+      <div class="head" data-reveal><h2>People first. <span>Everything else, later.</span></h2><p>Mail from people sits at the top. Newsletters fold into one page. Strangers wait at the door until you say yes.</p></div>
+      <div class="grid">
+        <article class="tile" data-reveal>
+          <div class="pic" style="--a:oklch(.62 .12 245);--b:oklch(.86 .07 60)"><canvas data-sky="tile" data-seed="3" aria-hidden="true"></canvas>
+            <div class="pane" role="img" aria-label="Three new senders waiting: Studio Klang, Ferry bookings and Hanna Ek. Allow or not now.">
+              <header aria-hidden="true"><b>At the door</b><span>3 new senders</span></header>
+              <div class="door" aria-hidden="true"><span class="face" style="--h:60">HE</span><div><b>Hanna Ek</b><small>Friend of Amara</small></div><div class="yes"><span class="in">Allow</span><span>Not now</span></div></div>
+              <div class="door" aria-hidden="true"><span class="face" style="--h:210">SF</span><div><b>Skärgård Ferries</b><small>Bookings</small></div><div class="yes"><span class="in">Allow</span><span>Not now</span></div></div>
+              <div class="door" aria-hidden="true"><span class="face" style="--h:330">DM</span><div><b>Deal Mart</b><small>Offers</small></div><div class="yes"><span class="in">Allow</span><span>Not now</span></div></div>
+            </div>
+          </div>
+          <p class="cap"><b>New senders wait at the door.</b> You decide who gets in, once, and Cirrus remembers.</p>
+        </article>
+        <article class="tile" data-reveal style="--i:1">
+          <div class="pic" style="--a:oklch(.55 .14 252);--b:oklch(.78 .09 235)"><canvas data-sky="tile" data-seed="7" aria-hidden="true"></canvas>
+            <div class="pane" role="img" aria-label="Today's skim: three newsletters, one line each, about three minutes.">
+              <header aria-hidden="true"><b>Skim</b><span>12 · 3 min</span></header>
+              <div class="paper" aria-hidden="true">
+                <div><b>The Northern Ledger</b><i>1 min</i><small>Rates hold; ferries add a winter route.</small></div>
+                <div><b>Type Thursday</b><i>40 s</i><small>A grotesk that started as a sign painter’s hand.</small></div>
+                <div><b>Receipts</b><i>20 s</i><small>Train to Uppsala, and the cooler.</small></div>
+              </div>
+            </div>
+          </div>
+          <p class="cap"><b>Newsletters, read like a paper.</b> One page every morning, a line each.</p>
+        </article>
+        <article class="tile full" data-reveal>
+          <div class="pic" style="--a:oklch(.48 .12 270);--b:oklch(.78 .11 40)"><canvas data-sky="tile" data-seed="11" aria-hidden="true"></canvas>
+            <div class="pane" role="img" aria-label="Later: this evening at six, tomorrow morning, or when Maya is at the cabin.">
+              <header aria-hidden="true"><b>Later</b><span>Lena’s form</span></header>
+              <div class="when" aria-hidden="true">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>This evening<em>6:00 pm</em></span>
+                <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21"/></svg>Tomorrow morning<em>8:00 am</em></span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m3.5 11 8.5-7 8.5 7M5.5 9.5V20h13V9.5"/></svg>When I’m at the cabin<em>Arrive</em></span>
+              </div>
+            </div>
+          </div>
+          <p class="cap"><b>Later means later.</b> A message comes back when you can act on it: tonight, tomorrow, or when you get to the cabin.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" style="padding-top: 0">
+    <div class="wrap">
+      <div class="stat" data-reveal><canvas data-sky="tile" data-seed="5" aria-hidden="true"></canvas>
+        <span class="n num">0</span>
+        <p><b>Tracking pixels loaded.</b> Read receipts are stopped before you open a thing, on every account.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band keys" id="keys" style="padding-top: 0">
+    <div class="wrap">
+      <div class="head" data-reveal><h2>Every action is one key.</h2><p>Press them. Cirrus works the same way.</p></div>
+      <div class="caps" data-reveal style="--i:1">
+        <div class="cap-k"><kbd data-key="e">E</kbd><span>Archive</span></div>
+        <div class="cap-k"><kbd data-key="r">R</kbd><span>Reply</span></div>
+        <div class="cap-k"><kbd data-key="l">L</kbd><span>Later</span></div>
+        <div class="cap-k"><kbd data-key="s">S</kbd><span>Skim</span></div>
+        <div class="cap-k"><kbd data-key="/">/</kbd><span>Search</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="pricing" style="padding-top: 0">
+    <div class="wrap">
+      <div class="head" data-reveal><h2>Free for one inbox. <span>Six dollars for all of them.</span></h2></div>
+      <div class="plans">
+        <div class="plan" data-reveal><h3>Personal</h3><p class="price">$0</p>
+          <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>One account</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>People first, Skim and Later</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Tracking blocked</li></ul>
+          <a class="btn soft" href="#download">Download free</a></div>
+        <div class="plan pick" data-reveal style="--i:1"><h3>Every inbox</h3><p class="price num">$6<small>a month</small></p>
+          <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Unlimited accounts, one inbox</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Later by place and time</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Mac and iPhone</li></ul>
+          <a class="btn ink" href="#download">Try it free for 30 days</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="close" id="download">
+    <canvas data-sky="tile" data-seed="13" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <h2 data-reveal>Clear skies <span>by nine.</span></h2>
+      <div class="acts" data-reveal style="--i:1"><a class="btn white" href="#download">Download for Mac</a><a class="btn glass" href="#pricing">Pricing</a></div>
+      <p data-reveal style="--i:2">Free for one inbox. macOS 14 and later.</p>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><span>© 2026 Cirrus Mail AB, Stockholm</span><nav aria-label="Footer"><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#changelog">Changelog</a><a href="#contact">Contact</a></nav></div></footer>
+
+<script>
+  // The sky, drawn in code: soft clouds from layered value noise, and a halftone of dots sized by
+  // the same clouds. Each canvas renders once (and on resize); scroll only moves them.
+  const hash = (x, y, s) => { const h = Math.sin(x * 127.1 + y * 311.7 + s * 74.7) * 43758.5453; return h - Math.floor(h); };
+  const smooth = (t) => t * t * (3 - 2 * t);
+  const noise = (x, y, s) => { const xi = Math.floor(x), yi = Math.floor(y), xf = smooth(x - xi), yf = smooth(y - yi);
+    const a = hash(xi, yi, s), b = hash(xi + 1, yi, s), c = hash(xi, yi + 1, s), d = hash(xi + 1, yi + 1, s);
+    return a + (b - a) * xf + (c - a) * yf + (a - b - c + d) * xf * yf; };
+  const fbm = (x, y, s) => { let v = 0, amp = .5; for (let o = 0; o < 5; o++) { v += amp * noise(x, y, s + o * 13); x *= 2.03; y *= 2.03; amp *= .5; } return v; };
+
+  function paint(cv) {
+    const kind = cv.dataset.sky, seed = +(cv.dataset.seed || { far: 1, soft: 2, near: 4 }[kind]);
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
+    const dpr = Math.min(2, devicePixelRatio), c = cv.getContext('2d');
+    if (kind === 'soft') { // soft volume: low resolution, scaled up smooth, then blurred by CSS
+      const cell = 10, cols = Math.ceil(w / cell), rows = Math.ceil(h / cell);
+      cv.width = cols; cv.height = rows; const img = c.createImageData(cols, rows);
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+        const v = fbm(i / 34, j / 22, seed), fall = Math.min(1, (j / rows) * 1.6 + .15), a = Math.max(0, Math.min(1, (v - .44) * 3.2)) * fall;
+        const q = (j * cols + i) * 4; img.data[q] = img.data[q + 1] = img.data[q + 2] = 255; img.data[q + 3] = a * 235; }
+      c.putImageData(img, 0, 0); return;
+    }
+    cv.width = w * dpr; cv.height = h * dpr; c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+    const cell = kind === 'near' ? 9 : kind === 'far' ? 6 : 7, scale = kind === 'near' ? 260 : kind === 'far' ? 420 : 300;
+    c.fillStyle = '#fff';
+    for (let y = cell / 2; y < h; y += cell) for (let x = cell / 2; x < w; x += cell) {
+      const v = fbm(x / scale, y / (scale * .62), seed), fall = kind === 'tile' ? 1 : Math.min(1, (y / h) * 1.5 + .1);
+      let d = (v - (kind === 'near' ? .52 : .46)) * (kind === 'near' ? 2.6 : 2.2) * fall;
+      if (kind === 'far') d = Math.max(d, .16 + .1 * hash(x, y, seed)); // a fine even grain across the whole sky
+      const r = cell * .5 * Math.min(1, d); if (r < .5) continue;
+      c.globalAlpha = kind === 'near' ? .95 : kind === 'far' ? .38 : .7;
+      c.beginPath(); c.arc(x, y, r, 0, 6.2832); c.fill();
+    }
+  }
+  const skies = [...document.querySelectorAll('canvas[data-sky]')];
+  const paintAll = () => skies.forEach(paint);
+  paintAll(); let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(paintAll, 150); });
+
+  // The scene: scroll progress goes to one CSS variable; CSS moves the sky, the words and the app.
+  const stage = document.querySelector('[data-stage]'), scene = stage.parentElement;
+  const still = matchMedia('(prefers-reduced-motion: reduce), (max-width: 860px)');
+  let queued = false;
+  const copy = stage.querySelector('.copy');
+  const measure = () => { if (still.matches) return; const was = stage.style.getPropertyValue('--p'); stage.style.setProperty('--p', 0);
+    stage.style.setProperty('--top0', `${Math.round(copy.offsetTop + copy.offsetHeight + 64)}px`); stage.style.setProperty('--p', was || 0); };
+  document.fonts.ready.then(measure); addEventListener('resize', measure); measure();
+  const nav = document.querySelector('.nav');
+  // Solid as soon as something light is under it: the rising window, or the page after the scene.
+  const tone = () => { const p = +stage.style.getPropertyValue('--p') || 0, under = still.matches ? stage.offsetHeight - 72 : scene.offsetHeight - innerHeight;
+    nav.toggleAttribute('data-solid', (!still.matches && p > .5) || scrollY > under); };
+  addEventListener('scroll', tone, { passive: true }); tone();
+  const tick = () => { queued = false; if (still.matches) return stage.style.setProperty('--p', 0);
+    const r = scene.getBoundingClientRect(), p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+    stage.style.setProperty('--p', p.toFixed(4)); };
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(() => { tick(); tone(); }); } }, { passive: true });
+  still.addEventListener('change', tick); tick();
+
+  // Keycaps light when their key is pressed (not while typing in a field).
+  addEventListener('keydown', (e) => { if (e.target.closest('input, textarea')) return; const k = document.querySelector(`kbd[data-key="${CSS.escape(e.key.toLowerCase())}"]`); if (k) k.dataset.down = ''; });
+  addEventListener('keyup', (e) => { const k = document.querySelector(`kbd[data-key="${CSS.escape(e.key.toLowerCase())}"]`); if (k) delete k.dataset.down; });
+
+  // Reveals below the fold, once.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { e.target.classList.remove('pending'); io.unobserve(e.target); } }, { rootMargin: '0px 0px -12% 0px' });
+    for (const el of document.querySelectorAll('[data-reveal]')) if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pending'); io.observe(el); }
+  }
+</script>
+</body>
+</html>

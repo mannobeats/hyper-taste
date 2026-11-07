@@ -1,5 +1,60 @@
 # Changelog
 
+## [3.0.0] - 2026-11-07
+
+- **ui-director, teaching pairs at the gold bar.** All fourteen pairs were redrawn on one upgraded
+  base: tinted, layered shadows with a lit top edge, a lit studio ground, 11px avatar initials,
+  44px touch targets on phones, and real buttons. Each "before" is now the same screen with the
+  same tokens and one fault, so a pair teaches one thing. Every "after" passes the check (eight
+  failed it before), and the gate in `AGENTS.md` now covers them.
+- **ui-director, the Tally landing rebuilt.** Its ground is a guilloche drawn in code, the
+  engraved rings of a banknote, radiating from the card and lifted from behind the headline. The
+  card, the tax reserve and the chosen plan wear the same engraving, and it returns behind the
+  close. The signature is the sort: a pinned scene where a €9,400 payment lands and splits into
+  tax, equipment and spending as you scroll, balances rolling, with a phone version at rest. The
+  Tally app's tax reserve wears the same plate.
+- **ui-director, three rules back.** Editorial, gallery and split-stage compositions; one peak per
+  page; and one material, made once and reused down the page.
+- **ui-director, a steadier check.** The scroll pass waits for rendered frames, so reveals are not
+  missed on a busy machine, and words behind a modal (`inert`) no longer count as covered.
+
+- **ui-director, start from gold.** The skill ships seven finished pages in `examples/`, each at
+  the bar it asks for: three landing pages, three dashboards in three shells (sidebar, inset
+  sidebar, top nav), and a phone app. Among them: a light landing (a five-word promise centered over a sky drawn in code,
+  the app rising out of it in a pinned scroll scene), a dark landing (three lines of type and a
+  machined knob you can turn, a faceplate with a live VU meter), a deploy platform's dashboard in
+  light and dark, and a running app's phone screen. Every picture is drawn in code. Every job
+  starts from the closest gold: copy its structure and craft, replace its world. Fourteen small
+  before and after pairs live in `teaching/`.
+- **ui-director, the first screen.** A word budget (a headline of 3–8 words on 2–3 lines, one
+  line under it, two actions, one chip), the picture as the largest thing, ten headlines written
+  and one kept, one metaphor carried lightly from the chip to the close, and "Make the pictures
+  yourself" (scenes from noise, objects in CSS, the data as the hero). The obvious version no
+  longer bans a centered headline over the product; it bans the generated version of it.
+- **ui-director, space and balance.** Two spacing tokens per page (between sections, between
+  blocks), centered columns that center every block, balanced cards, a sidebar that folds to a
+  rail on tablets, and a nav that stays pinned and adapts to what's under it. The check now looks
+  at 1440, 820 and 390 and catches empty bands between sections, off-center columns and button
+  groups, unbalanced cards, empty panes, cards touching their section's edge, and words spilling
+  out of their panel.
+- **ui-director, `scripts/check.mjs`.** Headless Chrome with no dependencies: screenshots at
+  1440 and 390, light and dark, reduced motion; Fix lines (never intentional) and Judge lines
+  (leads); `check passed` only when no Fix line is left. It catches words covered by another
+  box, words cut by a crop, the desktop shrunk onto a phone, reveals that never fire, invented
+  logos, AI sparkles and violet gradients, mixed icon styles and clipped glyphs, and measures
+  contrast on what is really painted under the words. `scripts/page-check.js` is the same check
+  for a browser tool's console.
+- **ui-director, new references:** `product-shots.md` (the product at real size, the pinned
+  scene, framing, the faceplate, glass over a scene, state grids, phones), `mobile.md`,
+  `review.md` (a fresh-eye reviewer). Some framing rules, the review brief and several detectors
+  are adapted from [Stageshow](https://github.com/benjitaylor/skills/tree/main/stageshow) by
+  Benji Taylor (MIT).
+- **ui-director, cut:** the mandatory photo backdrop, the corner-bleed hero, the long recipes in
+  `craft.md`, and the old pair pages as examples. The skill folder went from 280 KB to under
+  1 MB with no photographs.
+- **Pairs:** the live-product, dark and dashboard pages got phone layouts, and three phone
+  screens got links and tabs that pass contrast.
+
 ## [2.2.0] - 2026-10-27
 
 ui-director 2.2.0. agents-md is unchanged at 1.1.0.

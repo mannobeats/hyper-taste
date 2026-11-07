@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Gold example: copy its structure and its craft, replace its world. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tally: every euro, already sorted</title>
+<meta name="description" content="A business account that puts the tax aside the moment you're paid.">
+<style>
+  /* Tally, a business account for small studios. Light, warm, centered.
+     The material is money's own: guilloche, the fine engraved rings on a banknote, drawn in code
+     once per resize. It sits behind the card, engraves the card itself, and returns behind the close.
+     The signature is the sort: a payment lands and splits three ways as you scroll.
+     Every section is one spacing apart (--section), every block one gap (--gap). */
+  @font-face { font-family: "Geist"; src: url("../fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+  :root {
+    --font: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --bg: oklch(.975 .006 80); --surface: oklch(1 0 0); --fill: oklch(.95 .007 80);
+    --ink: oklch(.2 .01 70); --ink-2: oklch(.36 .01 70); --muted: oklch(.5 .012 70); --soft-ink: oklch(.62 .012 70); --line: oklch(.91 .007 80);
+    --in: oklch(.5 .12 155);
+    --section: clamp(88px, 10vw, 136px); --gap: 56px; --gutter: clamp(20px, 4vw, 40px);
+    --ease: cubic-bezier(.16, 1, .3, 1); color-scheme: light;
+    --shade: 0 0 0 .5px oklch(.2 .02 70 / .12), 0 1px 2px oklch(.2 .02 70 / .05), 0 24px 48px -24px oklch(.2 .03 70 / .22);
+  }
+  *, *::before, *::after { box-sizing: border-box; } * { margin: 0; }
+  body { font: 450 16px/1.5 var(--font); color: var(--ink-2); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  svg, canvas { display: block; } a { color: inherit; text-decoration: none; } button { font: inherit; border: 0; background: none; cursor: pointer; }
+  .num { font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding-inline: var(--gutter); }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 8px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 48px; padding: 0 24px; border-radius: 999px; font: 550 15px/1 var(--font); white-space: nowrap; transition: background-color 140ms, transform 140ms var(--ease); }
+  .btn:active { transform: scale(.98); }
+  .btn.ink { background: var(--ink); color: var(--bg); } .btn.ink:hover { background: oklch(.3 .01 70); }
+  .btn.soft { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 .5px oklch(.2 .02 70 / .14), 0 1px 2px oklch(.2 .02 70 / .06); }
+  .engrave { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* The nav stays; it frosts once the page moves */
+  .nav { position: sticky; top: 0; z-index: 10; transition: background-color 300ms, box-shadow 300ms; }
+  .nav[data-solid] { background: color-mix(in oklch, var(--bg) 80%, transparent); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4); box-shadow: 0 1px 0 var(--line); }
+  .nav .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 68px; }
+  .mark { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); font: 650 20px/1 var(--font); letter-spacing: -.035em; }
+  .mark svg { width: 22px; height: 22px; }
+  .links { display: flex; gap: 32px; font-size: 15px; font-weight: 500; } .links a { color: var(--muted); } .links a:hover { color: var(--ink); }
+  .nav .end { justify-self: end; display: flex; align-items: center; gap: 20px; font-size: 15px; font-weight: 500; }
+  .nav .end > a:first-child { color: var(--muted); }
+  .nav .btn { height: 40px; padding: 0 18px; font-size: 14px; }
+
+  /* The first screen: the stack in the middle, the card under it, the engraving radiating from the card */
+  .hero { position: relative; overflow-x: clip; margin-top: -68px; padding-top: calc(68px + clamp(40px, 5vw, 72px)); text-align: center; isolation: isolate; }
+  .hero > .engrave { z-index: -1; transform-origin: var(--ox, 50%) var(--oy, 70%); transform: translateY(calc(var(--sy, 0) * .25px)) rotate(calc(var(--sy, 0) * .004deg));
+                     -webkit-mask: linear-gradient(to bottom, transparent 40px, #000 160px, #000 82%, transparent); mask: linear-gradient(to bottom, transparent 40px, #000 160px, #000 82%, transparent); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 999px; font-size: 14px; font-weight: 500; line-height: 1; color: var(--ink-2); background: var(--surface); box-shadow: 0 0 0 .5px oklch(.2 .02 70 / .14); }
+  .chip b { color: var(--in); font-weight: 600; }
+  h1 { margin-top: 24px; font: 640 clamp(3rem, 1.3rem + 5.2vw, 6.25rem)/.94 var(--font); letter-spacing: -.055em; color: var(--ink); }
+  h1 span, h2 span { display: block; color: var(--soft-ink); }
+  .lede { max-width: 32rem; margin: 24px auto 0; font-size: clamp(1.06rem, 1rem + .3vw, 1.25rem); line-height: 1.45; color: var(--muted); text-wrap: balance; }
+  .acts { display: flex; justify-content: center; gap: 12px; margin-top: 32px; }
+
+  .stagecard { position: relative; display: grid; place-items: center; margin-top: var(--gap); padding-bottom: 32px; perspective: 1400px; }
+  .card { --rx: 8deg; --ry: -14deg; --mx: 30%; --my: 20%; position: relative; width: min(460px, 86vw); aspect-ratio: 1.586; border-radius: 22px; padding: 28px 30px; color: oklch(.92 .004 80); overflow: hidden;
+          display: grid; grid-template-rows: auto 1fr auto; transform: rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d; transition: transform 500ms var(--ease);
+          background: radial-gradient(120% 140% at var(--mx) var(--my), oklch(.42 .006 70), oklch(.22 .006 70) 55%, oklch(.15 .005 70)),
+                      repeating-linear-gradient(100deg, oklch(1 0 0 / .025) 0 1px, transparent 1px 3px);
+          background-blend-mode: normal, overlay;
+          box-shadow: inset 0 1px 0 oklch(1 0 0 / .25), inset 0 0 0 1px oklch(1 0 0 / .06), 0 60px 90px -40px oklch(.2 .03 70 / .55), 0 24px 36px -24px oklch(.2 .03 70 / .4); }
+  .card > .engrave { mix-blend-mode: screen; opacity: .9; }
+  .card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; mix-blend-mode: soft-light; /* the sheen that follows the pointer */
+                 background: radial-gradient(40% 50% at var(--mx) var(--my), oklch(1 0 0 / .45), transparent 70%); }
+  .card > div { position: relative; }
+  .card .row { display: flex; justify-content: space-between; align-items: center; }
+  .card .row .mark { color: inherit; font-size: 20px; min-height: 0; }
+  .card .row small { font-size: 13px; letter-spacing: .02em; opacity: .7; }
+  .chip-gold { width: 46px; height: 36px; margin-top: 24px; border-radius: 8px; background: linear-gradient(135deg, oklch(.82 .07 85), oklch(.66 .08 75) 50%, oklch(.84 .06 90));
+               box-shadow: inset 0 0 0 1px oklch(.4 .05 70 / .5); position: relative; }
+  .chip-gold::before { content: ""; position: absolute; inset: 9px 0; border-block: 1px solid oklch(.45 .05 70 / .5); }
+  .card .who { display: flex; justify-content: space-between; align-items: end; font-size: 15px; letter-spacing: .04em; }
+  .card .who b { font-weight: 500; } .card .who span { font-size: 14px; opacity: .8; }
+
+  .ping { position: absolute; left: calc(50% + min(230px, 43vw) - 70px); top: 30%; /* over the empty middle of the card, never its name or number */ width: 300px; padding: 14px 16px; border-radius: 18px; text-align: left; font-size: 14px; line-height: 1.4; color: var(--ink-2);
+          background: color-mix(in oklch, var(--surface) 86%, transparent); -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4);
+          box-shadow: 0 0 0 .5px oklch(.2 .02 70 / .12), 0 24px 48px -18px oklch(.2 .03 70 / .35); }
+  .ping header { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
+  .ping b { display: block; margin-top: 6px; color: var(--ink); font-weight: 600; }
+
+  .head { max-width: 760px; margin: 0 auto; text-align: center; }
+  .head h2 { font: 640 clamp(2.25rem, 1.3rem + 2.8vw, 3.75rem)/1.02 var(--font); letter-spacing: -.04em; color: var(--ink); text-wrap: balance; }
+  .head p { max-width: 32rem; margin: 18px auto 0; font-size: 17px; color: var(--muted); text-wrap: balance; }
+
+  /* The sort, pinned: one payment lands and splits three ways while you scroll. One variable drives it. */
+  .flow { position: relative; margin-top: var(--section); }
+  .stage { position: relative; }
+  .stagein { padding-top: 0; }
+  .diagram { position: relative; display: grid; grid-template-columns: 300px 1fr 300px; align-items: center; height: 360px; max-width: 1080px; margin: var(--gap) auto 0; }
+  .pay { position: relative; z-index: 1; display: grid; gap: 14px; padding: 20px; border-radius: 22px; background: var(--surface); box-shadow: var(--shade); }
+  .pay header { display: flex; align-items: center; gap: 12px; }
+  .logo { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: oklch(.93 .03 230); color: oklch(.38 .08 230); font-weight: 650; font-size: 15px; line-height: 1; letter-spacing: -.02em; }
+  .pay b { display: block; color: var(--ink); font-weight: 600; font-size: 15px; line-height: 1.2; }
+  .pay small { display: block; color: var(--muted); font-size: 13px; }
+  .pay .amt { font: 640 44px/1 var(--font); letter-spacing: -.045em; color: var(--ink); }
+  .pay .st { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); padding-top: 12px; border-top: 1px solid var(--line); }
+  .pay .st b { display: inline; font-size: 13px; color: var(--in); font-weight: 600; opacity: var(--sorted, 1); transition: opacity 300ms; }
+  .wires { width: 100%; height: 360px; overflow: visible; }
+  .wires .base { fill: none; stroke: var(--line); stroke-width: 1.5; }
+  .wires .run { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; }
+  .wires .bead { fill: var(--ink); stroke: var(--bg); stroke-width: 3; }
+  .wires text { font: 600 13px var(--font); fill: var(--muted); }
+  .pots { display: grid; gap: 12px; }
+  .pot { position: relative; height: 112px; display: grid; align-content: center; gap: 4px; padding: 0 20px; border-radius: 20px; background: var(--surface); box-shadow: var(--shade); }
+  .pot header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 500; color: var(--ink-2); }
+  .pot .add { font-style: normal; font-size: 13px; font-weight: 600; color: var(--in); opacity: var(--done, 1); transform: translateY(calc((1 - var(--done, 1)) * 4px)); }
+  .pot .bal { font: 640 26px/1.15 var(--font); letter-spacing: -.035em; color: var(--ink); }
+  .pot small { font-size: 13px; color: var(--muted); }
+  .pot.tax { background: var(--ink); color: var(--bg); box-shadow: 0 30px 50px -30px oklch(.2 .03 70 / .6); overflow: hidden; }
+  .pot.tax > .engrave { mix-blend-mode: screen; }
+  .pot.tax header, .pot.tax small { color: oklch(.8 .008 80); } .pot.tax .bal { color: var(--bg); } .pot.tax .add { color: oklch(.82 .1 155); }
+  .pot > * { position: relative; } .pot > .engrave { position: absolute; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1080px; margin: var(--gap) auto 0; padding: 0; list-style: none; }
+  .steps li { padding-top: 16px; position: relative; font-size: 15px; color: var(--muted); transition: color 300ms; }
+  .steps li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; border-radius: 2px; background: var(--line); }
+  .steps li::after { content: ""; position: absolute; left: 0; top: 0; height: 2px; border-radius: 2px; background: var(--ink); width: calc(var(--s, 1) * 100%); }
+  .steps li b { display: block; color: var(--ink); font-weight: 600; }
+  .steps li.on { color: var(--ink-2); }
+  @media (min-width: 861px) and (min-height: 760px) and (prefers-reduced-motion: no-preference) {
+    .flow { height: 260svh; margin-top: calc(var(--section) - 120px); } /* the stage's own top padding makes up the rest of the gap */
+    .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+    .stagein { padding-top: 120px; }
+  }
+
+  /* Sections, one rhythm */
+  section.band { padding-top: var(--section); }
+  .split3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: var(--gap); }
+  .tile { display: grid; grid-template-rows: 1fr auto; gap: 24px; min-height: 340px; padding: 28px; border-radius: 28px; background: var(--surface); box-shadow: 0 0 0 .5px oklch(.2 .02 70 / .1), 0 1px 2px oklch(.2 .02 70 / .04); }
+  .tile .pic { display: grid; place-items: center; }
+  .tile p { font-size: 17px; line-height: 1.45; color: var(--muted); } .tile p b { color: var(--ink); font-weight: 600; }
+  .fan { position: relative; width: 220px; height: 150px; }
+  .fan span { position: absolute; left: 30px; top: 18px; width: 170px; aspect-ratio: 1.586; border-radius: 12px; padding: 12px 14px; display: flex; align-items: flex-end; font-size: 13px; font-weight: 500; letter-spacing: .03em;
+              box-shadow: inset 0 1px 0 oklch(1 0 0 / .3), 0 18px 30px -16px oklch(.2 .03 70 / .5); transform-origin: 50% 120%; }
+  .fan span:nth-child(1) { background: linear-gradient(150deg, oklch(.86 .03 150), oklch(.74 .04 150)); color: oklch(.3 .04 150); transform: rotate(-12deg); }
+  .fan span:nth-child(2) { background: linear-gradient(150deg, oklch(.9 .03 75), oklch(.8 .04 70)); color: oklch(.34 .04 70); transform: rotate(-2deg); }
+  .fan span:nth-child(3) { background: linear-gradient(150deg, oklch(.4 .006 70), oklch(.18 .005 70)); color: oklch(.9 .004 80); transform: rotate(9deg); }
+  .big { font: 640 clamp(3rem, 1.3rem + 5.2vw, 6.25rem)/.8 var(--font); letter-spacing: -.05em; color: var(--ink); text-box: trim-both cap alphabetic; }
+  .people { display: flex; } .people span { display: grid; place-items: center; width: 52px; height: 52px; margin-left: -12px; border-radius: 50%; box-shadow: 0 0 0 3px var(--surface); font-size: 14px; font-weight: 600; color: oklch(.38 .08 var(--h)); background: oklch(.9 .05 var(--h)); }
+  .people span:first-child { margin-left: 0; }
+
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 880px; margin: var(--gap) auto 0; }
+  .plan { position: relative; padding: 32px; border-radius: 28px; background: var(--surface); box-shadow: 0 0 0 .5px oklch(.2 .02 70 / .1); overflow: hidden; }
+  .plan.pick { box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .plan > * { position: relative; }
+  .plan > .engrave { position: absolute; opacity: .9; }
+  .plan h3 { font-size: 17px; font-weight: 600; color: var(--ink); }
+  .plan .price { margin-top: 14px; font: 640 44px/1 var(--font); letter-spacing: -.045em; color: var(--ink); } .plan .price small { margin-left: 4px; font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+  .plan ul { margin: 22px 0 28px; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 15px; }
+  .plan li { display: flex; gap: 10px; } .plan li svg { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--ink); }
+  .plan .btn { width: 100%; height: 44px; }
+
+  .close { position: relative; overflow-x: clip; isolation: isolate; margin-top: var(--section); padding-block: var(--section); text-align: center; }
+  .close > .engrave { z-index: -1; -webkit-mask: linear-gradient(transparent, #000 25%, #000 75%, transparent); mask: linear-gradient(transparent, #000 25%, #000 75%, transparent); }
+  .close h2 { font: 640 clamp(2.75rem, 1.4rem + 4.4vw, 5.25rem)/.94 var(--font); letter-spacing: -.05em; color: var(--ink); }
+  .close .acts { margin-top: 32px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 24px; padding-block: 28px 40px; box-shadow: inset 0 1px 0 var(--line); font-size: 14px; color: var(--muted); }
+  footer nav { display: flex; gap: 24px; } footer a:hover { color: var(--ink); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .enter { animation: up 1s var(--ease) both; animation-delay: calc(var(--i, 0) * 80ms); }
+    @keyframes up { from { opacity: 0; translate: 0 24px; filter: blur(8px); } }
+    .hero > .engrave { animation: etch 1.8s var(--ease) both; }
+    @keyframes etch { from { opacity: 0; scale: 1.04; } }
+  }
+  [data-reveal] { transition: opacity 1s var(--ease), translate 1.2s var(--ease), filter 1s var(--ease); transition-delay: calc(var(--i, 0) * 80ms); }
+  [data-reveal].pending { opacity: 0; translate: 0 24px; filter: blur(8px); }
+
+  @media (max-width: 1100px) { .ping { display: none; } .diagram { grid-template-columns: 260px 1fr 260px; } }
+  @media (max-width: 860px) {
+    .links { display: none; } .nav .wrap { grid-template-columns: 1fr auto; } .nav .end > a:first-child { display: none; } .nav .btn { height: 44px; }
+    .split3 { grid-template-columns: 1fr; } .tile { min-height: 300px; }
+    /* The sort, at rest and in one column: the payment, a stem, the three places it went. */
+    .diagram { grid-template-columns: 1fr; height: auto; max-width: 400px; gap: 0; }
+    .wires { display: none; }
+    .pay { margin-bottom: 40px; }
+    .pay::after { content: ""; position: absolute; left: 50%; bottom: -40px; width: 1.5px; height: 40px; background: var(--ink); }
+    .steps { grid-template-columns: 1fr; gap: 16px; max-width: 400px; }
+  }
+  @media (max-width: 600px) {
+    .acts { flex-direction: column; align-items: stretch; max-width: 320px; margin-inline: auto; }
+    .plans { grid-template-columns: 1fr; }
+    .card { padding: 22px; } .chip-gold { margin-top: 14px; }
+    footer .wrap { flex-direction: column; } footer nav { flex-wrap: wrap; gap: 0 24px; } footer nav a { display: inline-flex; align-items: center; min-height: 44px; line-height: 1; }
+  }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5v14M10 5v14M15 5v14M3 15.5 21 8.5"/></svg>Tally</a>
+    <nav class="links" aria-label="Main"><a href="#how">How it sorts</a><a href="#pricing">Pricing</a><a href="#security">Security</a></nav>
+    <div class="end"><a href="#login">Log in</a><a class="btn ink" href="#open">Open an account</a></div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <canvas class="engrave" data-engrave="hero" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <p class="chip enter">For studios and small teams <b>in the EU</b></p>
+      <h1 class="enter" style="--i:1">Every euro, <span>already sorted.</span></h1>
+      <p class="lede enter" style="--i:2">A business account that puts the tax aside the moment a client pays you.</p>
+      <div class="acts enter" style="--i:3"><a class="btn ink" href="#open">Open an account</a><a class="btn soft" href="#how">See how it sorts</a></div>
+      <div class="stagecard enter" style="--i:4">
+        <div class="card" data-card role="img" aria-label="The Tally card in graphite, engraved, for Ines Duarte, ending 0912.">
+          <canvas class="engrave" data-engrave="card" aria-hidden="true"></canvas>
+          <div class="row" aria-hidden="true"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5v14M10 5v14M15 5v14M3 15.5 21 8.5"/></svg>Tally</span><small>Business</small></div>
+          <div aria-hidden="true"><div class="chip-gold"></div></div>
+          <div class="who num" aria-hidden="true"><b>Ines Duarte</b><span>•••• 0912</span></div>
+        </div>
+        <aside class="ping num" aria-label="The notification Tally sends"><header><span>Tally</span><span>now</span></header><b>€9,400 in from Halvorsen</b>€2,068 went straight to your tax reserve.</aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="flow" id="how" aria-labelledby="how-h">
+    <div class="stage">
+      <div class="wrap stagein">
+        <div class="head"><h2 id="how-h">Paid once. <span>Sorted three ways.</span></h2><p>Each payment splits the moment it lands, by rules you set once.</p></div>
+        <div class="diagram" role="img" aria-label="A €9,400 payment from Halvorsen Studio splits into €2,068 for the tax reserve, €940 for equipment and €6,392 to the main account.">
+          <article class="pay" aria-hidden="true">
+            <header><span class="logo">H</span><div><b>Halvorsen Studio</b><small>Invoice 2026-031</small></div></header>
+            <p class="amt num">€9,400</p>
+            <p class="st"><span>Received 09:41</span><b>Sorted</b></p>
+          </article>
+          <svg class="wires" aria-hidden="true">
+            <path class="base" data-w="0"/><path class="base" data-w="1"/><path class="base" data-w="2"/><path class="base" data-w="3"/>
+            <path class="run" data-r="0" pathLength="1" stroke-dasharray="1"/><path class="run" data-r="1" pathLength="1" stroke-dasharray="1"/><path class="run" data-r="2" pathLength="1" stroke-dasharray="1"/><path class="run" data-r="3" pathLength="1" stroke-dasharray="1"/>
+            <text data-t="1">22%</text><text data-t="2">10%</text><text data-t="3">68%</text>
+            <circle class="bead" r="5" data-b="0"/><circle class="bead" r="5" data-b="1"/><circle class="bead" r="5" data-b="2"/><circle class="bead" r="5" data-b="3"/>
+          </svg>
+          <div class="pots" aria-hidden="true">
+            <article class="pot tax" data-pot="1"><canvas class="engrave" data-engrave="pot"></canvas><header><span>Tax reserve</span><em class="add num">+€2,068</em></header><p class="bal num" data-from="12480" data-add="2068">€14,548</p><small>Q4 VAT, due Jan 20: covered</small></article>
+            <article class="pot" data-pot="2"><header><span>Equipment</span><em class="add num">+€940</em></header><p class="bal num" data-from="3210" data-add="940">€4,150</p><small>New camera body by March</small></article>
+            <article class="pot" data-pot="3"><header><span>Main</span><em class="add num">+€6,392</em></header><p class="bal num" data-from="18904" data-add="6392">€25,296</p><small>Yours to spend</small></article>
+          </div>
+        </div>
+        <ol class="steps">
+          <li data-step="0"><b>A client pays</b>Into your Tally IBAN, any bank in the EU.</li>
+          <li data-step="1"><b>Tax goes aside first</b>22% to the reserve, before you see the rest.</li>
+          <li data-step="2"><b>The rest is yours</b>Equipment gets its tenth; the main account, what's left.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="band wrap">
+    <div class="head" data-reveal><h2>The rest of the month, <span>handled.</span></h2></div>
+    <div class="split3">
+      <article class="tile" data-reveal>
+        <div class="pic"><div class="fan" aria-label="Three cards: sage, sand and graphite"><span>Jonas</span><span>Marco</span><span>Ines</span></div></div>
+        <p><b>A card for everyone.</b> Limits per person, receipts snapped on the spot.</p>
+      </article>
+      <article class="tile" data-reveal style="--i:1">
+        <div class="pic"><span class="big num">€0</span></div>
+        <p><b>A month, for one person.</b> Add teammates when you hire them.</p>
+      </article>
+      <article class="tile" data-reveal style="--i:2">
+        <div class="pic"><div class="people" aria-label="Four people on payroll"><span style="--h:40">ID</span><span style="--h:200">MR</span><span style="--h:150">JS</span><span style="--h:300">AK</span></div></div>
+        <p><b>Payroll on the 28th.</b> Four people paid, and the tax filed with it.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="band wrap" id="pricing">
+    <div class="head" data-reveal><h2>Free to start. <span>€19 when you grow.</span></h2></div>
+    <div class="plans">
+      <div class="plan" data-reveal><h3>Solo</h3><p class="price num">€0</p>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>One account and one card</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Automatic tax reserve</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Invoices and payment links</li></ul>
+        <a class="btn soft" href="#open">Open for free</a></div>
+      <div class="plan pick" data-reveal style="--i:1"><canvas class="engrave" data-engrave="plan" aria-hidden="true"></canvas><h3>Studio</h3><p class="price num">€19<small>a month</small></p>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Up to ten people and cards</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Payroll and filings</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Your accountant, invited</li></ul>
+        <a class="btn ink" href="#open">Try Studio for 30 days</a></div>
+    </div>
+  </section>
+
+  <section class="close" id="open">
+    <canvas class="engrave" data-engrave="close" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <h2 data-reveal>Every euro, <span>already sorted.</span></h2>
+      <div class="acts" data-reveal style="--i:1"><a class="btn ink" href="#open">Open an account</a><a class="btn soft" href="#pricing">Pricing</a></div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><span>© 2026 Tally Payments SA, Lisbon</span><nav aria-label="Footer"><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#security">Security</a><a href="#contact">Contact</a></nav></div></footer>
+
+<script>
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v) => Math.max(0, Math.min(1, v)), seg = (p, a, b) => clamp((p - a) / (b - a)), ease = (t) => 1 - (1 - t) ** 3;
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+
+  // Guilloche: two families of wavy rings around one center, phase-shifted against each other so they
+  // weave a net, like the engraving on a banknote. Drawn once per resize; scroll only moves the canvas.
+  function engrave(canvas, o) {
+    const dpr = Math.min(2, devicePixelRatio || 1), w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    const g = canvas.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h); g.lineWidth = o.width ?? .7;
+    const steps = 900;
+    for (let fam = 0; fam < 2; fam++) for (let R = o.rMin, i = 0; R < o.rMax; R += o.gap, i++) {
+      const a = o.amp * (.65 + .35 * Math.sin(i * .45)), ph = (fam ? -1 : 1) * i * o.twist + fam * Math.PI, alpha = o.alpha(R);
+      if (alpha < .004) continue;
+      g.strokeStyle = `rgba(${o.rgb}, ${alpha.toFixed(3)})`; g.beginPath();
+      for (let s = 0; s <= steps; s++) { const t = s / steps * Math.PI * 2, r = R + a * Math.sin(o.lobes * t + ph); const x = o.cx + r * Math.cos(t), y = o.cy + r * Math.sin(t); s ? g.lineTo(x, y) : g.moveTo(x, y); }
+      g.stroke();
+    }
+    if (o.clear) { // keep the words clean: lift the engraving from behind the headline, softly
+      const { x, y, rx, ry } = o.clear; g.save(); g.globalCompositeOperation = 'destination-out'; g.translate(x, y); g.scale(1, ry / rx);
+      const gr = g.createRadialGradient(0, 0, 0, 0, 0, rx); gr.addColorStop(0, 'rgba(0,0,0,.92)'); gr.addColorStop(.6, 'rgba(0,0,0,.7)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gr; g.beginPath(); g.arc(0, 0, rx, 0, Math.PI * 2); g.fill(); g.restore();
+    }
+  }
+
+  const hero = document.querySelector('.hero'), card = document.querySelector('[data-card]'), title = document.querySelector('h1');
+  function drawAll() {
+    const hr = hero.getBoundingClientRect(), cr = card.getBoundingClientRect(), tr = title.getBoundingClientRect();
+    const cx = cr.left - hr.left + cr.width / 2, cy = cr.top - hr.top + cr.height / 2, far = Math.hypot(Math.max(cx, hr.width - cx), Math.max(cy, hr.height - cy));
+    hero.style.setProperty('--ox', `${cx}px`); hero.style.setProperty('--oy', `${cy}px`);
+    const small = innerWidth < 600;
+    engrave(hero.querySelector('[data-engrave=hero]'), { cx, cy, rMin: cr.width * .5, rMax: far, gap: small ? 11 : 13, amp: small ? 6 : 9, lobes: small ? 28 : 40, twist: .19, rgb: '120, 98, 68',
+      alpha: (R) => .2 * smooth(cr.width * .5, cr.width * .5 + 90, R) * (1 - smooth(far * .5, far * .95, R)),
+      clear: { x: tr.left - hr.left + tr.width / 2, y: tr.top - hr.top + tr.height * .6, rx: tr.width * .62, ry: tr.height * 1.15 } });
+    const c = card.querySelector('[data-engrave]'); engrave(c, { cx: c.clientWidth * 1.08, cy: c.clientHeight * -.25, rMin: c.clientWidth * .25, rMax: c.clientWidth * 1.2, gap: 7, amp: 4, lobes: 30, twist: .23, width: .6, rgb: '255, 248, 235', alpha: (R) => .085 * (1 - smooth(c.clientWidth * .6, c.clientWidth * 1.2, R)) });
+    const pot = document.querySelector('[data-engrave=pot]'); engrave(pot, { cx: pot.clientWidth * 1.1, cy: pot.clientHeight * .5, rMin: pot.clientHeight * .5, rMax: pot.clientWidth, gap: 7, amp: 3, lobes: 26, twist: .23, width: .6, rgb: '255, 248, 235', alpha: (R) => .07 * (1 - smooth(pot.clientWidth * .5, pot.clientWidth, R)) });
+    const plan = document.querySelector('[data-engrave=plan]'); engrave(plan, { cx: plan.clientWidth * 1.02, cy: -10, rMin: 30, rMax: plan.clientWidth * 1.1, gap: 9, amp: 5, lobes: 30, twist: .2, rgb: '120, 98, 68', alpha: (R) => .14 * (1 - smooth(plan.clientWidth * .45, plan.clientWidth * 1.05, R)) });
+    const close = document.querySelector('[data-engrave=close]'), ch = document.querySelector('.close h2').getBoundingClientRect(), sr = close.getBoundingClientRect();
+    engrave(close, { cx: close.clientWidth / 2, cy: close.clientHeight / 2, rMin: Math.min(ch.width * .3, 220), rMax: Math.hypot(close.clientWidth, close.clientHeight) / 2, gap: small ? 11 : 13, amp: small ? 6 : 9, lobes: small ? 28 : 40, twist: .19, rgb: '120, 98, 68',
+      alpha: (R) => .17 * smooth(120, 260, R) * (1 - smooth(sr.width * .32, sr.width * .55, R)),
+      clear: { x: close.clientWidth / 2, y: ch.top - sr.top + ch.height / 2, rx: ch.width * .6, ry: ch.height * 1.1 } });
+  }
+
+  // The sort. --p runs 0→1 through the pinned stage; each part has its own slice of it.
+  const flow = document.querySelector('.flow'), svg = document.querySelector('.wires'), pay = document.querySelector('.pay'), pots = [...document.querySelectorAll('.pot')], steps = [...document.querySelectorAll('[data-step]')];
+  const base = [...svg.querySelectorAll('.base')], run = [...svg.querySelectorAll('.run')], beads = [...svg.querySelectorAll('.bead')], labels = [...svg.querySelectorAll('text')];
+  const euro = (n) => '€' + Math.round(n).toLocaleString('en-US');
+  const pinned = () => matchMedia('(min-width: 861px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)').matches;
+  function wire() {
+    const w = svg.clientWidth, h = 360, split = Math.round(w * .32), ys = [56, 180, 304];
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    const d = [`M0 180 H${split}`, ...ys.map((y) => `M${split} 180 C ${split + w * .34} 180, ${w - w * .3} ${y}, ${w} ${y}`)];
+    d.forEach((x, i) => { base[i].setAttribute('d', x); run[i].setAttribute('d', x); });
+    labels.forEach((t, i) => { const p = run[i + 1].getPointAtLength(run[i + 1].getTotalLength() * .62); t.setAttribute('x', p.x - 12); t.setAttribute('y', p.y - 10); });
+  }
+  function render(p) {
+    const parts = [seg(p, .12, .26), seg(p, .26, .44), seg(p, .4, .58), seg(p, .52, .72)];
+    pay.style.setProperty('--sorted', seg(p, .7, .76).toFixed(3));
+    parts.forEach((t, i) => {
+      run[i].style.strokeDashoffset = (1 - t).toFixed(4);
+      const len = run[i].getTotalLength(), pt = run[i].getPointAtLength(len * ease(t));
+      beads[i].setAttribute('cx', pt.x); beads[i].setAttribute('cy', pt.y); beads[i].style.opacity = t > 0 && t < 1 ? 1 : 0;
+    });
+    pots.forEach((pot, i) => { const t = ease(parts[i + 1]), bal = pot.querySelector('.bal');
+      bal.textContent = euro(+bal.dataset.from + +bal.dataset.add * t); pot.style.setProperty('--done', seg(parts[i + 1], .7, 1).toFixed(3)); });
+    const s = [seg(p, 0, .26), seg(p, .26, .52), seg(p, .52, .8)], on = p < .26 ? 0 : p < .52 ? 1 : 2;
+    steps.forEach((li, i) => { li.style.setProperty('--s', s[i].toFixed(3)); li.classList.toggle('on', i === on); });
+  }
+  let pin = false;
+  function tick() {
+    document.documentElement.style.setProperty('--sy', Math.min(scrollY, innerHeight * 1.5).toFixed(1));
+    if (!pin) return;
+    const r = flow.getBoundingClientRect(); render(clamp(-r.top / (r.height - innerHeight)));
+  }
+  function layout() {
+    pin = pinned(); wire();
+    if (pin) { // on tall screens the next section rises over the stage's empty lower part, so the gap stays one --section
+      const stage = flow.querySelector('.stagein'), bottom = stage.offsetTop + stage.offsetHeight;
+      flow.style.marginBottom = `${-Math.max(0, innerHeight - bottom)}px`;
+    } else { flow.style.marginBottom = ''; render(1); }
+    drawAll(); tick();
+  }
+
+  const nav = document.querySelector('.nav');
+  addEventListener('scroll', () => { nav.toggleAttribute('data-solid', scrollY > 8); requestAnimationFrame(tick); }, { passive: true });
+  let rs; addEventListener('resize', () => { clearTimeout(rs); rs = setTimeout(layout, 120); });
+  document.fonts.ready.then(layout); layout();
+
+  // The card leans toward a fine pointer, and its sheen follows it. Still on touch and under reduced motion.
+  if (matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+    addEventListener('pointermove', (e) => { const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--ry', `${Math.max(-18, Math.min(18, (x - .5) * 22))}deg`); card.style.setProperty('--rx', `${Math.max(-12, Math.min(12, (.5 - y) * 16))}deg`);
+      card.style.setProperty('--mx', `${Math.max(0, Math.min(100, x * 100))}%`); card.style.setProperty('--my', `${Math.max(0, Math.min(100, y * 100))}%`); }, { passive: true });
+  }
+  if (!still) {
+    const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { e.target.classList.remove('pending'); io.unobserve(e.target); } }, { rootMargin: '0px 0px -12% 0px' });
+    for (const el of document.querySelectorAll('[data-reveal]')) if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pending'); io.observe(el); }
+  }
+</script>
+</body>
+</html>

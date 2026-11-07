@@ -3,26 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Finance</title>
+<title>Staff</title>
+<link rel="stylesheet" href="../tokens.css">
 <style>
-  body { margin: 0; padding: 40px 32px; background: #f4f4f5; font: 13px/1.4 Inter, system-ui, sans-serif; color: #18181b; }
-  .wrap { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); overflow: hidden; }
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: left; font-weight: 600; color: #52525b; padding: 10px 14px; border-bottom: 1px solid #e4e4e7; background: #fafafa; }
-  td { text-align: left; padding: 0 14px; height: 40px; border-bottom: 1px solid #f0f0f1; white-space: nowrap; }
-  tr:last-child td { border-bottom: 0; }
+  :root { --accent-h: 230; }
+  .wrap { width: min(100%, 1080px); overflow: hidden; container-type: inline-size; }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; }
+  .head h1 { font-size: 17px; letter-spacing: -.01em; }
+  .head span { color: var(--muted); font-size: var(--text-sm); margin-left: 8px; font-weight: var(--w-body); }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  th { text-align: left; font-weight: var(--w-ui); color: var(--muted); font-size: var(--text-xs); padding: 0 16px 10px; white-space: nowrap; }
+  td { padding: 0 16px; height: 52px; border-top: 1px solid var(--line); color: var(--ink); white-space: nowrap; }
+  th:first-child, td:first-child { padding-left: 20px; } th:last-child, td:last-child { padding-right: 20px; }
+  /* The same table. The one fault: every column is left-aligned plain text at one weight, whatever it holds. */
+  .r { text-align: right; }
+  .id { color: var(--muted); }
+  .who { display: flex; align-items: center; gap: 10px; font-weight: var(--w-ui); }
+  .email { max-width: 220px; overflow: hidden; text-overflow: ellipsis; color: var(--ink-2); }
+  tr.off td, tr.off .email { color: var(--muted); }
+  tr.off .avatar { opacity: .55; }
+  .scroll { overflow-x: auto; }
 </style>
 </head>
 <body>
-  <div class="wrap"><table>
-    <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Email</th><th>Status</th><th>Years</th><th>Salary</th></tr></thead>
-    <tbody>
-      <tr><td>ST-104</td><td>Mira Patel</td><td>Operations</td><td>mira.patel@brightwater-freight.com</td><td>Active</td><td>4</td><td>$72,400</td></tr>
-      <tr><td>ST-117</td><td>Jonah Weiss</td><td>Finance</td><td>jonah.weiss@brightwater-freight.com</td><td>Active</td><td>9</td><td>$98,000</td></tr>
-      <tr><td>ST-121</td><td>Elena Sokolova</td><td>Support</td><td>elena.sokolova@brightwater-freight.com</td><td>Inactive</td><td>1</td><td>$54,800</td></tr>
-      <tr><td>ST-130</td><td>Kwame Mensah</td><td>Engineering</td><td>kwame.mensah@brightwater-freight.com</td><td>Active</td><td>11</td><td>$141,500</td></tr>
-      <tr><td>ST-142</td><td>Hana Ito</td><td>Engineering</td><td>hana.ito@brightwater-freight.com</td><td>On leave</td><td>7</td><td>$118,250</td></tr>
-    </tbody>
-  </table></div>
+  <section class="card wrap">
+    <header class="head"><h1>Staff<span class="num">5 people</span></h1><button class="btn sm" type="button"><i data-lucide="download"></i>Export</button></header>
+    <div class="scroll"><table>
+      <thead><tr><th class="c-id">ID</th><th>Name</th><th class="c-dept">Department</th><th class="c-email">Email</th><th>Status</th><th class="c-years">Years</th><th>Salary</th></tr></thead>
+      <tbody>
+        <tr><td class="c-id">ST-104</td><td>Mira Patel</td><td class="c-dept">Operations</td><td class="c-email">mira.patel@brightwater-freight.com</td><td>Active</td><td class="c-years">4</td><td>$72,400</td></tr>
+        <tr><td class="c-id">ST-117</td><td>Jonah Weiss</td><td class="c-dept">Finance</td><td class="c-email">jonah.weiss@brightwater-freight.com</td><td>Active</td><td class="c-years">9</td><td>$98,000</td></tr>
+        <tr><td class="c-id">ST-121</td><td>Elena Sokolova</td><td class="c-dept">Support</td><td class="c-email">elena.sokolova@brightwater-freight.com</td><td>Inactive</td><td class="c-years">1</td><td>$54,800</td></tr>
+        <tr><td class="c-id">ST-130</td><td>Kwame Mensah</td><td class="c-dept">Engineering</td><td class="c-email">kwame.mensah@brightwater-freight.com</td><td>Active</td><td class="c-years">11</td><td>$141,500</td></tr>
+        <tr><td class="c-id">ST-142</td><td>Hana Ito</td><td class="c-dept">Engineering</td><td class="c-email">hana.ito@brightwater-freight.com</td><td>On leave</td><td class="c-years">7</td><td>$118,250</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="../pair.js"></script>
 </body>
 </html>
