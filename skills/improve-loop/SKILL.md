@@ -81,7 +81,8 @@ list, persistence); from M2 on, one story per commit.
 
 At the end of the loop, report to the user:
 
-- Stories done, with one line each and the screenshots that show them.
+- Stories done, with one line each and the evidence: the passing test output and the
+  screenshots that show them.
 - Stories blocked, and why.
 - Anything the user should try by hand (shortcuts, drag and drop).
 - The next story in line.

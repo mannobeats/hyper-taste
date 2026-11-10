@@ -53,12 +53,18 @@ the old ad-hoc copies use it.
 
 Each slice goes through every layer it needs (data, logic, UI) and works on its own:
 
-1. Write the test that proves the slice: it fails first. Logic, parsers, money, security and
-   data writes always get one; trivial changes don't need one.
-2. Make it pass with the simplest code that fits the system.
-3. Run the whole relevant suite, the type checker and the linter. Then look at the running
+1. **Test first, from the spec, not from the code.** Write the test from the story's acceptance
+   lines (or the bug report) before the implementation exists, and run it: it must fail, for the
+   reason you expect. A test written after the code tends to describe what the code does, bugs
+   included, and passes anyway. Logic, parsers, money, security, data writes and every bug fix
+   get one; trivial changes and pure layout don't (those are proven by looking).
+2. Make it pass with the simplest code that fits the system. Never change a test to match the
+   code; change it only when the spec changed, and say so.
+3. **Check the test can catch a bug:** break the line it guards for a moment (flip a condition,
+   return early) and see it fail. A test that still passes proves nothing.
+4. Run the whole relevant suite, the type checker and the linter. Then look at the running
    result if the slice has UI (`ui-director`, `mac-app`).
-4. Commit with a message that says what someone can now do.
+5. Commit with a message that says what someone can now do.
 
 Never leave the codebase broken between slices. If a slice grows past what you can verify in one
 go, split it.
@@ -69,14 +75,29 @@ APIs change. Before you use a framework feature, a config key or a library call 
 about, read the official docs or the installed version's source, and use what they say for the
 version this project has. Say which source you used when it matters. Never invent an API.
 
-## 6. Design interfaces on purpose
+## 6. Prove every claim
+
+Say only what you checked, and show how you know. Agents that read a doc, guess, or skim one file
+and then report "done" or "this works" are the most expensive failure there is.
+
+- **About the code:** you read it in this session. Cite `file:line`. Never describe code, an API
+  or a config from memory or from a README when the source is there to read.
+- **About behavior:** you ran it. Quote the command and the decisive line of its output (the
+  test summary, the error, the response), or point to the screenshot you looked at.
+- **About a library or platform:** the official docs or the installed version's source, named.
+- **Unknown stays unknown:** "I didn't run the migration", "not checked on a real phone". A gap
+  you name is fine; a gap you hide is a bug.
+- **Before "done":** re-read the diff end to end, and re-run what proves it after the last edit,
+  not before it.
+
+## 7. Design interfaces on purpose
 
 For an API, a module boundary or a component's props: design the contract before the code.
 Name things for what they mean to the caller, keep inputs and outputs small, validate at the
 boundary, return errors the caller can act on, and keep it stable once others use it (add, don't
 break). Expect callers to depend on everything observable, not only what you documented.
 
-## 7. Finish the change
+## 8. Finish the change
 
 - **Every caller:** grep every use of what you changed, and update each one. A bug fix goes in
   the shared code, once, not in the one caller the report named.
@@ -90,7 +111,10 @@ break). Expect callers to depend on everything observable, not only what you doc
 
 - You searched before writing, and nothing new duplicates something that existed.
 - Every place on the scope list is updated, and the tests, types and linter pass.
+- Each new test failed before the code and passes after; the full suite, types and linter pass.
 - The change was seen working (tests, and the running app for anything visible).
+- Your report cites the evidence (`file:line`, command output, screenshots) for every claim,
+  and names what you did not check.
 - Each slice is its own commit, and anything you couldn't check is named in your report.
 
 Reuse rules adapted from Ponytail by Dietrich Gebert (MIT); slices, tests and source-driven work

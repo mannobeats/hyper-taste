@@ -35,6 +35,8 @@ In an unattended run, don't ask: apply the floor and the defaults and say so in 
 - No new suppression comments (ts-ignore, eslint-disable, noqa, swiftlint:disable) without a reason.
 - No unimplemented stubs, empty catch blocks, or skipped tests without a reason in the commit.
 - No secrets in source. No duplicate of an existing helper, component or token.
+- Tests come before the code they prove, and fail first; a test is never edited to match a bug.
+- Every "done" cites its evidence: the command and its output, `file:line`, or a screenshot.
 - This file is never weakened to make a change pass.
 
 ## Enforced
