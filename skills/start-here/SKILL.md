@@ -44,6 +44,7 @@ idea -> research -> clone (optional) -> product-brief -> user-stories -> quality
 | Start, run, test or speed up a Mac app | `mac-app` |
 | Fix a bug, a failing test or a broken build | `debug` |
 | Review a diff or audit a codebase | `review` |
+| Restructure, simplify or de-bloat existing code | `review` to find what to fix, then `refactor` |
 | Work through the backlog on its own | `improve-loop` |
 | Keep `AGENTS.md` / `CLAUDE.md` small and in sync | `agents-md` |
 

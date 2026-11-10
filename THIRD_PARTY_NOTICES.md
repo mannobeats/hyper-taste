@@ -5,9 +5,9 @@ came from. Their licenses follow.
 
 | Project | Used in |
 |---|---|
-| [BAMA](https://github.com/daveebbelaar/bama) by Dave Ebbelaar (commit 22dc792) | mac-design, mac-app, ux-design, app-icon, research, product-brief, user-stories, clone, improve-loop, design-system, review |
-| [Agent Skills](https://github.com/addyosmani/agent-skills) by Addy Osmani (commit 301b02b) | build, debug, review, quality-bar, product-brief |
-| [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (commit 96608e0) | build, review |
+| [BAMA](https://github.com/daveebbelaar/bama) by Dave Ebbelaar (commit 22dc792) | mac-design, mac-app, ux-design, app-icon, research, product-brief, user-stories, clone, improve-loop, design-system, review, refactor |
+| [Agent Skills](https://github.com/addyosmani/agent-skills) by Addy Osmani (commit 301b02b) | build, debug, review, refactor, quality-bar, product-brief |
+| [Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (commit 96608e0) | build, review, refactor |
 | Stageshow review brief by Benji Taylor (MIT) | ui-director references/look.md |
 
 ## BAMA

@@ -57,6 +57,7 @@ Plain words, worst first, in three groups (skip empty ones):
 
 Each line: `file:line`, what is wrong, the case that shows it, the fix. End with what you did
 not check. If the code is good, say so and say what you checked.
+Fixing a large set of findings (dead code, duplicates, structure) is `refactor`.
 
 ## Done when
 

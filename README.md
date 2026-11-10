@@ -38,6 +38,7 @@ Start with `start-here` (`/hyper-taste:start-here`): it names the next skill for
 | [mac-app](skills/mac-app/SKILL.md) | Set up, build, verify and speed up a Mac app in SwiftUI, Electron or Tauri |
 | [debug](skills/debug/SKILL.md) | Reproduce, find the root cause, fix it once, prove it with a test |
 | [review](skills/review/SKILL.md) | Review a diff or audit a repo: every finding with a failing case and the smallest fix |
+| [refactor](skills/refactor/SKILL.md) | Simplify, de-bloat and restructure existing code, one proven step per commit, behavior unchanged |
 | [improve-loop](skills/improve-loop/SKILL.md) | Work through the backlog one story at a time, unattended if needed |
 | [agents-md](docs/agents-md/README.md) | Keeps AGENTS.md small and every agent in sync |
 

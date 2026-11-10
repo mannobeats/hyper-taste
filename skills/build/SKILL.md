@@ -1,6 +1,6 @@
 ---
 name: build
-description: How to write code in any project so it stays one coherent system - read the code first, reuse what exists, build in thin tested slices, check the official docs, and finish every part a change touches. Use when implementing a feature or story, fixing a bug, refactoring, adding an API, or choosing a library or dependency.
+description: How to write code in any project so it stays one coherent system - read the code first, reuse what exists, build in thin tested slices, check the official docs, and finish every part a change touches. Use when implementing a feature or story, fixing a bug, adding an API, or choosing a library or dependency.
 ---
 
 # Build
@@ -106,6 +106,8 @@ break). Expect callers to depend on everything observable, not only what you doc
 - **Never cut:** validation at trust boundaries, error handling that prevents data loss,
   security, accessibility, anything the user asked for.
 - **A known limit** gets a one-line comment: `limit: <what>, <when to revisit>`.
+
+Restructuring or cleaning up code that already works is `refactor`.
 
 ## Done when
 

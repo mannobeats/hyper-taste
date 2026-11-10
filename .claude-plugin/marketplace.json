@@ -179,6 +179,18 @@
       "commands": []
     },
     {
+      "name": "refactor",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Restructure, simplify and de-bloat an existing codebase without changing what it does - pin today's behavior, then delete, merge, simplify and reshape one proven step per commit.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/refactor",
+      "license": "MIT",
+      "skills": [
+        "./skills/refactor"
+      ],
+      "commands": []
+    },
+    {
       "name": "review",
       "version": "1.0.0",
       "source": "./",

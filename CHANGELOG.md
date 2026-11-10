@@ -6,10 +6,10 @@ Hyper Taste grows from two skills to a full set for building software with agent
 and build apps for the Mac, the web and phones, without slop. Every skill now says what good is
 and how to judge it, and leaves the tools to the agent's harness.
 
-- **17 skills, one owner per job.** Plan: `start-here`, `research`, `product-brief`,
+- **18 skills, one owner per job.** Plan: `start-here`, `research`, `product-brief`,
   `user-stories`, `clone`, `quality-bar`. Design: `ui-director`, `mac-design`, `design-system`,
-  `ux-design`, `app-icon`. Build: `mac-app`, `build`, `debug`, `review`, `improve-loop`. Plus
-  `agents-md`. Skills point to each other instead of repeating each other.
+  `ux-design`, `app-icon`. Build: `mac-app`, `build`, `debug`, `review`, `refactor`,
+  `improve-loop`. Plus `agents-md`. Skills point to each other instead of repeating each other.
 - **ui-director 4.0.0: outcomes, not machinery.** `scripts/check.mjs` and `page-check.js`, the
   eight gold pages, the teaching pairs and the bundled fonts are gone from the skill: agents look
   at their work with their own browser and screenshot tools, and the golds made every result look
@@ -21,7 +21,8 @@ and how to judge it, and leaves the tools to the agent's harness.
   reference per stack, macOS integrations, performance and media.
 - **Code that stays one system.** `build` searches before it writes and reuses what exists,
   works in thin tested slices, checks the official docs, and finishes every caller. `review`
-  finds duplication and rules that live in two places. `quality-bar` writes the project's bar
+  finds duplication and rules that live in two places, and `refactor` removes them: it pins
+  today's behavior, then deletes, merges, simplifies and reshapes one proven step per commit. `quality-bar` writes the project's bar
   down as `CONSTRAINTS.md` with a command per rule.
 - **Sources.** Mac, planning, UX and loop skills adapted from BAMA (Dave Ebbelaar, MIT);
   engineering practice from Agent Skills (Addy Osmani, MIT); reuse rules from Ponytail (Dietrich
