@@ -24,6 +24,7 @@ for (const skill of skills) {
   if (name !== skill) fail(`${path}: name "${name}" must match the folder "${skill}"`);
   if (!description) fail(`${path}: description is empty`);
   if (description.length > 1024) fail(`${path}: description is ${description.length} chars, the limit is 1024`);
+  if (/: |\s#/.test(description) && !/^["']/.test(description)) fail(`${path}: description has ": " or " #", which breaks YAML; quote it or reword`);
   for (const [, ref] of text.matchAll(/`((?:references|scripts|fonts)\/[\w./-]+)`/g)) {
     if (!existsSync(`skills/${skill}/${ref}`)) fail(`${path}: links to ${ref}, which doesn't exist`);
   }

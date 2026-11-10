@@ -1,6 +1,6 @@
 ---
 name: mac-design
-description: How a desktop app looks and behaves like a real Mac app on macOS 26 and later, in SwiftUI, Electron or Tauri: Apple's principles, the window, sidebar, toolbar, menus, keyboard, type, color, Liquid Glass and dark mode. Use when building or reviewing any Mac window, sidebar, toolbar, menu, panel or Settings screen, or when the user asks for a more native or Apple-like app.
+description: How a desktop app looks and behaves like a real Mac app on macOS 26 and later, in SwiftUI, Electron or Tauri - Apple's principles, the window, sidebar, toolbar, menus, keyboard, type, color, Liquid Glass and dark mode. Use when building or reviewing any Mac window, sidebar, toolbar, menu, panel or Settings screen, or when the user asks for a more native or Apple-like app.
 ---
 
 # Mac design

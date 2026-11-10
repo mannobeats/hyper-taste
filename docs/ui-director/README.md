@@ -44,7 +44,7 @@ docs/ui-director/         before/after pairs for humans: live HTML, screenshots,
 ## Install
 
 ```bash
-npx skills add mannobeats/hyper-taste --skill ui-director
+npx skills add mannobeats/hyper-taste -g -a claude-code -s ui-director -y
 ```
 
 ```

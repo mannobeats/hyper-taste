@@ -45,13 +45,21 @@ Start with `start-here` (`/hyper-taste:start-here`): it names the next skill for
 
 ### Any agent, with the skills CLI
 
+Name your agents with `-a`, so the installer doesn't ask you to scroll through its list:
+
 ```bash
-npx skills add mannobeats/hyper-taste --skill '*'           # every skill
-npx skills add mannobeats/hyper-taste                       # pick from the list
-npx skills add mannobeats/hyper-taste --skill ui-director   # one skill
+# every skill, for Claude Code, for your user (all projects), no prompts
+npx skills add mannobeats/hyper-taste -g -a claude-code -s '*' -y
+
+# Claude Code and Codex together
+npx skills add mannobeats/hyper-taste -g -a claude-code codex -s '*' -y
+
+# one skill
+npx skills add mannobeats/hyper-taste -g -a claude-code -s ui-director -y
 ```
 
-Add `-g` to install for your user instead of the current project.
+Drop `-g` to install into the current project only. Leave out `-a` to pick agents from the list,
+or `-s` to pick skills from it. `-a '*'` installs for every agent the CLI knows.
 
 ### Claude Code plugin marketplace
 

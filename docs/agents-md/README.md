@@ -33,7 +33,7 @@ skills/agents-md/
 ## Install
 
 ```bash
-npx skills add mannobeats/hyper-taste --skill agents-md
+npx skills add mannobeats/hyper-taste -g -a claude-code -s agents-md -y
 ```
 
 ```

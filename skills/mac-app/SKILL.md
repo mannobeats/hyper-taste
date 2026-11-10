@@ -1,6 +1,6 @@
 ---
 name: mac-app
-description: Build, run and verify a desktop app for the Mac in SwiftUI, Electron or Tauri, so it behaves like a native Mac app: project setup, the native window and menu bar, system integrations (hotkeys, menu bar items, permissions), testing, snapshots and performance. Use when starting a Mac app, writing its code, hooking into macOS, making it fast, or checking that a change works in the running app.
+description: Build, run and verify a desktop app for the Mac in SwiftUI, Electron or Tauri, so it behaves like a native Mac app - project setup, the native window and menu bar, system integrations (hotkeys, menu bar items, permissions), testing, snapshots and performance. Use when starting a Mac app, writing its code, hooking into macOS, making it fast, or checking that a change works in the running app.
 ---
 
 # Mac app
