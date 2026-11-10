@@ -4,8 +4,8 @@
 
    Sections: 1 knobs · 2 light tokens · 3 dark tokens · 4 base · 5 primitives · 6 demo stage */
 
-@font-face { font-family: "Geist"; src: url("../../../skills/ui-director/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
-@font-face { font-family: "Geist Mono"; src: url("../../../skills/ui-director/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+@font-face { font-family: "Geist"; src: url("../fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+@font-face { font-family: "Geist Mono"; src: url("../fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
 
 /* ---------- 1. Knobs: the only values a brand should change. Pages override them inline. ---------- */
 :root {

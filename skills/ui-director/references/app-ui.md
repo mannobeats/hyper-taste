@@ -3,24 +3,21 @@
 For admin panels, analytics, CRMs, tables, settings and detail pages, and every app's waits,
 success and failure. Phone apps also read `mobile.md`. The layout comes from the job this
 product does; the template (greeting, four stat cards, a chart, a table) is the obvious version.
-The golds are three shells: `examples/app-dashboard.html` (sidebar), `app-analytics.html`
-(inset sidebar on a tinted ground) and `app-finance.html` (top nav, one centered column). The
-page column is centered in the main area; the sidebar folds to a rail of icons on tablets.
+The page column is centered in the main area; a sidebar folds to a rail of icons on tablets.
 
-## The direction block
+## Direction, for an app
 
-Write it into `DESIGN.md` before any code.
+Add to the block in `DESIGN.md`:
 
 ```
 App: <product>, for <who>, doing <the primary job>, <how often>. They open it asking: <question>.
 Key object: <the invoice, the take, the shift…> and its states. Needs attention: <what must jump out, and the one color it gets>.
 Actions: primary "<label>"; frequent <…>; rare <…>; destructive <…>.
-Density: <calm | standard | dense>. Shell: <sidebar | top tabs | queue and detail | canvas>. Gold: <the example you start from>.
+Density: <calm | standard | dense>. Shell: <sidebar | top tabs | queue and detail | canvas>.
 Three directions, each from one thing in the user's world (a ledger, a board, a score, a map); the first idea dropped. Pick: <one>, because <…>.
 Signature: <the key object drawn so the answer is visible at a glance>.
-Voice: <family, radius, accent from the user's world, what red means> (`voice.md`, In app UI).
+Voice: <family, radius, accent from the user's world, what red means>. Inside an app the voice is quiet: family, radius, accent and density carry it.
 Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
-Sample world: <one team or person, their real-looking data>. Obvious version: <the screen any model builds for this>.
 ```
 
 What worked in testing: open invoices drawn as one bar split at "today"; a drum step key that
@@ -128,7 +125,7 @@ Most "it looks off" is here. Check each in the browser at every width, light and
 - Below about 760px every multi-column layout becomes one column, in the same component: the
   sidebar becomes a top bar or a drawer, stats stack, the side panel moves under the main one.
 - Tables become two-line rows: who and how much, then the detail as plain text
-  (`examples/app-dashboard.html` at 390). Nothing important is hover-only.
+  Nothing important is hover-only.
 - Controls grow to 44px on touch; body and inputs 16px. Phone apps proper: `mobile.md`.
 
 ## Moments
@@ -154,11 +151,9 @@ People remember an app by its best moment and how it ends. Write the moments int
   meal is wrong when the camera can see it. Design for the real situation: one hand, half
   asleep, on a train.
 
-## Done means
+## Done when
 
-- [ ] The first screen answers the question in one glance; the key object is the largest view.
-- [ ] Nothing from the obvious version or "Never" in `SKILL.md`.
-- [ ] Every control has hover, focus, active, disabled; every list has empty, loading, error.
-- [ ] The peak, the end and the screen they return to are designed.
-- [ ] Phone (390): its own layout, no sideways scroll, two-line rows, 44px targets, 16px inputs.
-- [ ] Dark is designed and checked; `scripts/check.mjs` ends `check passed`.
+- The first screen answers the question in one glance; the key object is the largest view.
+- Every control has hover, focus, active, disabled; every list has empty, loading, error.
+- The peak, the end and the screen they return to are designed.
+- Phone: its own layout, two-line rows, 44px targets, 16px inputs. Dark is designed, not inverted.

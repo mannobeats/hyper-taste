@@ -1,22 +1,18 @@
 # Mobile: phone apps
 
 For a phone app's screens, on the web or native: home, lists, detail, forms, onboarding, paywalls,
-success and failure. Read `app-ui.md` too, for states, controls and moments. The gold is
-`examples/phone-app.html`; open it at 390 wide. `teaching/19-phone` shows a table becoming phone
-rows.
+success and failure. Read `app-ui.md` too, for states, controls and moments.
 
-## The direction block
+## Direction, for a phone app
 
-Write it into `DESIGN.md` before any code.
+Add to the block in `DESIGN.md`:
 
 ```
 App: <product>, for <who>, doing <the primary job>, <how often, where: one hand, on a train, half asleep>.
 They open it asking: <question>. The answer, in one line: <…>.
 Key object: <the session, the booking, the day's wind> and its states.
 Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
-Platform: <iOS | Android | both, one language per app>. Gold: `phone-app`.
-Voice: <family, radius, accent from the user's world, what red means>. Sample world: <one person, their real-looking data>.
-Obvious version: <the screen any model builds for this>.
+Platform: <iOS | Android | both, one language per app>. Stack: <SwiftUI | Compose | Expo/React Native | web>.
 ```
 
 ## The first screen answers the question
@@ -65,7 +61,7 @@ Design at 390 × 844 (check 375 and 430). All sizes in points.
 ## Native stacks
 
 SwiftUI, Compose, React Native: the system pieces first (`TabView`, `NavigationStack`, `.sheet`,
-SF Symbols; Material 3), restyled with the tokens (`system.md`, Native). Springs with no bounce
+SF Symbols; Material 3), restyled with the tokens (`design-system` skill). Springs with no bounce
 in UI (`.smooth`, `.snappy`; Compose `dampingRatio = 1f`), a drag handing its velocity to the
 spring. Haptics on confirm, success and error only. Check the largest Dynamic Type size; if text
 feels small, cut or split the screen, don't shrink the text.
@@ -79,16 +75,14 @@ feels small, cut or split the screen, don't shrink the text.
 
 ## Showing a phone app on a page
 
-When the job is the app's landing page, the phone is the hero: `product-shots.md`, Phones in a
-page. Real proportions, the crop under the content, the notification the app sends over empty
+When the job is the app's landing page, the phone is the hero (`landing.md`). Real proportions, the crop under the content, the notification the app sends over empty
 screen, never over a row.
 
-## Done means
+## Done when
 
-- [ ] The first screen answers the question in one glance; the key object is the largest view.
-- [ ] One primary action, labeled, in thumb reach; no floating button over content.
-- [ ] 44pt targets, 16pt inputs, text 11pt or more, safe areas respected, nothing under the island.
-- [ ] Every list has empty, loading and error; every action ends with a named result.
-- [ ] The peak, the end and the screen they come back to are designed (`app-ui.md`, Moments).
-- [ ] Dark is designed and checked; `scripts/check.mjs` passes at 390 (or the simulator
-      screenshots are seen, for a native app).
+- The first screen answers the question in one glance; the key object is the largest view.
+- One primary action, labeled, in thumb reach; no floating button over content.
+- 44pt targets, 16pt inputs, text 11pt or more, safe areas respected.
+- Every list has empty, loading and error; every action ends with a named result.
+- Seen on a simulator or device at the smallest and largest common sizes, light and dark, and at
+  the largest Dynamic Type size.
