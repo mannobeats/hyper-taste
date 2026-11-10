@@ -3,7 +3,6 @@ name: product-brief
 description: One-page brief (docs/BRIEF.md) for a new app or product, written before any code - what it is, who it is for, the main jobs, the data, the platform and stack, the look, what is out of scope, and how we will know it works. Use when the user has an idea, wants to replace an app they use, hands over a rough spec, or research is done.
 argument-hint: "[idea in a few words]"
 ---
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Product brief
 
 Write `docs/BRIEF.md` in a folder named after the product (`<parent>/<Name>/docs/BRIEF.md`; ask for the parent folder, default

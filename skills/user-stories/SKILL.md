@@ -2,7 +2,6 @@
 name: user-stories
 description: A prioritized backlog of small user stories with checkable acceptance criteria (docs/STORIES.md), grouped into milestones that each end in something usable. Use after product-brief or clone, or when the user asks for user stories, a plan, a backlog, a task breakdown, or "what do we build first".
 ---
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # User stories
 
 Screens show what an app looks like. Stories say what a person does with

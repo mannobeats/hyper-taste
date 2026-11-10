@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Menus
 
 The menu bar, context menus, and the Dock menu, from the HIG (The menu bar,

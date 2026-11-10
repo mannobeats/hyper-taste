@@ -89,6 +89,3 @@ or `AGENTS.md` where the structure they describe changed. Then run `review` on t
 - Every step is its own green commit, with nothing removed that something still used.
 - The code is measurably smaller or simpler, and the report shows the numbers and names what was
   not checked.
-
-Adapted from BAMA's architecture check-in by Dave Ebbelaar (MIT), Agent Skills' code
-simplification and migration by Addy Osmani (MIT), and Ponytail by Dietrich Gebert (MIT).

@@ -39,6 +39,7 @@ Start with `start-here` (`/hyper-taste:start-here`): it names the next skill for
 | [debug](skills/debug/SKILL.md) | Reproduce, find the root cause, fix it once, prove it with a test |
 | [review](skills/review/SKILL.md) | Review a diff or audit a repo: every finding with a failing case and the smallest fix |
 | [refactor](skills/refactor/SKILL.md) | Simplify, de-bloat and restructure existing code, one proven step per commit, behavior unchanged |
+| [stop-overthinking](skills/stop-overthinking/SKILL.md) | Ask for it when work goes in circles: a short call on whether it's ready, and the next steps |
 | [improve-loop](skills/improve-loop/SKILL.md) | Work through the backlog one story at a time, unattended if needed |
 | [agents-md](docs/agents-md/README.md) | Keeps AGENTS.md small and every agent in sync |
 
@@ -108,8 +109,15 @@ scripts/validate.mjs    checks skills, manifests and versions (runs in CI)
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) to add a skill or cut a release.
 
+## Credits
+
+Built on ideas from [BAMA](https://github.com/daveebbelaar/bama) by Dave Ebbelaar,
+[Agent Skills](https://github.com/addyosmani/agent-skills) by Addy Osmani,
+[Ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert and
+[Stageshow](https://github.com/benjitaylor/skills/tree/main/stageshow) by Benji Taylor and
+[stop-overthinking](https://github.com/davidondrej/skills) by David Ondrej, all MIT.
+
 ## License
 
-[MIT](LICENSE). Parts are adapted from other MIT-licensed work, credited in
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The Geist fonts used by the demo pages in
+[MIT](LICENSE). The Geist fonts used by the demo pages in
 `docs/` are under the SIL Open Font License.

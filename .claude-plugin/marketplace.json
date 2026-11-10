@@ -203,6 +203,18 @@
       "commands": []
     },
     {
+      "name": "stop-overthinking",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Stop going around in circles and give a short, practical call - is it ready, and what's next. Invoked by the user.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/stop-overthinking",
+      "license": "MIT",
+      "skills": [
+        "./skills/stop-overthinking"
+      ],
+      "commands": []
+    },
+    {
       "name": "start-here",
       "version": "1.0.0",
       "source": "./",

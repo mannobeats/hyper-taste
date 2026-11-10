@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Design rules with sources
 
 A checklist for reviewing a macOS SwiftUI app. Each rule is testable on a
@@ -143,19 +142,4 @@ snapshot or in the code. Sources are listed at the bottom.
 
 ## Sources
 
-- Kole Jain, "Everything you need to Design macOS Apps EXACTLY like Apple (beginner friendly)", YouTube, December 2025: https://www.youtube.com/watch?v=Vy0KKvZJRH8
-- Apple Human Interface Guidelines, Designing for macOS: https://developer.apple.com/design/human-interface-guidelines/designing-for-macos
-- HIG Materials, Color, Typography, Sidebars, Toolbars, Menus, Context menus, Scroll views, Sheets, Search fields, Searching, Settings, The menu bar, Keyboards, Icons, Buttons, Toggles, Layout, Windows, Lists and tables, Outline views, Drag and drop, Launching, Onboarding, Accessibility, Progress indicators: https://developer.apple.com/design/human-interface-guidelines
-- HIG Design principles (June 2026): https://developer.apple.com/design/human-interface-guidelines/design-principles
-- WWDC25-219 Meet Liquid Glass: https://developer.apple.com/videos/play/wwdc2025/219/
-- WWDC25-356 Get to know the new design system: https://developer.apple.com/videos/play/wwdc2025/356/
-- WWDC25-323 Build a SwiftUI app with the new design: https://developer.apple.com/videos/play/wwdc2025/323/
-- WWDC25-310 Build an AppKit app with the new design: https://developer.apple.com/videos/play/wwdc2025/310/
-- WWDC26-269 What's new in SwiftUI: https://developer.apple.com/videos/play/wwdc2026/269/
-- WWDC26-250 Principles of great design: https://developer.apple.com/videos/play/wwdc2026/250/
-- WWDC26-292 Design intuitive search experiences: https://developer.apple.com/videos/play/wwdc2026/292/
-- WWDC26-289 Modernize your AppKit app: https://developer.apple.com/videos/play/wwdc2026/289/
-- WWDC25-359 Design foundations from idea to interface: https://developer.apple.com/videos/play/wwdc2025/359/
-- Brent Simmons, inessential.com, September 2026: https://inessential.com/2026/09/22/that-about-wraps-it-up-for.html
-- petekp/agent-skills `macos-app-design`, kageroumado/swiftui-macos-skill, ehmo/platform-design-skills (GitHub)
-- Optical Flow and Pulse design systems (Dave Ebbelaar's own apps)
+- Apple Human Interface Guidelines: https://developer.apple.com/design/human-interface-guidelines

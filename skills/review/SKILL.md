@@ -63,6 +63,3 @@ Fixing a large set of findings (dead code, duplicates, structure) is `refactor`.
 
 Every changed line was read, every finding has a case and a fix, and the report says what was
 not checked. When fixing your own findings, each fix gets a test or a look at the running result.
-
-Adapted from Agent Skills by Addy Osmani (MIT), Ponytail's audit by Dietrich Gebert (MIT), and
-BAMA's architecture check-in by Dave Ebbelaar (MIT).

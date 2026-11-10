@@ -57,5 +57,3 @@ prove fixed. If it only happens sometimes, find what makes it happen more (load,
 
 The cause is named in one sentence, the fix is in the shared code, a test that failed before
 now passes, the full suite passes, and the original steps no longer show the bug.
-
-Adapted from Agent Skills by Addy Osmani (MIT).

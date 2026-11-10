@@ -70,5 +70,3 @@ a task done. Never weaken it to make a change pass."
 
 `CONSTRAINTS.md` exists, every enforced row's command runs and passes today (or its current
 number is recorded), and `AGENTS.md` points to it.
-
-Adapted from Agent Skills' constraint-driven development by Addy Osmani (MIT).

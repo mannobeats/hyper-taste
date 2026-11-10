@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Where a feature opens
 
 Code for each row of the surface table in the `ux-design` skill. It compiles

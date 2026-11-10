@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # macOS integrations
 
 A Mac app is a set of entry points around the system, not one window. This

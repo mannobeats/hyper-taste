@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # AI features
 
 Rules for a feature that uses a model: a summary, generated text, a

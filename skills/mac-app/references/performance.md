@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Performance
 
 Fast means two numbers: the first frame after a key press shows in under

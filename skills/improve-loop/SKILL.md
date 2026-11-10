@@ -3,7 +3,6 @@ name: improve-loop
 description: Work through docs/STORIES.md one story at a time - plan, build, test, run and look, compare, fix, commit - until a milestone is done, unattended if needed. Use when the user says "keep going", "work through the backlog", "build M1", "make it match the reference", or wants an autonomous build loop.
 argument-hint: "[milestone, e.g. M1]"
 ---
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Improve loop
 
 One pass through the loop takes one story from `todo` to `done`:

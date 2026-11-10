@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Writing patterns
 
 Patterns for the words in a Mac app. Each one has a rule and a before and

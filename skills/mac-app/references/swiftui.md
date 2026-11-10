@@ -1,4 +1,3 @@
-<!-- Swift rules from BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # SwiftUI
 
 Copyable view code (sidebar, toolbar, inspector, quick panel, Settings, tables, undo, calm

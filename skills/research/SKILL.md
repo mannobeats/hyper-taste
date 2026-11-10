@@ -2,7 +2,6 @@
 name: research
 description: Research before building an app - the best apps in the category, what people love and hate about them, and how the platform lets you build it - run as parallel researcher subagents and saved to docs/research/. Use when the user asks what to build, which features matter, how the best apps in a category work, how a platform API works, or wants a feature comparison.
 ---
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Research
 
 Research answers three questions before code exists: what the best apps in

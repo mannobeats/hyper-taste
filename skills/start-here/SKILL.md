@@ -46,6 +46,7 @@ idea -> research -> clone (optional) -> product-brief -> user-stories -> quality
 | Review a diff or audit a codebase | `review` |
 | Restructure, simplify or de-bloat existing code | `review` to find what to fix, then `refactor` |
 | Work through the backlog on its own | `improve-loop` |
+| A quick call when work goes in circles: is it ready, what's next | `stop-overthinking` |
 | Keep `AGENTS.md` / `CLAUDE.md` small and in sync | `agents-md` |
 
 ## Done when

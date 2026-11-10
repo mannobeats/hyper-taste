@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Accessibility audit
 
 How to check step 7 of the `ux-design` skill on a running build, and the

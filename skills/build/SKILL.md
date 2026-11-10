@@ -85,6 +85,8 @@ and then report "done" or "this works" are the most expensive failure there is.
 - **About behavior:** you ran it. Quote the command and the decisive line of its output (the
   test summary, the error, the response), or point to the screenshot you looked at.
 - **About a library or platform:** the official docs or the installed version's source, named.
+- **Real problems only:** a risk you can't show with a case, a failing check or a source is not
+  a problem; don't add work for it. When the change is ready, say so.
 - **Unknown stays unknown:** "I didn't run the migration", "not checked on a real phone". A gap
   you name is fine; a gap you hide is a bug.
 - **Before "done":** re-read the diff end to end, and re-run what proves it after the last edit,
@@ -118,6 +120,3 @@ Restructuring or cleaning up code that already works is `refactor`.
 - Your report cites the evidence (`file:line`, command output, screenshots) for every claim,
   and names what you did not check.
 - Each slice is its own commit, and anything you couldn't check is named in your report.
-
-Reuse rules adapted from Ponytail by Dietrich Gebert (MIT); slices, tests and source-driven work
-adapted from Agent Skills by Addy Osmani (MIT).

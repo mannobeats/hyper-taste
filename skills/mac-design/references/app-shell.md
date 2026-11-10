@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # App shell
 
 The frame of a window with a left sidebar, a right panel, and a top bar on

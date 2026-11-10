@@ -2,7 +2,6 @@
 name: app-icon
 description: A Mac app icon made the way Apple's are - an Icon Composer file (AppIcon.icon, JSON plus SVG layers) the system turns into Liquid Glass, compiled with actool and reviewed in every look (default, dark, tinted, clear) and at 16 px. Works for SwiftUI, Electron and Tauri apps. Use when the user wants an app icon, a better icon, or a Dock icon.
 ---
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # App icon
 
 The icon is an Icon Composer file in git: `Icon/AppIcon.icon`, a folder with `icon.json` and SVG

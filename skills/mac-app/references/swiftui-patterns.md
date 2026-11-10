@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # SwiftUI patterns for macOS
 
 Code that compiles on macOS 26 with Swift 6.2 and main-actor default isolation

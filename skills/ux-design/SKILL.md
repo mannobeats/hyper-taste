@@ -2,8 +2,6 @@
 name: ux-design
 description: The UX pass for one feature of any app (Mac, web or phone) - what things are called, the flow, where it opens (inline, popover, sheet, panel, window, alert), every state, the words, hover help and accessibility, including features that use AI. Use before building a story that adds a screen, an action or words, when reviewing a built screen's UX, or when the user asks for clearer wording, better names, or whether something should be a modal.
 ---
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
-
 # UX design
 
 A feature that works can still confuse people. This pass decides what

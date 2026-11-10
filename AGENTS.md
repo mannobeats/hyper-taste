@@ -7,7 +7,8 @@ projects as is, so put nothing there that isn't for the agent using the skill.
   copy: agents use their own tools. A rule a script would enforce is written as a rule.
 - One owner per job. Before adding a rule, find the skill that owns the topic and put it there;
   other skills point to it by name. Never repeat content between skills.
-- Adapted text keeps its source line, and the skill's `NOTICE.md` keeps the license.
+- Credit work we build on with one line in the README's Credits, nowhere else: no notices or
+  source lines in skills.
 - Adding a skill or cutting a release: follow `CONTRIBUTING.md`.
 - After any change to skills or manifests, run `node scripts/validate.mjs` and
   `claude plugin validate .`.

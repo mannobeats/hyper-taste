@@ -26,7 +26,7 @@ look again after each round. Two rounds at least.
 The builder can't see its own work; it remembers what it meant. Before handing over a page that
 sells or a new app screen, start a subagent with only the screenshots, a one-line brief and the
 prompt below. Not your direction, not your reasons. With no subagent, read the screenshots cold
-before you read your code again. (Adapted from Stageshow's review brief, Benji Taylor, MIT.)
+before you read your code again.
 
 > You are reviewing an interface someone else built, from its screenshots and a one-line brief.
 >

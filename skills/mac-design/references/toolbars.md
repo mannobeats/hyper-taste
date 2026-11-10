@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Toolbars
 
 Toolbar layout for a macOS 26 SwiftUI window, checked on macOS 26.5.
@@ -199,4 +198,3 @@ struct ContentView: View {
 - SwiftUI: [ToolbarSpacer](https://developer.apple.com/documentation/swiftui/toolbarspacer), [sharedBackgroundVisibility](https://developer.apple.com/documentation/swiftui/toolbarcontent/sharedbackgroundvisibility(_:)), [ToolbarDefaultItemKind](https://developer.apple.com/documentation/swiftui/toolbardefaultitemkind), [InspectorCommands](https://developer.apple.com/documentation/swiftui/inspectorcommands), [Adding a search interface](https://developer.apple.com/documentation/swiftui/adding-a-search-interface-to-your-app)
 - Landmarks toolbar sample: https://developer.apple.com/documentation/swiftui/landmarks-refining-the-system-provided-glass-effect-in-toolbars
 - Inspector toggle placement across macOS 26 releases: https://developer.apple.com/forums/thread/795561
-- Field test: Brisk commit f9f264b, and placement snapshots on macOS 26.5

@@ -6,10 +6,11 @@ Hyper Taste grows from two skills to a full set for building software with agent
 and build apps for the Mac, the web and phones, without slop. Every skill now says what good is
 and how to judge it, and leaves the tools to the agent's harness.
 
-- **18 skills, one owner per job.** Plan: `start-here`, `research`, `product-brief`,
+- **19 skills, one owner per job.** Plan: `start-here`, `research`, `product-brief`,
   `user-stories`, `clone`, `quality-bar`. Design: `ui-director`, `mac-design`, `design-system`,
   `ux-design`, `app-icon`. Build: `mac-app`, `build`, `debug`, `review`, `refactor`,
-  `improve-loop`. Plus `agents-md`. Skills point to each other instead of repeating each other.
+  `improve-loop`. Plus `agents-md`, and `stop-overthinking` for a short call when work goes in
+  circles. Skills point to each other instead of repeating each other.
 - **ui-director 4.0.0: outcomes, not machinery.** `scripts/check.mjs` and `page-check.js`, the
   eight gold pages, the teaching pairs and the bundled fonts are gone from the skill: agents look
   at their work with their own browser and screenshot tools, and the golds made every result look
@@ -24,9 +25,7 @@ and how to judge it, and leaves the tools to the agent's harness.
   finds duplication and rules that live in two places, and `refactor` removes them: it pins
   today's behavior, then deletes, merges, simplifies and reshapes one proven step per commit. `quality-bar` writes the project's bar
   down as `CONSTRAINTS.md` with a command per rule.
-- **Sources.** Mac, planning, UX and loop skills adapted from BAMA (Dave Ebbelaar, MIT);
-  engineering practice from Agent Skills (Addy Osmani, MIT); reuse rules from Ponytail (Dietrich
-  Gebert, MIT). See `THIRD_PARTY_NOTICES.md`.
+- **Credits** live in one README section; skills carry no notices or source lines.
 - The unreleased 3.x work (a fourth landing gold, trims) is folded in or retired with the golds.
 - Slash commands: `audit` (ui-director); `match` and `setup` move to design-system.
 - The before and after pairs stay in `docs/ui-director/` as eval fixtures and the live gallery.

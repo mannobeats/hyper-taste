@@ -3,7 +3,6 @@ name: clone
 description: Walk through an existing app (a native Mac app with computer use, a web app with a browser, a phone app from screenshots), capture every screen, menu and dialog, write a screen index, and turn it into user stories. Use when the user wants to rebuild, replace or learn from an app, copy its structure, or says "screenshot every screen".
 argument-hint: "<app name as shown in the menu bar, or a URL>"
 ---
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # Clone
 
 Output: a folder of screenshots, one index that describes everything the

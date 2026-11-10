@@ -1,4 +1,3 @@
-<!-- From BAMA by Dave Ebbelaar (MIT), adapted for Hyper Taste. -->
 # GPU and media recipes
 
 For apps that capture, decode, process, or encode video, audio, or large

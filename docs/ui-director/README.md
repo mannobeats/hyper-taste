@@ -78,9 +78,6 @@ landing and phone pairs keep a "before" with no system at all.
 [`pairs.json`](pairs.json) holds each pair's title, rule and captions, and feeds the live page,
 the screenshots and the [evals](../../evals/ui-director).
 
-The review brief is adapted from [Stageshow](https://github.com/benjitaylor/skills/tree/main/stageshow)
-by Benji Taylor (MIT).
-
 Photographs from Unsplash: the kitchen in pair 08 by
 [Nicolas J Leclercq](https://unsplash.com/photos/KBjDo_QA1lY), the Chapel of Souls in pair 09 by
 [Aman Jhalani](https://unsplash.com/photos/ddDNOa4nsLU), the loaf in pair 10 by
