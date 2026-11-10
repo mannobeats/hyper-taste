@@ -6,91 +6,124 @@ visitor, measure what eyes miss, and fix from what you saw, never from the code.
 
 ## The check
 
-`scripts/check.mjs` in this skill does the routine part in one command, with no dependencies
-(Node 22 and a Chrome, Chromium, Edge or Brave on the machine):
+`scripts/check.mjs` does the routine part in one command, with no dependencies (Node 22 and a
+Chrome, Chromium, Edge or Brave on the machine). Serve the page over http first (the project's
+dev server or `python3 -m http.server`); a `file://` page breaks canvases, modules and fonts
+quietly.
 
 ```sh
 node <skill>/scripts/check.mjs http://localhost:4321/ --out shots
 ```
 
-It opens the page headless at 1440, 820 and 390, light and dark, then once with reduced motion;
-screenshots the first screen and the whole page; scrolls so every reveal fires; runs
-`scripts/page-check.js` at the top and after the scroll; and prints two lists:
+It opens the page at 1440, 820 and 390, light and dark, then once with reduced motion; scrolls
+so every reveal fires; and writes three kinds of screenshot. **Open every one.**
 
-- **Fix** lines are never intentional: sideways scroll, a font that didn't load, contrast,
-  `covered` words, words `cut by the crop`, clipped text, tiny text, small tap targets, cramped
-  labels, words too close to a card's edge or spilling out of it, an `empty band` between
-  sections, an `off-center` column or button group, `unbalanced` cards, an `empty pane`, a card
-  that `touches the edge` of its section, content `never shown`, console and load errors, and
-  the slop from "Never" (dots in pills, icons on tinted shapes, emoji, buzzwords, placeholders,
-  an invented logo, sparkles, violet gradients, mixed icon styles, arrows on buttons).
-- **Judge** lines are leads: habit fonts, all caps, tracking, two-fragment headlines, type and
-  control-height counts, loose lists and fat rows, uneven padding, invented-looking proof.
+- `-first-screen`: what a visitor sees on arrival.
+- `-page`: the whole page at once, sharp enough to read. A pinned scene looks like an empty band
+  in it and a fixed bar lands mid-page.
+- `-scroll`: frames taken as a visitor scrolls. The truth about scenes and fixed bars.
 
-The last line is `check passed` only when no Fix line is left. Clearing a line by hiding,
-removing or shrinking the thing it points at is a bug. A passing check is necessary, not
-sufficient: it can't see the obvious version, a weak idea or a bad crop of a photo. **Open every
-screenshot it writes**, then delete the shots folder when you're done.
+It prints two lists, and each line says what is wrong and what to do:
 
-The dark pass emulates `prefers-color-scheme`. A project that only switches dark mode with a
-class or an attribute needs that toggled too: use your browser tool for the dark look.
+- **Fix** lines are never intentional (layout, contrast, covered or cut words, lines of a headline that collide, tiny text, tap
+  targets, spacing and balance, reveals that never fire, the example's world left in your page,
+  console errors, and the slop from "Never"). Clearing a line by hiding, removing or shrinking
+  the thing it points at is a bug.
+- **Judge** lines are leads (habit fonts, all caps, tracking, type and control counts, uneven
+  padding, invented-looking proof). Keep one only with a reason from the product's world.
 
-## When the check can't run
+The last line is `check passed` only when no Fix line is left. A passing check is necessary,
+not sufficient: it can't see the obvious version, a weak idea or a bad crop.
 
-Use the browser your harness gives you: a built-in browser, a browser or Chrome MCP server, a
-preview tool. These are often deferred tools that stay hidden until you search, so search your
-tools for "browser", "chrome", "preview", "screenshot" and "playwright" before deciding you have
-none. Paste `scripts/page-check.js` into its JavaScript at each width and mode; it returns the
-same `{ fix, judge }` lists. Failing that, headless Chrome takes a screenshot in one command:
+The dark passes emulate `prefers-color-scheme` and set `class="dark"` or `data-theme="dark"`
+when the page's CSS switches on one. A project with another switch needs your browser tool.
 
-```sh
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --window-size=1440,900 --virtual-time-budget=2000 --screenshot=shot.png http://localhost:4321/
-```
-
-**Serve the page over http,** with the project's dev server or `python3 -m http.server`. A
-`file://` page breaks quietly: canvases can't read their images, modules and some fonts don't
-load. Only when all of this fails, tell the user what you tried and exactly what to look at.
+**When the check can't run,** use the browser your harness gives you. Browser tools are often
+deferred: search your tools for "browser", "chrome", "preview", "screenshot" and "playwright"
+before deciding you have none. Paste `scripts/page-check.js` into its JavaScript at each width
+and mode; it returns the same lists. Only when all of this fails, tell the user what you tried
+and exactly what to look at.
 
 ## What to look at
 
-Every pass, in order:
+Every pass, in order. Fix the largest visible fault first (composition, then hierarchy, then
+motion, then polish) and look again: two passes at least. A first render always has problems.
 
-1. **The first screen at 1440, beside the gold** you started from at the same width. Name the one
-   difference. If yours is the emptier, flatter, busier or more generic one, that is the fix.
-2. **The whole scroll at 1440:** every section, every scene played (a full-page screenshot can
-   show scenes empty).
-3. **The tablet at 820 and the phone at 390,** the same scroll: each its own composition, nothing
-   covered, nothing cut.
+1. **The first screen at 1440, beside the gold** you started from. Name the one difference. If
+   yours is the emptier, flatter, busier or more generic one, that is the fix. If it is the gold
+   with a new name, change the voice, then the composition.
+2. **The whole scroll:** sections on the page shot, scenes and bars on the `-scroll` sheet.
+3. **820 and 390:** each its own composition, nothing covered, nothing cut.
 4. **Dark at every width.**
 5. **Every control once:** hover, click, tab, type, drag; and the console.
-6. **Reduced motion:** everything shows, nothing travels.
+6. **Text on a photo or a scene,** zoomed in on the screenshot: where a bright patch, a dot or
+   a line sits behind a word, deepen the shade on that side or move the picture.
 
-Then judge it against `DESIGN.md` and your job's "Done means". Fix the largest visible fault
-first (composition, then hierarchy, then motion, then polish) and look again: two passes at
-least. A first render always has problems. Text on a photo is judged on the screenshot, where the
-scrim is part of the picture: zoom into each line, and where a bright patch sits behind the
-words, deepen the scrim on that side or move the photo.
+## A fresh eye
 
-## What you see, what you do
+The builder can't see its own page; it remembers what it meant. Before handing over a page that
+sells or a new app screen, start a subagent with only the screenshots, the first-screen
+screenshot of the gold, the brief in one line, and the brief below. Not your direction, not your
+reasons. With no subagent, read the screenshots cold before you read your code again. (Adapted
+from Stageshow's review brief, Benji Taylor, MIT.)
 
-| You see | You do |
+> You are reviewing an interface someone else built, from its screenshots, the screenshot of
+> the example it started from, and a one-line brief. A pinned scene looks empty on a `-page`
+> shot; judge it on the `-scroll` sheet.
+>
+> First: **could this be any product in its category?** The example's page with a new name, its
+> typeface and headline shape around other words, a headline that fits a competitor, a palette
+> from the category: each is a finding, ranked first.
+>
+> Then look the way the most exacting designer you know would:
+> 1. **Composition:** anything covered, cut or floating? Is the picture the largest, sharpest
+>    thing on the first screen? Does the phone have its own composition?
+> 2. **Hierarchy:** what does the eye land on first, and is it the point? One primary action?
+> 3. **Craft:** labels touching edges, uneven padding, near-tangent edges, too many control
+>    heights, contrast, two icon sets, sizes that don't form a scale.
+> 4. **Slop:** anything from "Never" and "The obvious version" in `SKILL.md`.
+>
+> Return a ranked list, worst first: what you would screenshot, which screenshot shows it, the
+> fix in one line. Say what you could not judge from screenshots. If there is nothing, say
+> "nothing" and list what you looked at.
+
+Answer every item: fix it and look again, or write in `DESIGN.md` why it stands. A finding the
+builder calls intentional is judged again on the screenshot, not on the intention.
+
+## Redesigns and audits
+
+Run the check and look first, then read the page against "Never" and "The obvious version" in
+`SKILL.md`. `teaching/` has a before and after pair for each small problem.
+
+**What you see, what you do instead:**
+
+| You see | Instead |
 |---|---|
-| A window or card over the headline or the button (`covered`) | Start the window a column past the words, or below the action; move the satellite over chrome or empty screen |
-| A status, date or button sliced by an edge (`cut by the crop`) | Move the window or change its columns so the crop falls on filler; at the bottom, crop between rows |
-| 4–8px type at 390 (`tiny text`) | A phone composition: the key panel at a 360–400px design width, two-line rows |
-| A small window boxed in a frame | 80% of the content width or more, rising from the fold; in a tile, bleed it off an edge |
-| A paragraph on the first screen | One line of 14 words at most; the rest goes or becomes the picture |
-| A pane that ends in a void, rows spread to fill it | Crop under the content, or add product; never spread the rows |
-| Gray bars where the eye lands | Words there; filler stays at the edges |
-| Text 3–7px from a card's edge (`tight inset`) | 12px of padding, or let the content run off with the crop |
-| A link or tab label at 4.2:1 | The accent's ink step (700 in light) for small text |
-| A section that stays blank (`never shown`) | Its reveal never fires: the observer, the threshold, or content waiting on JavaScript |
-| Your page is the gold with a new name | Change the idea, the headline, the picture and the palette from the product's world |
-| Ten fixes, the check green, the screen unchanged | Stop and get a fresh eye (`review.md`) |
+| Everything centered | Left-align what people read in order; center only a short headline stack or a statement |
+| Sections in cards, cards in cards | One surface split by lines and headings |
+| Three equal feature cards | A grid of product states: one hero tile, a number, a component (`product-shots.md`) |
+| The same composition section after section | Change form and pace: full-bleed, a tight list, one huge number, a quiet pause |
+| Nothing bigger than a polite headline | Scale the one thing you're proudest of until it feels too big, then pull back a little |
+| A screenshot in a frame on a glow | The product rebuilt in code at real size, 80% of the content width |
+| Only fade-ups | Motion that acts out the product: the film, a scene, something to try |
+| White page, gray text, one blue button; or the gold's look on another product | A voice from this product's world (`voice.md`) |
+| Categories as shades of one color; every card a different color | Different hues at one lightness; neutral by default, color for meaning |
+| Pure black text, `#fff` on black, dark mode by inverting | Gray text levels, dark surfaces at L .13–.21, a designed dark (`system.md`) |
+| Stretched rows: a label far left, its value far right | Natural widths, more columns |
+| The stat card grid | A row with dividers: muted label, 600 value, context line |
+| Two equal buttons; a modal for everything | One primary per view; popovers, drawers, inline editing |
+| A library's default look | Its variables mapped to the tokens (`stacks.md`) |
+| Raw hex in components, `z-index: 9999`, links to `#`, `// TODO` | Tokens, a small z scale, real targets, finished sections |
+| Ten fixes, the check green, the screen unchanged | Stop and get a fresh eye |
+
+**Redesign order:** list every tell and missing state; keep URLs, nav labels, field names and
+order, the logo, legal copy and analytics hooks; fix tokens, then spacing and edges, emphasis,
+cards to layout, states, copy, motion, looking after each; stop when the brief is met.
 
 ## Before you hand over
 
-Write the "Check" section of `DESIGN.md`:
+Write the "Check" section of `DESIGN.md`, then close your tabs, stop the servers you started
+and delete the shots.
 
 ```md
 ## Check
@@ -100,5 +133,3 @@ Check: <the last line of check.mjs, pasted>
 Review: <each finding> → <fix, or why it stands>
 Not checked: <what you didn't see: a real phone, a slow network, a browser>
 ```
-
-Close your tabs, stop the servers you started and delete the shots.

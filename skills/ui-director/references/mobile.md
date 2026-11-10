@@ -14,10 +14,9 @@ App: <product>, for <who>, doing <the primary job>, <how often, where: one hand,
 They open it asking: <question>. The answer, in one line: <…>.
 Key object: <the session, the booking, the day's wind> and its states.
 Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
-Platform: <iOS | Android | both, one language per app>. Gold: <the example you start from>.
+Platform: <iOS | Android | both, one language per app>. Gold: `phone-app`.
+Voice: <family, radius, accent from the user's world, what red means>. Sample world: <one person, their real-looking data>.
 Obvious version: <the screen any model builds for this>.
-Palette: <neutrals, the accent from the user's world, what red means>. Type: <family>.
-Sample world: <one person, their real-looking data>.
 ```
 
 ## The first screen answers the question

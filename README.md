@@ -80,5 +80,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) to add a skill or cut a release.
 
 ## License
 
-[MIT](LICENSE). The Geist fonts bundled with ui-director are under the
-[SIL Open Font License](skills/ui-director/fonts/OFL.txt).
+[MIT](LICENSE). The Geist and Source Serif 4 fonts bundled with ui-director are under the
+SIL Open Font License ([Geist](skills/ui-director/fonts/OFL.txt),
+[Source Serif 4](skills/ui-director/fonts/OFL-SourceSerif4.txt)).

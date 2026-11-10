@@ -13,22 +13,14 @@ Write it into `DESIGN.md` before any code.
 
 ```
 App: <product>, for <who>, doing <the primary job>, <how often>. They open it asking: <question>.
-Key object: <the invoice, the take, the shift…> and its states.
-Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
-Needs attention: <what must jump out, and the one color it gets>.
+Key object: <the invoice, the take, the shift…> and its states. Needs attention: <what must jump out, and the one color it gets>.
 Actions: primary "<label>"; frequent <…>; rare <…>; destructive <…>.
-Density: <calm | standard | dense>, because <…>. Shell: <sidebar | top tabs | queue and detail | canvas>.
-Gold: <the example you start from>.
-Obvious version: <the screen any model builds for this>.
-Directions, each from one thing in the user's world (a ledger, a board, a score, a map):
-  A. <the thing>: <what the first screen shows and how> / <palette> / <type>
-  B. …
-  C. …
-Pick: <letter>, because <one sentence>.
+Density: <calm | standard | dense>. Shell: <sidebar | top tabs | queue and detail | canvas>. Gold: <the example you start from>.
+Three directions, each from one thing in the user's world (a ledger, a board, a score, a map); the first idea dropped. Pick: <one>, because <…>.
 Signature: <the key object drawn so the answer is visible at a glance>.
-Palette: <neutrals and tint, the accent from the user's world, what red means>. Type: <family>.
-Sample world: <one team or person, their real-looking data>.
-First screen: <what the user learns in one glance, in one sentence>.
+Voice: <family, radius, accent from the user's world, what red means> (`voice.md`, In app UI).
+Moments: <the peak>, <how the core flow ends>, <the screen they come back to>.
+Sample world: <one team or person, their real-looking data>. Obvious version: <the screen any model builds for this>.
 ```
 
 What worked in testing: open invoices drawn as one bar split at "today"; a drum step key that
@@ -86,7 +78,6 @@ belongs to its product.
 ## The invisible states
 
 - **Tooltips** on every icon-only button and truncated value.
-- **Empty:** one line on what goes here, plus the action that fills it.
 - **Loading:** skeletons shaped like the final layout.
 - **Errors:** inline, next to the cause, with a way to recover.
 - **After every action:** a toast naming the result, Undo for anything not destructive.
@@ -133,7 +124,7 @@ Most "it looks off" is here. Check each in the browser at every width, light and
 
 ## Responsive
 
-- Design at 1440, check 1024, 768 and 390 as you go.
+- Design at 1440, check 820 and 390 as you go, and 1024 when a sidebar is near its fold.
 - Below about 760px every multi-column layout becomes one column, in the same component: the
   sidebar becomes a top bar or a drawer, stats stack, the side panel moves under the main one.
 - Tables become two-line rows: who and how much, then the detail as plain text

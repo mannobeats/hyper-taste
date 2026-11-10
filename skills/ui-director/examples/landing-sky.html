@@ -6,6 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cirrus: your inbox, mostly clear</title>
 <meta name="description" content="Cirrus sorts mail by who sent it, so mornings take minutes. Free for Mac.">
+<!-- Map: the pinned scene (.scene, .stage, --p) · the words (.copy, .forecast is the chip) · the sky
+     (paint(), .stage canvas) · the app window at real size (.window, .side, .list, .read) · product
+     states as tiles, glass over drawn skies (.grid, .tile, .pic, .pane) · one number as a tile
+     (.stat) · keys that light (.keys) · plans (.plans) · the close (.close) · nav that turns solid
+     (.nav[data-solid]). -->
 <style>
   /* Cirrus, mail for Mac. One idea carried everywhere: the inbox as a weather report.
      The first screen is a sky drawn in code (soft clouds under a halftone of dots, three layers
@@ -74,6 +79,8 @@
   .stage .far { opacity: .9; transform: translate3d(0, calc(var(--p) * -40px), 0); }
   .stage .soft { opacity: .85; filter: blur(14px); transform: translate3d(0, calc(var(--p) * -90px), 0) scale(calc(1 + var(--p) * .06)); }
   .stage .near { transform: translate3d(0, calc(var(--p) * -170px), 0) scale(calc(1 + var(--p) * .12)); }
+  /* The big dots lift from behind the words, so no line is read through a halftone. */
+  @media (min-width: 861px) { .stage .near { -webkit-mask-image: radial-gradient(ellipse 44% 34% at 50% 37%, transparent 50%, #000); mask-image: radial-gradient(ellipse 44% 34% at 50% 37%, transparent 50%, #000); } }
   /* The sky pales into the page as the scene ends, so there is no seam. */
   .stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: calc(var(--p) * 1.15 - .15);
                   background: linear-gradient(180deg, transparent 0%, oklch(.975 .006 240 / .7) 60%, var(--ground) 100%); }
@@ -156,6 +163,7 @@
   .head { max-width: 680px; }
   .head h2 { font: 640 clamp(2.25rem, 1.3rem + 2.8vw, 3.75rem)/1.02 var(--font); letter-spacing: -.04em; color: var(--ink); text-wrap: balance; }
   .head h2 span { display: block; color: oklch(.6 .015 255); }
+  .head h2 span.same { color: inherit; } /* a second line that breaks where the meaning breaks, in one tone: the two-tone turn is kept for the hero, one head and the close */
   .head p { margin-top: 18px; max-width: 34rem; font-size: 18px; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
 
   .grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; margin-top: 56px; }
@@ -417,7 +425,7 @@
 
   <section class="band" id="pricing" style="padding-top: 0">
     <div class="wrap">
-      <div class="head" data-reveal><h2>Free for one inbox. <span>Six dollars for all of them.</span></h2></div>
+      <div class="head" data-reveal><h2>Free for one inbox. <span class="same">Six dollars for all of them.</span></h2></div>
       <div class="plans">
         <div class="plan" data-reveal><h3>Personal</h3><p class="price">$0</p>
           <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>One account</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>People first, Skim and Later</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Tracking blocked</li></ul>

@@ -6,6 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tally: every euro, already sorted</title>
 <meta name="description" content="A business account that puts the tax aside the moment you're paid.">
+<!-- Map: the centered first screen (.hero) · the card that leans toward the pointer (.card, .chip-
+     gold) and its satellite (.ping) · the engraved ground (.engrave) · the pinned sort, a payment
+     splitting as you scroll (.stage, .wires, .pots, --p) · three tiles (.tile) · plans (.plans,
+     .plan) · the close (.close). -->
 <style>
   /* Tally, a business account for small studios. Light, warm, centered.
      The material is money's own: guilloche, the fine engraved rings on a banknote, drawn in code
@@ -53,6 +57,7 @@
   .chip b { color: var(--in); font-weight: 600; }
   h1 { margin-top: 24px; font: 640 clamp(3rem, 1.3rem + 5.2vw, 6.25rem)/.94 var(--font); letter-spacing: -.055em; color: var(--ink); }
   h1 span, h2 span { display: block; color: var(--soft-ink); }
+  h2 span.same { color: inherit; } /* a line break where the meaning breaks, in one tone: the two-tone turn is kept for the hero, one head and the close */
   .lede { max-width: 32rem; margin: 24px auto 0; font-size: clamp(1.06rem, 1rem + .3vw, 1.25rem); line-height: 1.45; color: var(--muted); text-wrap: balance; }
   .acts { display: flex; justify-content: center; gap: 12px; margin-top: 32px; }
 
@@ -249,7 +254,7 @@
   </section>
 
   <section class="band wrap">
-    <div class="head" data-reveal><h2>The rest of the month, <span>handled.</span></h2></div>
+    <div class="head" data-reveal><h2>The rest of the month, <span class="same">handled.</span></h2></div>
     <div class="split3">
       <article class="tile" data-reveal>
         <div class="pic"><div class="fan" aria-label="Three cards: sage, sand and graphite"><span>Jonas</span><span>Marco</span><span>Ines</span></div></div>
@@ -267,7 +272,7 @@
   </section>
 
   <section class="band wrap" id="pricing">
-    <div class="head" data-reveal><h2>Free to start. <span>€19 when you grow.</span></h2></div>
+    <div class="head" data-reveal><h2>Free to start. <span class="same">€19 when you grow.</span></h2></div>
     <div class="plans">
       <div class="plan" data-reveal><h3>Solo</h3><p class="price num">€0</p>
         <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>One account and one card</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Automatic tax reserve</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Invoices and payment links</li></ul>

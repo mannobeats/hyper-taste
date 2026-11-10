@@ -115,7 +115,7 @@
   let photo = 0; const sizes = new Set();
   for (const e of texts) {
     const size = parseFloat(css(e, 'fontSize')), bold = +css(e, 'fontWeight') >= 700, fg = rgba(css(e, 'color')), mono = /mono/i.test(css(e, 'fontFamily')) || e.closest('code, pre, kbd, samp');
-    if (!e.closest('[role=img]')) sizes.add(size);
+    if (!e.closest('[role=img]') && size < 30) sizes.add(Math.round(size));
     if (size < 10 && !decorative(e)) say(fix, 'tiny text', `${size.toFixed(1)}px; 11px is the floor for words people read, 10px for a chart's axis`, e);
     else if (W < 500 && size < 11 && !decorative(e)) say(judge, 'small text', `${size.toFixed(1)}px on a phone`, e);
     if (!decorative(e)) { const bg = behind(e);
@@ -123,7 +123,7 @@
       else { const seen = fg.slice(0, 3).map((v, i) => v * fg[3] + bg[i] * (1 - fg[3])), [a, b] = [lum(seen), lum(bg)].sort((x, y) => y - x), ratio = (a + .05) / (b + .05), need = size >= 24 || (bold && size >= 18.6) ? 3 : 4.5;
         if (ratio < need) say(fix, 'contrast', `${ratio.toFixed(2)}:1, needs ${need}:1`, e); } }
     const track = parseFloat(css(e, 'letterSpacing')) / size;
-    if (size >= 20 && !decorative(e) && track < (size >= 40 ? -.055 : -.04)) say(judge, 'tracking', `${track.toFixed(3)}em at ${Math.round(size)}px; −.05em at most on display type, −.035em below 40px`, e);
+    if (size >= 20 && !decorative(e) && track < (size >= 40 ? -.055 : -.04)) say(judge, 'tracking', `${track.toFixed(3)}em at ${Math.round(size)}px; −.055em at most on display type, −.04em below 40px`, e);
     if (!mono && size < 20 && (css(e, 'textTransform') === 'uppercase' || (/[A-Z]{4}/.test(e.innerText) && e.innerText === e.innerText.toUpperCase() && !/^[A-Z0-9 .,·/-]{1,6}$/.test(e.innerText.trim())))) say(judge, 'all caps', 'sentence case, unless the product itself capitalizes', e);
     if (css(e, 'overflowX') !== 'visible' && css(e, 'textOverflow') !== 'ellipsis' && e.scrollWidth > e.clientWidth + 1) say(fix, 'clipped', 'text cut off at the side', e);
     else if (css(e, 'overflowY') !== 'visible' && parseFloat(css(e, 'lineHeight')) < size * 1.15) say(fix, 'clipped', 'line height under 1.15 inside a box that clips: descenders get cut', e);
@@ -134,7 +134,12 @@
       else if (lh % 1) say(judge, 'off-center label', `a ${lh.toFixed(2)}px line box on a ${Math.round(h)}px control snaps the label a pixel off; set line-height: 1`, e); }
   }
   if (photo) judge.add(`contrast: ${photo} text elements sit on an image, a gradient or clipped type; zoom into the screenshot and check them on the pixels`);
-  if (sizes.size > 10) say(judge, 'type sizes', `${sizes.size} sizes (${[...sizes].sort((a, b) => a - b).map((s) => Math.round(s * 10) / 10).join(', ')}px); 10 at most`);
+  if (sizes.size > 9) say(judge, 'type sizes', `${sizes.size} text sizes under 30px (${[...sizes].sort((a, b) => a - b).join(', ')}px); 9 at most, display sizes aside`);
+  // Lines of display type that touch: the descenders of one line reach the ascenders of the next.
+  for (const h of document.querySelectorAll('h1, h2, h3')) { if (!shown(h) || decorative(h)) continue; const st = getComputedStyle(h), size = parseFloat(st.fontSize), lh = parseFloat(st.lineHeight), t = (h.innerText || '').trim();
+    if (size < 28 || !lh || h.getBoundingClientRect().height < lh * 1.6 || !/[gjpqy]/.test(t.replace(/[gjpqy][^gjpqy]*$/, 'g_'))) continue;
+    ctx.font = `${st.fontStyle} ${st.fontWeight} ${size}px ${st.fontFamily}`; const m = ctx.measureText(t), need = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+    if (lh < need - size * .03) { say(fix, 'lines collide', `a line height of ${(lh / size).toFixed(2)} on type that needs ${(need / size).toFixed(2)}: descenders run into the line below; raise the line height`, h); break; } }
   const lit = texts.filter(clipText).filter((e) => !decorative(e));
   if (lit.length > 1) say(fix, 'gradient type', `${lit.length} elements with gradient text; one headline at most`, lit[1]);
   const labels = [...document.querySelectorAll('h1, h2')].filter((h) => shown(h) && !decorative(h)).map((h) => { const p = h.previousElementSibling; return p && p.innerText && p.innerText.length < 80 && parseFloat(css(p, 'fontSize')) < parseFloat(css(h, 'fontSize')) * .5 ? p : null; }).filter(Boolean);
@@ -198,6 +203,9 @@
   const body = document.body.innerText;
   const buzz = [...new Set((body.match(/\b(elevate|seamless(ly)?|unleash|revolutioni[sz]e|next-gen|cutting-edge|game-?changer|empower|supercharge|unlock|robust|leverage|delve|curated|all-in-one|effortless(ly)?|harness|streamline)\b/gi) || []).map((w) => w.toLowerCase()))];
   if (buzz.length) fix.add(`words: ${buzz.join(', ')}; say what it does instead`);
+  // The examples' own worlds, left in a page built from one.
+  if (![...document.head.childNodes].some((n) => n.nodeType === 8 && /Gold example|Teaching pair/.test(n.data))) { const kept = body.match(/\b(Cirrus|Ferro Audio|Larkspur|fieldnotes\.app|Maya Lindqvist|Jonas Berg|Ines Duarte|Noor Okafor|Atelier Duarte|Halvorsen)\b|mostly clear\.|minus the\s+rack\.|already sorted\./i);
+    if (kept) fix.add(`the example's world: "${kept[0]}" belongs to the gold you started from; replace its world with this product's (the idea, the words, the picture, the sample data)`); }
   const filler = body.match(/\b(lorem ipsum|dolor sit amet|Acme|John Doe|Jane Doe|Company Name|Your Name|Feature (one|two|three|1|2|3))\b/i);
   if (filler) fix.add(`placeholder: "${filler[0]}"; one sample world with real-sounding names (references/words.md)`);
   const proof = body.match(/trusted by|loved by|★★★★★|\b\d{1,3}(,\d{3})+\+ (users|customers|teams)|\b\d+k\+ (users|customers|teams)/i);

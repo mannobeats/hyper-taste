@@ -1,6 +1,6 @@
 // Builds the skill's gold examples and teaching pairs from the pages in this folder.
-// Each page is made self-contained: tokens.css and pair.js inlined, fonts pointed at the skill's
-// fonts/, photos resized into examples/img/. Edit the sources here, never the built files.
+// Each gold is made self-contained: tokens.css and pair.js inlined, fonts pointed at the skill's
+// fonts/ (the teaching pairs share one teaching/tokens.css), photos resized into examples/img/. Edit the sources here, never the built files.
 // Usage (from docs/ui-director, macOS for sips): npm run examples
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
@@ -16,6 +16,7 @@ const gold = {
   'landing-sky': 'gold/landing-sky.html',
   'landing-object': 'gold/landing-object.html',
   'landing-card': 'gold/landing-card.html',
+  'landing-night': 'gold/landing-night.html',
   'app-dashboard': 'gold/app-dashboard.html',
   'app-analytics': 'gold/app-analytics.html',
   'app-finance': 'gold/app-finance.html',
@@ -35,11 +36,11 @@ const theme = `<script>
 </script>`;
 const pairJs = (await readFile(join(here, 'pairs/pair.js'), 'utf8')).replace(/^.*\?theme=dark.*\n/m, '');
 
-async function build(src, out, note, imgDir, imgPrefix) {
+async function build(src, out, note, imgDir, imgPrefix, shared) {
   const dir = join(here, src, '..');
   let html = await readFile(join(here, src), 'utf8');
   html = html
-    .replace(/<link rel="stylesheet" href="\.\.\/(?:pairs\/)?tokens\.css">/, `<style>\n${tokens}</style>\n${theme}`)
+    .replace(/<link rel="stylesheet" href="\.\.\/(?:pairs\/)?tokens\.css">/, shared ? `<link rel="stylesheet" href="tokens.css">\n${theme}` : `<style>\n${tokens}</style>\n${theme}`)
     .replace(/<script src="\.\.\/(?:pairs\/)?pair\.js"><\/script>/, `<script>\n${pairJs}</script>`)
     .replace(/<script>if \(self === top\) (document\.documentElement\.classList\.add\('arrive'\);)<\/script>/, '<script>$1</script>')
     .replace(/<head>\n/, `<head>\n<!-- ${note} -->\n`)
@@ -50,7 +51,7 @@ async function build(src, out, note, imgDir, imgPrefix) {
     execFileSync('sips', ['-Z', '1600', '-s', 'format', 'jpeg', '-s', 'formatOptions', '55', join(dir, file), '--out', join(imgDir, name)], { stdio: 'ignore' });
     html = html.replaceAll(`"${file}"`, `"${imgPrefix}${name}"`);
   }
-  if (/tokens\.css|pair\.js|self === top/.test(html)) throw new Error(`${src}: something wasn't inlined`);
+  if (/\.\.\/(pairs\/)?tokens\.css|pair\.js|self === top/.test(html)) throw new Error(`${src}: something wasn't inlined`);
   return html;
 }
 
@@ -64,9 +65,11 @@ for (const [name, src] of Object.entries(gold)) {
   const note = 'Gold example: copy its structure and its craft, replace its world.';
   await writeFile(join(skill, 'examples', `${name}.html`), await build(src, name, note, join(skill, 'examples/img'), 'img/'));
 }
+// The pairs share one tokens.css, so reading a pair costs its own few KB, not the token file again.
+await writeFile(join(skill, 'teaching', 'tokens.css'), tokens);
 for (const id of teaching) {
   const p = byId[id];
-  await writeFile(join(skill, 'teaching', `${id}.before.html`), await build(`pairs/${id}/before.html`, id, `Teaching pair, the wrong half: ${p.before}`, join(skill, 'teaching'), ''));
-  await writeFile(join(skill, 'teaching', `${id}.after.html`), await build(`pairs/${id}/after.html`, id, `Teaching pair, the right half: ${p.after}`, join(skill, 'teaching'), ''));
+  await writeFile(join(skill, 'teaching', `${id}.before.html`), await build(`pairs/${id}/before.html`, id, `Teaching pair, the wrong half: ${p.before}`, join(skill, 'teaching'), '', true));
+  await writeFile(join(skill, 'teaching', `${id}.after.html`), await build(`pairs/${id}/after.html`, id, `Teaching pair, the right half: ${p.after}`, join(skill, 'teaching'), '', true));
 }
 console.log(`${Object.keys(gold).length} examples, ${teaching.length} teaching pairs`);

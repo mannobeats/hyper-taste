@@ -17,10 +17,10 @@ which people now recognize on sight. UI Director fixes both: the agent writes a 
 the product's world before any code, builds the whole page, then pushes one signature moment, and
 looks at the result with its own browser before calling it done.
 
-The skill ships seven gold examples, each a finished page at the bar it asks for: three landing
+The skill ships eight gold examples, each a finished page at the bar it asks for: four landing
 pages (a centered promise over a sky drawn in code with the app rising out of it, a dark page
 with a machined knob you can turn, a centered light page with a card that leans toward the
-pointer), three dashboards in three shells (sidebar, inset sidebar, top nav), and a running
+pointer, and a night train crossing a viaduct at dusk, where scrolling is the night passing), three dashboards in three shells (sidebar, inset sidebar, top nav), and a running
 app's phone screen. Each passes its own check at desktop and phone width. The agent starts from the closest one, copies its structure and replaces its world: tokens,
 words, icons, sample data. "A copy that only changes the name is not done." Starting from a
 finished page is what makes the result consistent; choosing among different compositions, and a
@@ -40,22 +40,21 @@ installs its own.
 skills/ui-director/
 ├── SKILL.md              the job router, the loop, craft numbers, layout, "Never" and the obvious version
 ├── references/           opened for the job at hand
-│   ├── landing.md        pages that sell: the direction, first-screen compositions, grammar, order, conversion
-│   ├── product-shots.md  the product rebuilt in code: framing, compositions, restraint, the film, state grids, phones
-│   ├── craft.md          the finish: grounds, type, chip, buttons, hairlines, nav, the close
+│   ├── landing.md        pages that sell: the direction, the first screen, headlines, compositions, order, conversion
+│   ├── voice.md          six voices (type, shape, color, motion), getting the typeface, differing from the gold
+│   ├── product-shots.md  the product rebuilt in code: the window, framing, restraint, the film, state grids, phones
+│   ├── craft.md          where each move lives in the golds, grounds, rhythm, the last five percent
 │   ├── visuals.md        photographs, image generation, layers, scroll scenes, real 3D
 │   ├── app-ui.md         dashboards, tables, states, controls, responsive, and the moments people remember
 │   ├── mobile.md         phone apps: the answer first, anatomy and sizes, platform conventions, native
-│   ├── system.md         token recipe, stack adapters, auditing a project, DESIGN.md
-│   ├── words.md          headlines, captions, plain copy, one sample world
-│   ├── motion.md         every timing, what to animate, recipes, reduced motion
-│   ├── tells.md          reviewing and redesigning
-│   ├── look.md           the check, what to look at, what you see and what you do
-│   └── review.md         the brief for a fresh-eye reviewer
-├── examples/             seven gold pages to start from, built from docs/ui-director/gold (npm run examples)
+│   ├── system.md         the token roles, the knobs, components, DESIGN.md
+│   ├── stacks.md         the tokens in Tailwind, shadcn, Bootstrap, MUI and native; auditing a project
+│   ├── motion.md         every timing, what to animate, reduced motion
+│   └── look.md           the check, what to look at, the fresh-eye brief, redesigns and audits
+├── examples/             eight gold pages to start from, built from docs/ui-director/gold (npm run examples)
 ├── teaching/             fourteen small before and after pairs, for diagnosing one problem
 ├── scripts/              check.mjs (headless Chrome, no dependencies) and page-check.js
-└── fonts/                Geist and Geist Mono (OFL), the fallback when a product has no face
+└── fonts/                Geist, Geist Mono and Source Serif 4 (OFL), for when a product has no face
 commands/ui-director/     setup, audit and match slash commands for Claude Code
 docs/ui-director/         before/after pairs for humans: live HTML, screenshots and evals source
 ```
@@ -123,8 +122,8 @@ landing and phone pairs keep a "before" with no system at all.
 the screenshots and the [evals](../../evals/ui-director).
 
 The pages in [`gold/`](gold) are built into the skill's `examples/`, and the small pairs into
-`teaching/`, by `npm run examples`, which points the fonts at the skill and inlines the pairs'
-tokens. Every picture in the gold pages is drawn in code, so the skill ships no photographs. Edit the pages here, never the built
+`teaching/`, by `npm run examples`, which points the fonts at the skill, inlines the tokens
+into each gold and writes them once for the pairs (`teaching/tokens.css`). Every picture in the gold pages is drawn in code, so the skill ships no photographs. Edit the pages here, never the built
 copies. Some of the framing rules, the review brief and several detectors in the check are
 adapted from [Stageshow](https://github.com/benjitaylor/skills/tree/main/stageshow) by Benji
 Taylor (MIT).

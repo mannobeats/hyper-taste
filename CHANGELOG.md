@@ -1,5 +1,67 @@
 # Changelog
 
+## Unreleased
+
+- **ui-director, a fourth landing gold, staged.** `landing-night` is a night train in the
+  Editorial voice, every picture drawn in code. The first screen is a train crossing a viaduct
+  at dusk: a sky mixed from three palettes, stars, a moon, ridgelines in atmospheric
+  perspective. Scrolling is the night: the sky turns, the moon crosses, the lit windows go dark
+  and a clock says where you are, until dawn. A paper ticket with grain, perforation and an ink
+  stamp lies across the scene's edge; the cabins are four lit carriage windows; the bar, the
+  blanket and breakfast are drawn tiles; the page ends on Madrid's skyline at sunrise. Source
+  Serif 4 and its italic ship in `fonts/` (OFL).
+- **ui-director, "Stage it".** The skill asked for subtraction and got tasteful, empty pages.
+  `landing.md` now asks for a scene with one light, three layers of depth and one overlap, a
+  real object in its material, small instruments, and a picture per section in a different
+  form; "the tasteful empty page" is listed under the obvious version.
+- **ui-director, lines that collide.** A new Fix line fails a headline whose descenders reach
+  the line below (a serif at a line height under 1), and the Editorial voice's numbers say so.
+- **ui-director, trimmed.** The prose went from 115 KB to 91 KB, and what a landing job reads
+  from about 17,700 tokens to about 12,600 (6,800 before it starts, the rest when it reaches the
+  product shot, the motion and the look), with no rule dropped that the check
+  or a gold doesn't already carry. One home per rule: the first screen, headlines and pictures
+  live in `landing.md` only; `SKILL.md` keeps what every job needs (space, craft numbers, words,
+  "Never", the obvious version) and its job table says what to read now and what to open later.
+  `words.md`, `review.md` and `tells.md` are folded into `SKILL.md` and `look.md`; "Faults that
+  come back" is gone, since each fault was already a rule elsewhere. Recipes that duplicated the
+  golds are out of `craft.md`, `product-shots.md` and `motion.md`; `craft.md` now says where each
+  move lives in a gold, and every gold opens with a map of its parts. Stack adapters and the
+  audit moved to `stacks.md`, read only for that job. Direction blocks are shorter.
+- **ui-director, fewer fingerprints.** The chip, button, wordmark and lit-plate recipes every
+  page used to paste are gone, "Built with ui-director" is out of the `DESIGN.md` template, and
+  the direction asks for three pictures and ten headlines with the first idea dropped.
+- **ui-director, a voice per product.** Every gold spoke in one voice (Geist at 640, a comma
+  headline with a gray second line, capsules, a chip), and the first-screen rules wrote that
+  voice down as law, so pages built from different golds still came out as one page. The new
+  `references/voice.md` has six voices (Precise, Editorial, Technical, Loud, Soft, Still), each
+  a full set of dials: display type, the headline's turn, shape, color and motion. It says how to
+  get a typeface into the project, and asks that four of eight dials differ from the gold. The
+  direction block names the voice and the signature, and the skill lists its own default look
+  under "The obvious version".
+- **ui-director, compositions with no gold** (type as the image, the photograph, editorial,
+  gallery, split stage) now say which gold's skeleton to borrow and what replaces its first
+  screen. Before, "never start from a blank file" left five of eight compositions unreachable.
+- **ui-director, the check sees the scroll.** A full-page screenshot shows a pinned scene as an
+  empty band and a fixed bar in the middle of the page. The check now also writes a `-scroll`
+  sheet per width: frames taken as a visitor scrolls. The dark passes set `class="dark"` or
+  `data-theme="dark"` when the page's CSS switches on one, so Tailwind and shadcn projects are
+  no longer checked in light twice. A new Fix line, `the example's world`, catches a gold's
+  names and headlines left in a page built from it.
+- **ui-director, rules that disagreed.** One section spacing instead of two; the tracking lead
+  matches the numbers in the skill; type sizes are counted under 30px (8 at most), since every
+  gold broke "10 sizes"; motion no longer bans animating height and asks for it in the same
+  file; the area chart ban names the chart that answers no question; four eval rubrics no longer
+  fail the split hero that `landing-object` uses.
+- **ui-director, the golds.** The big halftone dots lift from behind Cirrus's words (the line
+  under the headline was read through them). Section heads no longer all take the two-tone
+  turn, and one that colored a single word is one tone.
+- **ui-director, craft.** "The last five percent" in `craft.md`: gradients in OKLCH, grain
+  against banding, optical edges, `text-box` trimming, subgrid for cards that line up inside,
+  selection and caret colors, anchors that clear the nav. A focus ring and an icon set in the
+  craft numbers; layers that enter and leave with `@starting-style`.
+- **ui-director, lighter teaching pairs.** The pairs share one `teaching/tokens.css`; each page
+  went from 23 KB to about 5 KB, and the skill folder from 1.1 MB to 0.7 MB.
+
 ## [3.0.0] - 2026-11-07
 
 - **ui-director, teaching pairs at the gold bar.** All fourteen pairs were redrawn on one upgraded

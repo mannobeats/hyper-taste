@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Noturno · the night train from Lisbon to Madrid</title>
+<meta name="description" content="One train, every night. Board after dinner in Lisbon, step off in Madrid for breakfast.">
+<!-- Noturno, a night train. The Editorial voice on a staged scene, every picture drawn in code.
+     The first screen is a train crossing a viaduct at dusk: a sky mixed from three palettes
+     (dusk, night, dawn), stars, a moon, ridgelines in atmospheric perspective, lit windows that
+     go dark as the night deepens. Scrolling is the night: the sky turns, the moon crosses, the
+     land slides past, a clock and a line say where you are, and you arrive at dawn.
+     Map: time as two numbers (--n night, --d dawn; every color is a color-mix of them) · the
+     pinned scene (.scene, .stage, --p) · sky, stars, moon (.stars, .moon, .glow) · land in layers
+     (.ridge, .viaduct, .fog) · the train (.train, .car, .loco) · words then clock (.copy, .hud) ·
+     a paper ticket with a stamp, overlapping the scene (.ticket, .stamp) · a timetable (.tt) ·
+     cabins as lit carriage windows (.coach, .glass) · on board, as tiles (.tiles, .pic) ·
+     the arrival at dawn (.dawn). On phones and under reduced motion the scene rests at dusk. -->
+<style>
+  @font-face { font-family: "Source Serif 4"; src: url("../../../skills/ui-director/fonts/SourceSerif4-Variable.woff2") format("woff2"); font-weight: 200 900; font-display: block; }
+  @font-face { font-family: "Source Serif 4"; src: url("../../../skills/ui-director/fonts/SourceSerif4-Italic-Variable.woff2") format("woff2"); font-weight: 200 900; font-style: italic; font-display: block; }
+  @font-face { font-family: "Geist"; src: url("../../../skills/ui-director/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+
+  :root {
+    color-scheme: light dark;
+    --serif: "Source Serif 4", Georgia, serif; --sans: "Geist", system-ui, sans-serif;
+    --paper:  light-dark(oklch(.968 .012 85), oklch(.165 .02 262));
+    --card:   light-dark(oklch(.945 .015 85), oklch(.205 .024 262));
+    --ink:    light-dark(oklch(.23 .02 60),   oklch(.94 .012 85));
+    --ink-2:  light-dark(oklch(.38 .02 60),   oklch(.81 .012 85));
+    --ink-3:  light-dark(oklch(.49 .02 60),   oklch(.69 .012 85));
+    --rule:   light-dark(oklch(.23 .02 60 / .18), oklch(.94 .012 85 / .2));
+    --cream:  oklch(.965 .02 85); --night: oklch(.2 .04 262); --lamp: oklch(.85 .13 78); --stamp: oklch(.52 .19 28);
+    --section: clamp(88px, 10vw, 136px); --gap: 48px; --gutter: clamp(24px, 4vw, 48px);
+    --u: clamp(.62px, .0695vw, 1.12px);   /* the scene's unit: 1 at 1440 wide */
+    --ease: cubic-bezier(.16, 1, .3, 1);
+  }
+  :root[data-theme="dark"] { color-scheme: dark; } :root[data-theme="light"] { color-scheme: light; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; scrollbar-gutter: stable; -webkit-text-size-adjust: 100%; }
+  body { background: var(--paper); color: var(--ink-2); font: 440 16px/1.5 var(--sans); -webkit-font-smoothing: antialiased; font-synthesis: none; }
+  a { color: inherit; text-decoration: none; } ul { list-style: none; padding: 0; } svg { display: block; }
+  ::selection { background: color-mix(in oklch, var(--lamp) 45%, var(--paper)); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--lamp); outline-offset: 2px; border-radius: 4px; }
+  .wrap { max-width: 1440px; margin-inline: auto; padding-inline: var(--gutter); }
+  section { padding-top: var(--section); scroll-margin-top: 24px; }
+  h2 { font: 400 clamp(2.1rem, 1.2rem + 2.6vw, 3.5rem)/1.05 var(--serif); letter-spacing: -.028em; color: var(--ink); max-width: 16ch; text-wrap: balance; margin-left: -.03em; }
+  .head { margin-bottom: var(--gap); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 24px; border-radius: 8px;
+         font: 550 15px/1 var(--sans); background: var(--ink); color: var(--paper); transition: filter 160ms, transform 160ms var(--ease), background-color 160ms; }
+  .btn:hover { filter: brightness(1.12); } .btn:active { transform: scale(.98); }
+  .btn.lamp { background: var(--lamp); color: var(--night); }
+  .btn.ghost { background: none; color: var(--cream); box-shadow: inset 0 0 0 1px oklch(.965 .02 85 / .38); }
+
+  /* The nav is clear over the scene and paper after it (and at dawn, when the sky is pale). */
+  .nav { position: fixed; inset: 0 0 auto; z-index: 20; background: color-mix(in oklch, var(--paper) 86%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: var(--ink-2); transition: background-color 300ms, color 300ms; }
+  .js .nav:not([data-solid]) { background: none; -webkit-backdrop-filter: none; backdrop-filter: none; color: var(--cream); }
+  .nav .wrap { display: flex; align-items: center; gap: 36px; height: 72px; }
+  .mark { font: italic 500 26px/1 var(--serif); letter-spacing: -.02em; margin-right: auto; display: inline-flex; align-items: center; height: 44px; }
+  .nav[data-solid] .mark, html:not(.js) .mark { color: var(--ink); }
+  .nav .links { display: flex; gap: 32px; font-size: 15px; } .nav .links a { display: inline-flex; align-items: center; height: 44px; line-height: 1; opacity: .86; transition: opacity 160ms; } .nav .links a:hover { opacity: 1; }
+  .nav .btn { height: 40px; padding: 0 18px; font-size: 14px; }
+  .js .nav:not([data-solid]) .btn { background: var(--cream); color: var(--night); }
+
+  /* ---------- The scene. Time is two numbers; every color below is mixed from them. ---------- */
+  .scene { height: 320svh; }
+  .stage { --p: 0; --n: 0; --d: 0; --nn: calc(var(--n) * 100%); --dd: calc(var(--d) * 100%); --track: max(77%, 640px);
+    position: sticky; top: 0; height: 100svh; min-height: 760px; overflow: hidden; isolation: isolate; color: var(--cream);
+    --s1: color-mix(in oklab, color-mix(in oklab, oklch(.23 .06 262), oklch(.105 .03 265) var(--nn)), oklch(.60 .07 245) var(--dd));
+    --s2: color-mix(in oklab, color-mix(in oklab, oklch(.49 .035 330), oklch(.165 .04 262) var(--nn)), oklch(.79 .05 232) var(--dd));
+    --s3: color-mix(in oklab, color-mix(in oklab, oklch(.78 .125 62), oklch(.25 .05 258) var(--nn)), oklch(.91 .07 75) var(--dd));
+    --far:  color-mix(in oklab, color-mix(in oklab, oklch(.43 .055 272), oklch(.215 .04 264) var(--nn)), oklch(.64 .05 248) var(--dd));
+    --mid:  color-mix(in oklab, color-mix(in oklab, oklch(.33 .055 270), oklch(.165 .035 264) var(--nn)), oklch(.50 .05 252) var(--dd));
+    --arch: color-mix(in oklab, color-mix(in oklab, oklch(.245 .05 268), oklch(.115 .03 264) var(--nn)), oklch(.35 .045 256) var(--dd));
+    --near: color-mix(in oklab, color-mix(in oklab, oklch(.15 .035 266), oklch(.07 .02 264) var(--nn)), oklch(.22 .04 258) var(--dd));
+    background: linear-gradient(in oklab, var(--s1) 0%, var(--s2) 50%, var(--s3) 76%); }
+  .stage > * { position: absolute; }
+  .stars { left: 0; top: 0; width: 1px; height: 1px; border-radius: 50%; opacity: calc(.18 + var(--n) * .82 - var(--d) * 1.2); }
+  .stars.a { box-shadow: 80.2vw 5.9svh 0 0.0px rgb(255 255 255 / 0.73), 86.3vw 27.8svh 0 0.2px rgb(255 255 255 / 0.47), 92.7vw 16.8svh 0 0.2px rgb(255 255 255 / 0.36), 23.8vw 7.5svh 0 0.0px rgb(255 255 255 / 0.38), 20.2vw 19.4svh 0 0.3px rgb(255 255 255 / 0.45), 29.0vw 30.5svh 0 0.2px rgb(255 255 255 / 0.39), 1.8vw 15.8svh 0 0.3px rgb(255 255 255 / 0.31), 55.1vw 12.2svh 0 0.4px rgb(255 255 255 / 0.54), 10.6vw 49.3svh 0 0.2px rgb(255 255 255 / 0.52), 83.5vw 24.2svh 0 0.3px rgb(255 255 255 / 0.55), 98.2vw 21.2svh 0 0.3px rgb(255 255 255 / 0.72), 63.6vw 24.9svh 0 0.0px rgb(255 255 255 / 0.47), 13.0vw 5.2svh 0 0.1px rgb(255 255 255 / 0.67), 16.3vw 6.0svh 0 0.4px rgb(255 255 255 / 0.72), 67.1vw 17.6svh 0 0.1px rgb(255 255 255 / 0.42), 45.9vw 10.3svh 0 0.1px rgb(255 255 255 / 0.52), 96.2vw 58.4svh 0 0.1px rgb(255 255 255 / 0.57), 96.6vw 19.3svh 0 0.0px rgb(255 255 255 / 0.48), 38.2vw 29.0svh 0 0.1px rgb(255 255 255 / 0.55), 50.5vw 1.3svh 0 0.0px rgb(255 255 255 / 0.43), 40.0vw 3.5svh 0 0.1px rgb(255 255 255 / 0.31), 23.3vw 35.5svh 0 0.3px rgb(255 255 255 / 0.56), 65.8vw 43.2svh 0 0.2px rgb(255 255 255 / 0.74), 32.6vw 59.1svh 0 0.3px rgb(255 255 255 / 0.37), 64.3vw 3.6svh 0 0.4px rgb(255 255 255 / 0.72), 62.7vw 44.3svh 0 0.1px rgb(255 255 255 / 0.71), 52.4vw 30.8svh 0 0.4px rgb(255 255 255 / 0.72), 82.6vw 35.5svh 0 0.3px rgb(255 255 255 / 0.75), 69.3vw 14.6svh 0 0.1px rgb(255 255 255 / 0.32), 36.1vw 7.2svh 0 0.3px rgb(255 255 255 / 0.72), 62.8vw 37.9svh 0 0.2px rgb(255 255 255 / 0.64), 0.3vw 48.1svh 0 0.2px rgb(255 255 255 / 0.67), 53.5vw 39.9svh 0 0.3px rgb(255 255 255 / 0.33), 25.2vw 5.4svh 0 0.3px rgb(255 255 255 / 0.43), 20.5vw 44.6svh 0 0.2px rgb(255 255 255 / 0.79), 38.3vw 29.3svh 0 0.3px rgb(255 255 255 / 0.64), 61.7vw 38.9svh 0 0.1px rgb(255 255 255 / 0.34), 25.4vw 44.8svh 0 0.3px rgb(255 255 255 / 0.45), 1.2vw 4.6svh 0 0.3px rgb(255 255 255 / 0.43), 69.2vw 40.9svh 0 0.2px rgb(255 255 255 / 0.45), 46.5vw 28.5svh 0 0.4px rgb(255 255 255 / 0.36), 19.9vw 58.7svh 0 0.0px rgb(255 255 255 / 0.77), 45.9vw 49.4svh 0 0.2px rgb(255 255 255 / 0.78), 26.9vw 13.4svh 0 0.1px rgb(255 255 255 / 0.77), 58.1vw 9.4svh 0 0.4px rgb(255 255 255 / 0.56), 13.3vw 49.4svh 0 0.4px rgb(255 255 255 / 0.55), 70.3vw 14.7svh 0 0.2px rgb(255 255 255 / 0.75), 2.5vw 1.2svh 0 0.2px rgb(255 255 255 / 0.55), 30.2vw 9.3svh 0 0.1px rgb(255 255 255 / 0.47), 84.0vw 1.1svh 0 0.4px rgb(255 255 255 / 0.68), 12.0vw 55.7svh 0 0.4px rgb(255 255 255 / 0.66), 29.0vw 23.0svh 0 0.4px rgb(255 255 255 / 0.50), 58.9vw 22.3svh 0 0.1px rgb(255 255 255 / 0.51), 4.8vw 7.0svh 0 0.1px rgb(255 255 255 / 0.72), 93.6vw 15.7svh 0 0.2px rgb(255 255 255 / 0.43), 19.0vw 23.0svh 0 0.4px rgb(255 255 255 / 0.78), 81.2vw 38.2svh 0 0.4px rgb(255 255 255 / 0.76), 54.9vw 43.5svh 0 0.3px rgb(255 255 255 / 0.32), 45.1vw 45.4svh 0 0.1px rgb(255 255 255 / 0.62), 4.9vw 55.7svh 0 0.2px rgb(255 255 255 / 0.36), 34.4vw 18.6svh 0 0.4px rgb(255 255 255 / 0.67), 26.0vw 39.7svh 0 0.3px rgb(255 255 255 / 0.45), 39.4vw 10.9svh 0 0.1px rgb(255 255 255 / 0.38), 90.6vw 30.3svh 0 0.4px rgb(255 255 255 / 0.41), 99.6vw 27.5svh 0 0.1px rgb(255 255 255 / 0.37), 9.1vw 21.2svh 0 0.1px rgb(255 255 255 / 0.35), 25.8vw 34.6svh 0 0.3px rgb(255 255 255 / 0.74), 41.3vw 25.4svh 0 0.2px rgb(255 255 255 / 0.56), 33.8vw 4.7svh 0 0.4px rgb(255 255 255 / 0.44), 12.6vw 30.7svh 0 0.4px rgb(255 255 255 / 0.61), 21.6vw 17.0svh 0 0.2px rgb(255 255 255 / 0.42), 44.6vw 57.3svh 0 0.4px rgb(255 255 255 / 0.72), 2.2vw 2.9svh 0 0.4px rgb(255 255 255 / 0.65), 47.3vw 35.6svh 0 0.2px rgb(255 255 255 / 0.30), 92.7vw 49.7svh 0 0.4px rgb(255 255 255 / 0.73), 24.8vw 7.4svh 0 0.2px rgb(255 255 255 / 0.38), 68.2vw 56.5svh 0 0.3px rgb(255 255 255 / 0.66), 76.5vw 28.0svh 0 0.0px rgb(255 255 255 / 0.58), 78.2vw 14.7svh 0 0.3px rgb(255 255 255 / 0.76), 30.4vw 8.6svh 0 0.3px rgb(255 255 255 / 0.43), 69.9vw 7.6svh 0 0.2px rgb(255 255 255 / 0.34), 58.3vw 23.9svh 0 0.3px rgb(255 255 255 / 0.41), 1.0vw 18.8svh 0 0.4px rgb(255 255 255 / 0.53), 64.5vw 53.1svh 0 0.1px rgb(255 255 255 / 0.54), 24.7vw 57.7svh 0 0.1px rgb(255 255 255 / 0.65), 2.2vw 30.4svh 0 0.2px rgb(255 255 255 / 0.64), 25.7vw 40.4svh 0 0.1px rgb(255 255 255 / 0.76), 3.4vw 20.9svh 0 0.3px rgb(255 255 255 / 0.51), 19.8vw 48.0svh 0 0.2px rgb(255 255 255 / 0.67), 20.5vw 58.2svh 0 0.4px rgb(255 255 255 / 0.46), 23.1vw 14.1svh 0 0.1px rgb(255 255 255 / 0.68), 95.2vw 30.3svh 0 0.1px rgb(255 255 255 / 0.39), 41.7vw 40.3svh 0 0.1px rgb(255 255 255 / 0.77), 39.3vw 13.6svh 0 0.1px rgb(255 255 255 / 0.79), 5.2vw 4.5svh 0 0.4px rgb(255 255 255 / 0.50), 88.4vw 44.2svh 0 0.4px rgb(255 255 255 / 0.80), 32.9vw 11.9svh 0 0.3px rgb(255 255 255 / 0.77), 3.2vw 40.2svh 0 0.2px rgb(255 255 255 / 0.49), 33.2vw 11.0svh 0 0.1px rgb(255 255 255 / 0.30), 35.1vw 57.4svh 0 0.4px rgb(255 255 255 / 0.36), 20.7vw 22.0svh 0 0.4px rgb(255 255 255 / 0.71), 43.2vw 3.9svh 0 0.2px rgb(255 255 255 / 0.54), 92.0vw 12.4svh 0 0.4px rgb(255 255 255 / 0.48), 3.0vw 25.2svh 0 0.3px rgb(255 255 255 / 0.71), 4.1vw 3.1svh 0 0.4px rgb(255 255 255 / 0.33), 25.7vw 45.1svh 0 0.2px rgb(255 255 255 / 0.75), 27.2vw 57.5svh 0 0.1px rgb(255 255 255 / 0.61), 71.7vw 19.7svh 0 0.0px rgb(255 255 255 / 0.44), 75.6vw 55.1svh 0 0.4px rgb(255 255 255 / 0.62), 2.4vw 14.8svh 0 0.4px rgb(255 255 255 / 0.54), 95.4vw 23.8svh 0 0.2px rgb(255 255 255 / 0.43), 49.3vw 55.8svh 0 0.4px rgb(255 255 255 / 0.39), 73.8vw 49.5svh 0 0.3px rgb(255 255 255 / 0.69), 32.8vw 19.9svh 0 0.4px rgb(255 255 255 / 0.48), 7.9vw 12.6svh 0 0.1px rgb(255 255 255 / 0.68), 6.5vw 3.0svh 0 0.1px rgb(255 255 255 / 0.58), 98.0vw 53.1svh 0 0.1px rgb(255 255 255 / 0.79), 8.4vw 6.7svh 0 0.3px rgb(255 255 255 / 0.55), 44.7vw 14.8svh 0 0.3px rgb(255 255 255 / 0.51), 67.4vw 45.1svh 0 0.3px rgb(255 255 255 / 0.72), 12.1vw 50.6svh 0 0.3px rgb(255 255 255 / 0.45), 37.3vw 44.5svh 0 0.1px rgb(255 255 255 / 0.40), 24.5vw 10.0svh 0 0.3px rgb(255 255 255 / 0.74), 32.6vw 24.4svh 0 0.2px rgb(255 255 255 / 0.80), 23.1vw 48.7svh 0 0.4px rgb(255 255 255 / 0.63), 10.2vw 29.0svh 0 0.4px rgb(255 255 255 / 0.71), 91.4vw 3.4svh 0 0.1px rgb(255 255 255 / 0.45), 19.0vw 58.4svh 0 0.4px rgb(255 255 255 / 0.59), 37.2vw 52.1svh 0 0.1px rgb(255 255 255 / 0.52), 77.8vw 56.8svh 0 0.3px rgb(255 255 255 / 0.35), 62.0vw 13.8svh 0 0.1px rgb(255 255 255 / 0.48), 20.4vw 16.0svh 0 0.3px rgb(255 255 255 / 0.60), 20.3vw 1.7svh 0 0.3px rgb(255 255 255 / 0.46), 18.5vw 19.4svh 0 0.4px rgb(255 255 255 / 0.40), 54.8vw 4.7svh 0 0.2px rgb(255 255 255 / 0.35), 55.0vw 38.7svh 0 0.1px rgb(255 255 255 / 0.35), 69.5vw 25.2svh 0 0.1px rgb(255 255 255 / 0.44), 95.3vw 19.4svh 0 0.2px rgb(255 255 255 / 0.58), 41.6vw 52.0svh 0 0.2px rgb(255 255 255 / 0.80), 19.7vw 44.0svh 0 0.0px rgb(255 255 255 / 0.40), 90.2vw 26.0svh 0 0.2px rgb(255 255 255 / 0.71), 88.3vw 28.2svh 0 0.0px rgb(255 255 255 / 0.38), 55.2vw 38.8svh 0 0.0px rgb(255 255 255 / 0.75), 62.2vw 22.9svh 0 0.1px rgb(255 255 255 / 0.55), 28.3vw 31.7svh 0 0.0px rgb(255 255 255 / 0.76), 49.1vw 48.5svh 0 0.1px rgb(255 255 255 / 0.78), 12.7vw 56.6svh 0 0.2px rgb(255 255 255 / 0.79), 5.3vw 55.6svh 0 0.4px rgb(255 255 255 / 0.49), 62.0vw 49.6svh 0 0.4px rgb(255 255 255 / 0.38), 22.2vw 24.9svh 0 0.4px rgb(255 255 255 / 0.72); }
+  .stars.b { box-shadow: 18.3vw 13.9svh 0 0.8px rgb(255 252 240 / 0.73), 18.3vw 13.9svh 5px 1px rgb(255 240 200 / .22), 38.4vw 8.3svh 0 0.9px rgb(255 252 240 / 0.66), 38.4vw 8.3svh 5px 1px rgb(255 240 200 / .22), 89.7vw 3.4svh 0 0.9px rgb(255 252 240 / 0.80), 89.7vw 3.4svh 5px 1px rgb(255 240 200 / .22), 3.8vw 50.5svh 0 0.8px rgb(255 252 240 / 0.60), 3.8vw 50.5svh 5px 1px rgb(255 240 200 / .22), 55.0vw 38.0svh 0 0.7px rgb(255 252 240 / 0.69), 55.0vw 38.0svh 5px 1px rgb(255 240 200 / .22), 58.3vw 26.1svh 0 0.7px rgb(255 252 240 / 0.85), 58.3vw 26.1svh 5px 1px rgb(255 240 200 / .22), 43.8vw 2.4svh 0 0.7px rgb(255 252 240 / 0.83), 43.8vw 2.4svh 5px 1px rgb(255 240 200 / .22), 23.5vw 46.1svh 0 0.7px rgb(255 252 240 / 0.90), 23.5vw 46.1svh 5px 1px rgb(255 240 200 / .22), 18.0vw 28.9svh 0 0.6px rgb(255 252 240 / 0.60), 18.0vw 28.9svh 5px 1px rgb(255 240 200 / .22), 43.1vw 6.4svh 0 0.8px rgb(255 252 240 / 0.75), 43.1vw 6.4svh 5px 1px rgb(255 240 200 / .22), 4.1vw 38.5svh 0 0.9px rgb(255 252 240 / 0.59), 4.1vw 38.5svh 5px 1px rgb(255 240 200 / .22), 77.8vw 31.2svh 0 0.8px rgb(255 252 240 / 0.57), 77.8vw 31.2svh 5px 1px rgb(255 240 200 / .22), 37.8vw 57.1svh 0 0.9px rgb(255 252 240 / 0.61), 37.8vw 57.1svh 5px 1px rgb(255 240 200 / .22), 99.6vw 44.2svh 0 0.6px rgb(255 252 240 / 0.92), 99.6vw 44.2svh 5px 1px rgb(255 240 200 / .22), 98.2vw 30.0svh 0 1.0px rgb(255 252 240 / 0.98), 98.2vw 30.0svh 5px 1px rgb(255 240 200 / .22), 16.5vw 47.5svh 0 0.5px rgb(255 252 240 / 0.97), 16.5vw 47.5svh 5px 1px rgb(255 240 200 / .22), 35.1vw 45.6svh 0 0.9px rgb(255 252 240 / 0.62), 35.1vw 45.6svh 5px 1px rgb(255 240 200 / .22), 27.5vw 49.1svh 0 0.8px rgb(255 252 240 / 0.61), 27.5vw 49.1svh 5px 1px rgb(255 240 200 / .22), 92.0vw 13.3svh 0 0.8px rgb(255 252 240 / 0.67), 92.0vw 13.3svh 5px 1px rgb(255 240 200 / .22), 31.9vw 3.2svh 0 0.6px rgb(255 252 240 / 0.63), 31.9vw 3.2svh 5px 1px rgb(255 240 200 / .22), 93.6vw 41.1svh 0 0.6px rgb(255 252 240 / 0.95), 93.6vw 41.1svh 5px 1px rgb(255 240 200 / .22), 78.5vw 7.8svh 0 0.8px rgb(255 252 240 / 0.79), 78.5vw 7.8svh 5px 1px rgb(255 240 200 / .22), 36.0vw 52.5svh 0 0.8px rgb(255 252 240 / 0.80), 36.0vw 52.5svh 5px 1px rgb(255 240 200 / .22), 88.3vw 7.2svh 0 0.8px rgb(255 252 240 / 1.00), 88.3vw 7.2svh 5px 1px rgb(255 240 200 / .22), 39.4vw 48.1svh 0 1.0px rgb(255 252 240 / 0.67), 39.4vw 48.1svh 5px 1px rgb(255 240 200 / .22), 57.7vw 22.3svh 0 0.7px rgb(255 252 240 / 0.89), 57.7vw 22.3svh 5px 1px rgb(255 240 200 / .22); }
+  .moon { right: 13%; top: 17%; width: calc(118 * var(--u)); height: calc(118 * var(--u)); border-radius: 50%; opacity: calc(1 - var(--d) * .8);
+    background: radial-gradient(circle at 62% 30%, oklch(.9 .03 90 / .5) 0 9%, transparent 10%), radial-gradient(circle at 34% 60%, oklch(.88 .03 90 / .45) 0 13%, transparent 14%), radial-gradient(circle at 40% 36%, #fffdf3, #ece5cb 60%, #d3cbac);
+    box-shadow: 0 0 calc(50 * var(--u)) calc(14 * var(--u)) oklch(.95 .05 90 / .3), 0 0 calc(240 * var(--u)) calc(90 * var(--u)) oklch(.9 .06 90 / .13);
+    transform: translate(calc(var(--p) * -40vw), calc(((var(--p) - .4) * (var(--p) - .4) - .16) * 40svh)); }
+  .glow { left: 22%; top: var(--track); width: 110vw; height: 70svh; transform: translate(-50%, -42%); pointer-events: none;
+    background: radial-gradient(closest-side, oklch(.88 .13 62 / .8), oklch(.8 .12 50 / .3) 45%, transparent); opacity: calc(1 - var(--n) * 1.6); }
+  .glow.sun { left: 82%; background: radial-gradient(closest-side, oklch(.97 .09 85 / .95), oklch(.9 .1 70 / .4) 40%, transparent); opacity: calc(var(--d) * 1.3 - .3); }
+  .ridge { left: 0; bottom: 0; } .ridge path, .ridge circle, .ridge rect { fill: inherit; }
+  .ridge.far  { width: 150vw; height: 46%; bottom: 14%; fill: var(--far);  transform: translateX(calc(var(--p) * -9%)); }
+  .ridge.mid  { width: 190vw; height: 38%; bottom: 8%;  fill: var(--mid);  transform: translateX(calc(var(--p) * -19%)); }
+  .ridge.near { width: 260vw; height: 15%; bottom: -1px; fill: var(--near); transform: translateX(calc(var(--p) * -46%)); }
+  .viaduct { left: 0; top: var(--track); width: calc(5840 * var(--u)); height: calc(300 * var(--u)); fill: var(--arch); transform: translateX(calc(var(--p) * -34%)); }
+  .fog { inset: auto 0 0; top: calc(var(--track) + 60 * var(--u)); background: linear-gradient(transparent, color-mix(in oklab, var(--s3) 62%, var(--arch)) 70%); opacity: .7; }
+  .grain { inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* The train: carriages in CSS. Most windows go dark as the night deepens; a few stay lit. */
+  .train { left: 50%; top: var(--track); display: flex; align-items: flex-end; gap: calc(5 * var(--u)); transform: translate(-60%, -100%); }
+  .car { position: relative; flex: none; width: calc(214 * var(--u)); height: calc(46 * var(--u)); border-radius: calc(8 * var(--u)) calc(8 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u));
+    background: linear-gradient(transparent 68%, oklch(.93 .02 85 / .5) 68% 72%, transparent 72%), linear-gradient(oklch(.27 .045 262), oklch(.13 .03 262));
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / .22), inset 0 calc(-6 * var(--u)) 0 oklch(.08 .02 262); }
+  .car::before, .car::after { content: ""; position: absolute; left: calc(11 * var(--u)); right: calc(11 * var(--u)); top: calc(11 * var(--u)); height: calc(15 * var(--u)); border-radius: calc(2 * var(--u));
+    filter: drop-shadow(0 0 calc(7 * var(--u)) oklch(.84 .15 75 / .95)); }
+  .car::before { background: repeating-linear-gradient(90deg, var(--lamp) 0 calc(17 * var(--u)), transparent calc(17 * var(--u)) calc(27.4 * var(--u))); opacity: calc(1 - var(--n) * .9 + var(--d) * .25); }
+  .car::after { background: repeating-linear-gradient(90deg, transparent 0 calc(54.8 * var(--u)), var(--lamp) calc(54.8 * var(--u)) calc(71.8 * var(--u)), transparent calc(71.8 * var(--u)) calc(137 * var(--u))); }
+  .car:nth-child(2n)::after { background-position: calc(-54.8 * var(--u)) 0; }
+  .loco { width: calc(168 * var(--u)); height: calc(52 * var(--u)); border-radius: calc(8 * var(--u)) calc(30 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u)); }
+  .loco::before { left: auto; right: calc(20 * var(--u)); width: calc(30 * var(--u)); top: calc(10 * var(--u)); height: calc(13 * var(--u)); background: var(--lamp); opacity: .9; border-radius: calc(3 * var(--u)) calc(9 * var(--u)) calc(2 * var(--u)) calc(2 * var(--u)); }
+  .loco::after { left: 100%; right: auto; top: calc(8 * var(--u)); width: calc(520 * var(--u)); height: calc(150 * var(--u)); border-radius: 0; filter: blur(calc(7 * var(--u)));
+    background: linear-gradient(90deg, oklch(.97 .07 88 / .62), transparent 92%); clip-path: polygon(0 12%, 100% 0, 100% 100%, 0 22%); opacity: calc(.35 + var(--n) * .65); }
+
+  /* Words at dusk, then a clock for the night. */
+  .copy, .hud { left: var(--gutter); right: var(--gutter); top: calc(72px + clamp(20px, 5svh, 56px)); max-width: 1344px; margin-inline: auto; }
+  .copy { opacity: calc(1 - var(--p) * 9); transform: translateY(calc(var(--p) * -120px)); }
+  .copy::before { content: ""; position: absolute; inset: -10% 30% -16% -12%; z-index: -1; background: radial-gradient(closest-side, oklch(.2 .06 270 / .34), transparent); pointer-events: none; }
+  .stage[data-night] .copy { pointer-events: none; }
+  h1 { font: 400 clamp(3rem, 8.8vw, 9rem)/1.04 var(--serif); letter-spacing: -.038em; margin-left: -.04em; font-optical-sizing: auto; }
+  h1 .l { display: block; } .turn { font-style: italic; letter-spacing: -.045em; }
+  .lede { margin-top: clamp(20px, 3svh, 30px); font: 400 clamp(1.2rem, 1.05rem + .5vw, 1.45rem)/1.35 var(--serif); letter-spacing: -.01em; max-width: 27ch; text-wrap: pretty; }
+  .acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(20px, 3svh, 30px); }
+  .risk { margin-top: 14px; font-size: 14px; opacity: .92; }
+  .hud { pointer-events: none; opacity: calc(var(--p) * 12 - 1.4); text-shadow: 0 2px 34px oklch(.15 .04 262 / .5); transition: color .5s, text-shadow .5s; }
+  .stage[data-day] .hud { color: var(--night); text-shadow: none; } /* the words turn to ink once the sky is pale enough to carry them */
+  .clock { display: block; font: 300 clamp(4.2rem, 12vw, 12rem)/.88 var(--serif); letter-spacing: -.04em; font-variant-numeric: tabular-nums; margin-left: -.04em; }
+  .where { margin-top: 18px; font: italic 400 clamp(1.3rem, 1rem + 1.1vw, 1.9rem)/1.28 var(--serif); letter-spacing: -.012em; max-width: 22ch; text-wrap: balance; }
+
+  /* ---------- The ticket: paper, perforation, an ink stamp. It lies across the scene's edge. ---------- */
+  .pass { position: relative; z-index: 3; display: grid; grid-template-columns: 5fr 6fr; gap: clamp(32px, 6vw, 96px); align-items: start; padding-top: 0; margin-top: -132px; }
+  .pass .tt-col { padding-top: calc(132px + var(--gap)); }
+  .tt li { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 15px 0; border-top: 1px solid var(--rule); font-size: 16px; color: var(--ink); }
+  .tt li:first-child { border-top-color: var(--ink); } .tt li:last-child { border-bottom: 1px solid var(--ink); }
+  .tt b { font: 500 22px/1.2 var(--serif); font-variant-numeric: tabular-nums; } .tt span { font-size: 14px; color: var(--ink-3); text-align: right; }
+  .tickets { position: relative; justify-self: end; width: min(100%, 600px); }
+  .ticket { position: relative; display: flex; border-radius: 12px; color: oklch(.25 .02 60); transform: rotate(-4deg); transition: transform .6s var(--ease);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(175deg, oklch(.975 .018 90), oklch(.93 .028 86));
+    -webkit-mask: radial-gradient(circle 10px at calc(100% - 168px) 0, #0000 97%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at calc(100% - 168px) 100%, #0000 97%, #000) bottom / 100% 51% no-repeat;
+            mask: radial-gradient(circle 10px at calc(100% - 168px) 0, #0000 97%, #000) top / 100% 51% no-repeat, radial-gradient(circle 10px at calc(100% - 168px) 100%, #0000 97%, #000) bottom / 100% 51% no-repeat; }
+  .tickets:hover .ticket { transform: rotate(-1.5deg); }
+  .shadow { position: absolute; inset: 6% 3% -5%; border-radius: 12px; background: oklch(.15 .03 262 / .5); filter: blur(26px); transform: rotate(-4deg) translateY(22px); }
+  .under { position: absolute; inset: 0; border-radius: 12px; background: linear-gradient(175deg, oklch(.9 .03 86), oklch(.86 .035 84)); transform: rotate(3.5deg) translate(18px, 14px); box-shadow: 0 10px 30px -12px oklch(.15 .03 262 / .5); }
+  .t-main { flex: 1; min-width: 0; padding: 26px 28px 24px; }
+  .t-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 12px; opacity: .7; }
+  .t-top i { font: italic 500 22px/1 var(--serif); letter-spacing: -.02em; opacity: 1; color: oklch(.25 .02 60); }
+  .t-route { display: flex; align-items: center; gap: 16px; margin-top: 22px; font: 400 clamp(1.8rem, 1.2rem + 1.6vw, 2.6rem)/1 var(--serif); letter-spacing: -.03em; }
+  .t-route s { flex: 1; height: 1px; background: currentColor; opacity: .5; position: relative; text-decoration: none; }
+  .t-route s::before, .t-route s::after { content: ""; position: absolute; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: currentColor; } .t-route s::after { right: 0; }
+  .t-fields { display: grid; grid-template-columns: repeat(5, auto); justify-content: space-between; gap: 14px; margin-top: 24px; font-size: 12px; }
+  .t-fields b { display: block; margin-top: 3px; font: 500 17px/1.2 var(--serif); font-variant-numeric: tabular-nums; }
+  .t-code { display: flex; align-items: center; gap: 14px; margin-top: 22px; font: 500 12px/1 var(--sans); font-variant-numeric: tabular-nums; }
+  .t-code u { flex: 1; height: 30px; text-decoration: none; opacity: .86; background: repeating-linear-gradient(90deg, currentColor 0px 1px, transparent 1px 2px, currentColor 2px 4px, transparent 4px 6px, currentColor 6px 8px, transparent 8px 10px, currentColor 10px 13px, transparent 13px 15px, currentColor 15px 17px, transparent 17px 20px, currentColor 20px 21px, transparent 21px 22px, currentColor 22px 26px, transparent 26px 28px, currentColor 28px 30px, transparent 30px 33px, currentColor 33px 36px, transparent 36px 38px, currentColor 38px 41px, transparent 41px 43px, currentColor 43px 46px, transparent 46px 47px, currentColor 47px 49px, transparent 49px 51px, currentColor 51px 54px, transparent 54px 55px, currentColor 55px 56px, transparent 56px 58px, currentColor 58px 59px, transparent 59px 62px, currentColor 62px 65px, transparent 65px 66px, currentColor 66px 69px, transparent 69px 70px, currentColor 70px 72px, transparent 72px 75px, currentColor 75px 76px, transparent 76px 77px, currentColor 77px 78px, transparent 78px 80px, currentColor 80px 82px, transparent 82px 83px, currentColor 83px 84px, transparent 84px 87px, currentColor 87px 90px, transparent 90px 91px, currentColor 91px 92px, transparent 92px 95px, currentColor 95px 97px, transparent 97px 99px, currentColor 99px 103px, transparent 103px 105px, currentColor 105px 107px, transparent 107px 110px, currentColor 110px 113px, transparent 113px 115px, currentColor 115px 119px, transparent 119px 121px, currentColor 121px 124px, transparent 124px 126px, currentColor 126px 128px, transparent 128px 130px, currentColor 130px 132px, transparent 132px 133px, currentColor 133px 135px, transparent 135px 138px, currentColor 138px 140px, transparent 140px 141px, currentColor 141px 145px, transparent 145px 147px, currentColor 147px 149px, transparent 149px 150px); }
+  .t-stub { position: relative; flex: none; width: 168px; padding: 26px 22px 24px 24px; border-left: 1.5px dashed oklch(.25 .02 60 / .35); font-size: 12px; }
+  .t-stub b { display: block; margin-top: 3px; font: 500 17px/1.2 var(--serif); } .t-stub p + p { margin-top: 14px; }
+  .stamp { position: absolute; right: 12px; bottom: 14px; width: 104px; height: 104px; transform: rotate(-14deg); mix-blend-mode: multiply; opacity: .84; }
+  .stamp * { fill: none; stroke: var(--stamp); } .stamp text { fill: var(--stamp); stroke: none; font-family: var(--sans); font-weight: 600; }
+
+  /* ---------- Cabins: one carriage seen from the platform at night, four lit windows. ---------- */
+  .coach { position: relative; padding: 76px 0 64px; color: var(--cream); background: linear-gradient(oklch(.26 .04 262), oklch(.17 .03 262)); box-shadow: inset 0 1px 0 oklch(1 0 0 / .14), inset 0 -10px 0 oklch(.11 .02 262); }
+  .coach::before { content: ""; position: absolute; inset: 22px 0 auto; height: 6px; background: radial-gradient(circle, oklch(.44 .03 262) 1.6px, transparent 2.2px) 0 0 / 30px 6px; }
+  .coach::after { content: ""; position: absolute; inset: auto 0 34px; height: 4px; background: oklch(.93 .02 85 / .75); }
+  .wins { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(18px, 2.4vw, 36px); }
+  .glass { position: relative; aspect-ratio: 4 / 3; border-radius: 26px; overflow: hidden; border: 7px solid oklch(.33 .035 262); background: oklch(.36 .05 60);
+    box-shadow: 0 0 0 1.5px oklch(.12 .02 262), 0 0 70px oklch(.84 .14 75 / .2), 0 0 0 9px oklch(.2 .03 262 / .5); transition: box-shadow .5s; }
+  .win:hover .glass { box-shadow: 0 0 0 1.5px oklch(.12 .02 262), 0 0 110px oklch(.84 .14 75 / .38), 0 0 0 9px oklch(.2 .03 262 / .5); }
+  .glass svg { width: 100%; height: 100%; }
+  .glass::after { content: ""; position: absolute; inset: 0; background: linear-gradient(112deg, transparent 38%, oklch(1 0 0 / .09) 44% 50%, transparent 56%), radial-gradient(120% 90% at 50% 40%, transparent 55%, oklch(.1 .03 262 / .55)); }
+  .w { fill: oklch(.4 .05 62); } .w2 { fill: oklch(.33 .05 58); } .f { fill: oklch(.27 .045 50); } .l { fill: oklch(.94 .025 88); } .l2 { fill: oklch(.84 .03 86); }
+  .b { fill: oklch(.4 .09 258); } .b2 { fill: oklch(.93 .02 85); } .sky-n { fill: oklch(.19 .05 262); } .st { fill: oklch(.95 .03 90); } .br { fill: oklch(.72 .1 80); }
+  .plate { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; margin-top: 22px; }
+  .plate h3, .plate .price { font: 400 24px/1.15 var(--serif); letter-spacing: -.02em; } .plate .price { font-variant-numeric: tabular-nums; }
+  .plate p { grid-column: 1 / -1; font-size: 15px; line-height: 1.45; opacity: .76; max-width: 26ch; }
+  .note { margin-top: 20px; font-size: 14px; color: var(--ink-3); }
+
+  /* ---------- On board: pictures, a number, a texture. ---------- */
+  .tiles { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; }
+  .tile { grid-column: span 5; display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; background: var(--card); box-shadow: inset 0 0 0 1px var(--rule); }
+  .tile.wide { grid-column: span 7; }
+  .pic { position: relative; flex: 1; min-height: clamp(220px, 24vw, 330px); display: grid; place-items: center; overflow: hidden; }
+  .pic svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .cap { padding: 20px 24px 24px; font-size: 16px; line-height: 1.45; } .cap b { font: 500 19px/1.3 var(--serif); letter-spacing: -.012em; color: var(--ink); }
+  .bar { background: linear-gradient(oklch(.2 .03 40), oklch(.13 .02 40)); }
+  .zero { font: 300 clamp(9rem, 17vw, 15rem)/.8 var(--serif); letter-spacing: -.05em; color: var(--ink); }
+  .wool { background: repeating-linear-gradient(90deg, transparent 0 46px, oklch(.93 .02 85) 46px 52px, transparent 52px 58px, oklch(.93 .02 85) 58px 61px, transparent 61px 168px),
+    repeating-linear-gradient(45deg, oklch(.36 .09 258) 0 3px, oklch(.42 .09 258) 3px 6px), oklch(.4 .09 258); }
+  .wool::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, oklch(0 0 0 / .1) 0 2px, transparent 2px 5px), radial-gradient(90% 120% at 30% 0%, oklch(1 0 0 / .14), transparent 60%); }
+  .tag { position: relative; z-index: 1; padding: 10px 16px; border-radius: 3px; font: italic 500 18px/1 var(--serif); color: oklch(.25 .02 60); background: oklch(.95 .02 88); box-shadow: 0 0 0 4px oklch(.95 .02 88), inset 0 0 0 1px oklch(.25 .02 60 / .35), 0 6px 14px oklch(.1 .03 262 / .4); transform: rotate(-3deg); }
+  .tray { background: oklch(.3 .04 262); }
+
+  /* ---------- The arrival. ---------- */
+  .dawn { --n: .55; --d: 1; position: relative; margin-top: var(--section); min-height: min(86svh, 760px); overflow: hidden; isolation: isolate; color: var(--night);
+    background: linear-gradient(in oklab, oklch(.60 .07 245) 0%, oklch(.79 .05 232) 46%, oklch(.91 .07 75) 74%); }
+  .dawn > .wrap { position: relative; z-index: 2; padding-top: clamp(56px, 9svh, 104px); padding-bottom: 300px; }
+  .dawn h2 { font-size: clamp(3.2rem, 9.6vw, 9.6rem); line-height: 1.04; letter-spacing: -.04em; max-width: none; color: var(--night); margin-left: -.04em; }
+  .dawn .btn { background: var(--night); color: var(--cream); } .dawn .acts { align-items: center; gap: 12px 24px; margin-top: var(--gap); } .dawn .risk { margin: 0; opacity: .9; }
+  .dawn .sunup { position: absolute; left: 70%; bottom: 96px; width: 900px; height: 900px; transform: translate(-50%, 50%); background: radial-gradient(closest-side, #fffbe8 0 7%, oklch(.96 .1 85 / .9) 9%, oklch(.92 .1 72 / .35) 38%, transparent); }
+  .dawn .city { position: absolute; left: 0; bottom: 60px; width: max(100%, 1100px); height: 250px; fill: oklch(.42 .05 252); opacity: .9; }
+  .dawn .ground { position: absolute; inset: auto 0 0; height: 62px; background: linear-gradient(oklch(.24 .04 258), oklch(.16 .03 258)); box-shadow: 0 -1px 0 oklch(1 0 0 / .25); }
+  .dawn .train { position: absolute; left: 0; top: auto; bottom: 62px; transform: translateX(calc(var(--gutter) - 30%)); }
+  .dawn .haze { position: absolute; inset: auto 0 62px; height: 150px; background: linear-gradient(transparent, oklch(.93 .06 75 / .55)); }
+
+  footer .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px; min-height: 72px; font-size: 14px; color: var(--ink-3); }
+  footer span { margin-right: auto; } footer a { display: inline-flex; align-items: center; height: 44px; } footer a:hover { color: var(--ink); }
+
+  /* Motion in this voice: slow, plain fades. Stars are the one thing that breathes. */
+  @media (prefers-reduced-motion: no-preference) {
+    .enter { animation: fade 1.3s var(--ease) both; animation-delay: calc(var(--i, 0) * 120ms); }
+    @keyframes fade { from { opacity: 0; transform: translateY(.08em); } }
+    [data-reveal] { transition: opacity 1.2s var(--ease); } [data-reveal].pending { opacity: 0; }
+    .stars.b { animation: twinkle 5s ease-in-out infinite alternate; } @keyframes twinkle { to { opacity: calc((.18 + var(--n) * .82 - var(--d) * 1.2) * .45); } }
+  }
+  /* At rest: on phones and under reduced motion the scene is one picture, at dusk, in flow. */
+  @media (prefers-reduced-motion: reduce), (max-width: 860px) {
+    .scene { height: auto; } .stage { position: relative; } .hud { display: none; } .copy { opacity: 1; transform: none; }
+  }
+  @media (max-width: 1100px) {
+    .wins { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 28px; }
+    .pass { grid-template-columns: 1fr; margin-top: -96px; } .pass .tickets { grid-row: 1; justify-self: center; } .pass .tt-col { padding-top: 24px; }
+    .tile, .tile.wide { grid-column: span 6; }
+  }
+  @media (max-width: 620px) {
+    .nav .links { display: none; } .nav .btn { height: 44px; }
+    .stage { min-height: 700px; --track: max(78%, 566px); } .moon { right: 9%; top: 47%; } .ridge.far { width: 330vw; height: 36%; } .ridge.mid { width: 400vw; } .btn.ghost { display: none; } .copy .acts .btn { flex: 1; }
+    .ticket { flex-direction: column; transform: rotate(-2deg); -webkit-mask: none; mask: none; } .under { transform: rotate(2deg) translate(6px, 10px); } .shadow { transform: rotate(-2deg) translateY(16px); }
+    .t-fields { grid-template-columns: repeat(3, auto); } .t-stub { width: auto; display: flex; gap: 28px; border-left: 0; border-top: 1.5px dashed oklch(.25 .02 60 / .35); padding: 20px 28px 26px; } .t-stub p + p { margin-top: 0; }
+    .tt li { grid-template-columns: 64px minmax(0, 1fr); } .tt span { grid-column: 2; text-align: left; margin-top: -10px; }
+    .wins { grid-template-columns: 1fr; } .coach { padding: 64px 0 60px; } .glass { aspect-ratio: 16 / 10; }
+    .tile, .tile.wide { grid-column: 1 / -1; }
+    .dawn .acts { flex-direction: column; align-items: stretch; } .dawn > .wrap { padding-bottom: 250px; } .dawn .city { height: 190px; }
+    footer .wrap { padding-block: 16px; } footer span { flex-basis: 100%; }
+  }
+</style>
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<header class="nav"><div class="wrap">
+  <a class="mark" href="#top">Noturno</a>
+  <nav class="links" aria-label="Sections"><a href="#ticket">The night</a><a href="#cabins">Cabins</a><a href="#board">On board</a></nav>
+  <a class="btn" href="#book">Book a berth</a>
+</div></header>
+
+<main>
+  <div class="scene" id="top">
+    <div class="stage" data-stage>
+      <i class="stars a" aria-hidden="true"></i><i class="stars b" aria-hidden="true"></i>
+      <i class="moon" aria-hidden="true"></i>
+      <i class="glow" aria-hidden="true"></i><i class="glow sun" aria-hidden="true"></i>
+      <svg class="ridge far" viewBox="0 0 2000 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 300L0 200.8 20 187.7 40 177.4 60 170.6 80 165.8 100 161.2 120 156.1 140 152.0 160 150.9 180 154.8 200 163.0 220 172.9 240 180.4 260 182.4 280 178.5 300 170.7 320 162.9 340 158.1 360 157.3 380 158.9 400 160.4 420 159.7 440 156.5 460 152.5 480 149.4 500 147.9 520 146.6 540 142.6 560 133.2 580 118.0 600 99.1 620 80.8 640 67.2 660 60.4 680 59.7 700 62.4 720 65.6 740 68.1 760 70.4 780 74.5 800 81.6 820 91.5 840 101.7 860 109.6 880 113.7 900 115.1 920 116.7 940 122.3 960 133.8 980 150.4 1000 169.1 1020 185.7 1040 197.4 1060 204.0 1080 207.1 1100 208.9 1120 210.5 1140 211.2 1160 209.0 1180 202.5 1200 192.4 1220 181.3 1240 173.0 1260 170.3 1280 173.5 1300 180.1 1320 186.1 1340 188.4 1360 186.1 1380 180.9 1400 175.6 1420 172.7 1440 172.4 1460 173.3 1480 173.4 1500 172.0 1520 170.0 1540 170.1 1560 174.5 1580 183.5 1600 194.8 1620 204.2 1640 207.9 1660 204.1 1680 194.0 1700 181.0 1720 168.4 1740 157.8 1760 149.0 1780 139.9 1800 129.3 1820 117.4 1840 106.1 1860 98.0 1880 94.4 1900 94.3 1920 94.6 1940 92.0 1960 84.7 1980 73.6 2000 62.0L2000 300Z"/></svg>
+      <svg class="ridge mid" viewBox="0 0 2000 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 300L0 149.5 16 140.3 32 136.7 48 137.5 64 135.6 80 125.7 96 110.6 112 98.8 128 95.8 144 99.4 160 103.6 176 106.4 192 111.6 208 122.8 224 136.8 240 145.3 256 142.8 272 132.6 288 122.8 304 118.2 320 116.4 336 112.6 352 106.8 368 104.6 384 109.9 400 119.4 416 124.9 432 121.8 448 114.2 464 110.2 480 113.2 496 120.1 512 126.2 528 132.4 544 144.4 560 164.8 576 188.5 592 206.1 608 213.1 624 213.1 640 213.0 656 215.1 672 215.4 688 210.3 704 202.4 720 198.8 736 202.3 752 207.9 768 207.2 784 197.2 800 182.6 816 170.5 832 162.1 848 153.6 864 142.4 880 132.4 896 130.7 912 139.5 928 152.5 944 160.7 960 161.1 976 158.0 992 156.4 1008 155.9 1024 151.4 1040 140.8 1056 129.1 1072 123.9 1088 126.9 1104 132.0 1120 131.1 1136 122.9 1152 112.5 1168 104.7 1184 98.5 1200 89.2 1216 75.9 1232 65.2 1248 65.0 1264 76.3 1280 92.5 1296 105.9 1312 115.1 1328 124.7 1344 137.5 1360 150.1 1376 156.5 1392 156.2 1408 155.7 1424 162.3 1440 176.4 1456 190.9 1472 199.1 1488 201.2 1504 202.1 1520 204.1 1536 203.4 1552 194.7 1568 178.9 1584 164.4 1600 158.8 1616 162.4 1632 168.7 1648 172.2 1664 174.1 1680 178.9 1696 187.4 1712 193.7 1728 192.0 1744 183.1 1760 175.0 1776 174.4 1792 180.1 1808 185.3 1824 185.6 1840 182.8 1856 181.7 1872 181.8 1888 176.9 1904 161.7 1920 138.7 1936 116.8 1952 103.0 1968 96.4 1984 91.3 2000 85.0L2000 300Z"/></svg>
+      <svg class="viaduct" viewBox="0 0 5840 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H5840V300H5814V100A60 60 0 0 0 5694 100V300H5668V100A60 60 0 0 0 5548 100V300H5522V100A60 60 0 0 0 5402 100V300H5376V100A60 60 0 0 0 5256 100V300H5230V100A60 60 0 0 0 5110 100V300H5084V100A60 60 0 0 0 4964 100V300H4938V100A60 60 0 0 0 4818 100V300H4792V100A60 60 0 0 0 4672 100V300H4646V100A60 60 0 0 0 4526 100V300H4500V100A60 60 0 0 0 4380 100V300H4354V100A60 60 0 0 0 4234 100V300H4208V100A60 60 0 0 0 4088 100V300H4062V100A60 60 0 0 0 3942 100V300H3916V100A60 60 0 0 0 3796 100V300H3770V100A60 60 0 0 0 3650 100V300H3624V100A60 60 0 0 0 3504 100V300H3478V100A60 60 0 0 0 3358 100V300H3332V100A60 60 0 0 0 3212 100V300H3186V100A60 60 0 0 0 3066 100V300H3040V100A60 60 0 0 0 2920 100V300H2894V100A60 60 0 0 0 2774 100V300H2748V100A60 60 0 0 0 2628 100V300H2602V100A60 60 0 0 0 2482 100V300H2456V100A60 60 0 0 0 2336 100V300H2310V100A60 60 0 0 0 2190 100V300H2164V100A60 60 0 0 0 2044 100V300H2018V100A60 60 0 0 0 1898 100V300H1872V100A60 60 0 0 0 1752 100V300H1726V100A60 60 0 0 0 1606 100V300H1580V100A60 60 0 0 0 1460 100V300H1434V100A60 60 0 0 0 1314 100V300H1288V100A60 60 0 0 0 1168 100V300H1142V100A60 60 0 0 0 1022 100V300H996V100A60 60 0 0 0 876 100V300H850V100A60 60 0 0 0 730 100V300H704V100A60 60 0 0 0 584 100V300H558V100A60 60 0 0 0 438 100V300H412V100A60 60 0 0 0 292 100V300H266V100A60 60 0 0 0 146 100V300H120V100A60 60 0 0 0 0 100V300Z"/></svg>
+      <div class="train" aria-hidden="true"><i class="car"></i><i class="car"></i><i class="car"></i><i class="car"></i><i class="car"></i><i class="car loco"></i></div>
+      <i class="fog" aria-hidden="true"></i>
+      <svg class="ridge near" viewBox="0 0 2600 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 200L0 55.5 14 48.7 28 48.0 42 53.7 56 62.0 70 68.7 84 72.7 98 76.3 112 81.8 126 88.3 140 92.2 154 91.2 168 86.5 182 83.1 196 84.8 210 91.3 224 98.2 238 101.2 252 99.5 266 96.2 280 94.5 294 94.5 308 93.7 322 90.1 336 85.4 350 84.0 364 89.0 378 99.3 392 109.9 406 116.2 420 117.6 434 117.5 448 119.5 462 123.8 476 127.8 490 129.0 504 128.3 518 129.2 532 134.0 546 141.0 560 145.1 574 142.4 588 133.3 602 122.3 616 113.8 630 108.7 644 104.4 658 98.5 672 91.5 686 86.6 700 86.0 714 88.1 728 88.3 742 83.5 756 74.8 770 67.1 784 64.8 798 68.0 812 73.2 826 76.9 840 78.6 854 80.8 868 85.4 882 90.6 896 92.6 910 88.7 924 80.7 938 73.7 952 71.7 966 74.7 980 78.5 994 79.3 1008 76.8 1022 73.8 1036 73.0 1050 73.8 1064 73.1 1078 69.1 1092 63.8 1106 62.2 1120 67.5 1134 78.6 1148 90.4 1162 98.7 1176 102.8 1190 105.8 1204 110.7 1218 116.9 1232 121.6 1246 122.8 1260 121.9 1274 123.2 1288 129.1 1302 137.7 1316 143.8 1330 143.5 1344 137.1 1358 128.9 1372 122.6 1386 118.9 1400 115.0 1414 109.3 1428 102.9 1442 99.6 1456 101.4 1470 106.2 1484 109.0 1498 106.5 1512 99.6 1526 93.0 1540 90.8 1554 92.9 1568 96.2 1582 97.6 1596 97.5 1610 98.6 1624 102.6 1638 107.1 1652 107.7 1666 101.7 1680 91.0 1694 80.8 1708 75.3 1722 74.4 1736 74.4 1750 72.0 1764 67.5 1778 63.8 1792 63.1 1806 63.8 1820 62.4 1834 57.0 1848 50.1 1862 46.8 1876 50.6 1890 60.3 1904 71.1 1918 79.1 1932 83.9 1946 88.3 1960 94.5 1974 101.5 1988 105.8 2002 105.8 2016 103.7 2030 104.0 2044 109.6 2058 118.5 2072 125.6 2086 127.1 2100 123.3 2114 118.1 2128 114.8 2142 113.2 2156 110.7 2170 105.9 2184 100.8 2198 99.6 2212 104.3 2226 112.5 2240 119.0 2254 120.1 2268 116.7 2282 113.1 2296 112.9 2310 115.7 2324 118.4 2338 118.9 2352 118.1 2366 119.2 2380 123.7 2394 128.7 2408 129.5 2422 123.2 2436 111.7 2450 100.1 2464 92.5 2478 88.8 2492 85.6 2506 80.5 2520 74.2 2534 70.0 2548 69.3 2562 70.1 2576 68.2 2590 61.7L2600 200Z"/><circle cx="1204" cy="93" r="19"/><circle cx="1220" cy="101" r="14"/><circle cx="1190" cy="102" r="13"/><rect x="1202" y="103" width="3" height="19"/><circle cx="1470" cy="92" r="16"/><circle cx="1483" cy="98" r="11"/><circle cx="1459" cy="99" r="11"/><rect x="1468" y="100" width="3" height="16"/><circle cx="308" cy="77" r="18"/><circle cx="322" cy="85" r="13"/><circle cx="295" cy="86" r="12"/><rect x="306" y="87" width="3" height="18"/><circle cx="392" cy="98" r="13"/><circle cx="402" cy="103" r="9"/><circle cx="383" cy="104" r="9"/><rect x="390" y="105" width="3" height="13"/><circle cx="252" cy="82" r="19"/><circle cx="267" cy="90" r="13"/><circle cx="239" cy="91" r="13"/><rect x="250" y="92" width="3" height="19"/><circle cx="812" cy="65" r="9"/><circle cx="820" cy="69" r="7"/><circle cx="805" cy="69" r="6"/><rect x="810" y="69" width="3" height="9"/><circle cx="1610" cy="86" r="14"/><circle cx="1621" cy="92" r="10"/><circle cx="1600" cy="92" r="9"/><rect x="1608" y="93" width="3" height="14"/><circle cx="910" cy="80" r="10"/><circle cx="918" cy="84" r="7"/><circle cx="903" cy="84" r="7"/><rect x="908" y="85" width="3" height="10"/><circle cx="1568" cy="87" r="10"/><circle cx="1576" cy="91" r="7"/><circle cx="1561" cy="92" r="6"/><rect x="1566" y="92" width="3" height="10"/><circle cx="2072" cy="116" r="10"/><circle cx="2080" cy="120" r="7"/><circle cx="2065" cy="121" r="7"/><rect x="2070" y="121" width="3" height="10"/><circle cx="854" cy="66" r="16"/><circle cx="867" cy="73" r="11"/><circle cx="843" cy="74" r="11"/><rect x="852" y="74" width="3" height="16"/><circle cx="2142" cy="96" r="19"/><circle cx="2158" cy="103" r="14"/><circle cx="2128" cy="104" r="13"/><rect x="2140" y="105" width="3" height="19"/><circle cx="2114" cy="104" r="15"/><circle cx="2126" cy="110" r="11"/><circle cx="2103" cy="111" r="10"/><rect x="2112" y="112" width="3" height="15"/><circle cx="224" cy="80" r="20"/><circle cx="240" cy="88" r="14"/><circle cx="210" cy="89" r="13"/><rect x="222" y="90" width="3" height="20"/><circle cx="210" cy="78" r="15"/><circle cx="222" cy="84" r="11"/><circle cx="199" cy="84" r="10"/><rect x="208" y="85" width="3" height="15"/><circle cx="532" cy="123" r="12"/><circle cx="542" cy="128" r="9"/><circle cx="523" cy="129" r="8"/><rect x="530" y="129" width="3" height="12"/><circle cx="560" cy="132" r="15"/><circle cx="572" cy="138" r="10"/><circle cx="550" cy="138" r="10"/><rect x="558" y="139" width="3" height="15"/><circle cx="2100" cy="112" r="12"/><circle cx="2110" cy="117" r="9"/><circle cx="2091" cy="118" r="8"/><rect x="2098" y="118" width="3" height="12"/><circle cx="2492" cy="76" r="11"/><circle cx="2501" cy="80" r="8"/><circle cx="2484" cy="81" r="7"/><rect x="2490" y="81" width="3" height="11"/><circle cx="2128" cy="101" r="15"/><circle cx="2140" cy="107" r="11"/><circle cx="2117" cy="108" r="10"/><rect x="2126" y="109" width="3" height="15"/><circle cx="728" cy="77" r="13"/><circle cx="738" cy="82" r="9"/><circle cx="719" cy="82" r="9"/><rect x="726" y="83" width="3" height="13"/><circle cx="2016" cy="89" r="17"/><circle cx="2029" cy="95" r="12"/><circle cx="2004" cy="96" r="11"/><rect x="2014" y="97" width="3" height="17"/><circle cx="2072" cy="117" r="10"/><circle cx="2080" cy="121" r="7"/><circle cx="2065" cy="121" r="6"/><rect x="2070" y="122" width="3" height="10"/><circle cx="784" cy="52" r="14"/><circle cx="796" cy="58" r="10"/><circle cx="774" cy="58" r="10"/><rect x="782" y="59" width="3" height="14"/><circle cx="1960" cy="82" r="14"/><circle cx="1971" cy="88" r="10"/><circle cx="1950" cy="88" r="9"/><rect x="1958" y="89" width="3" height="14"/><circle cx="1176" cy="90" r="14"/><circle cx="1187" cy="96" r="10"/><circle cx="1166" cy="96" r="9"/><rect x="1174" y="97" width="3" height="14"/><circle cx="1680" cy="79" r="13"/><circle cx="1690" cy="85" r="9"/><circle cx="1671" cy="85" r="9"/><rect x="1678" y="86" width="3" height="13"/><circle cx="938" cy="58" r="18"/><circle cx="952" cy="65" r="12"/><circle cx="926" cy="66" r="12"/><rect x="936" y="67" width="3" height="18"/><circle cx="924" cy="72" r="10"/><circle cx="932" cy="76" r="7"/><circle cx="917" cy="76" r="7"/><rect x="922" y="77" width="3" height="10"/><circle cx="1120" cy="54" r="15"/><circle cx="1132" cy="60" r="10"/><circle cx="1110" cy="61" r="10"/><rect x="1118" y="62" width="3" height="15"/><circle cx="1274" cy="108" r="17"/><circle cx="1288" cy="115" r="12"/><circle cx="1262" cy="116" r="11"/><rect x="1272" y="116" width="3" height="17"/><circle cx="1078" cy="55" r="16"/><circle cx="1091" cy="61" r="11"/><circle cx="1067" cy="62" r="10"/><rect x="1076" y="63" width="3" height="16"/><circle cx="308" cy="84" r="10"/><circle cx="316" cy="89" r="7"/><circle cx="301" cy="89" r="7"/><rect x="306" y="90" width="3" height="10"/><circle cx="1554" cy="83" r="11"/><circle cx="1563" cy="88" r="8"/><circle cx="1546" cy="88" r="7"/><rect x="1552" y="89" width="3" height="11"/><circle cx="1274" cy="114" r="11"/><circle cx="1283" cy="118" r="7"/><circle cx="1267" cy="118" r="7"/><rect x="1272" y="119" width="3" height="11"/><circle cx="1806" cy="51" r="14"/><circle cx="1817" cy="57" r="10"/><circle cx="1796" cy="58" r="9"/><rect x="1804" y="58" width="3" height="14"/><circle cx="2450" cy="91" r="10"/><circle cx="2458" cy="95" r="7"/><circle cx="2443" cy="96" r="7"/><rect x="2448" y="96" width="3" height="10"/><circle cx="2044" cy="96" r="15"/><circle cx="2056" cy="102" r="11"/><circle cx="2033" cy="103" r="10"/><rect x="2042" y="103" width="3" height="15"/><circle cx="1176" cy="91" r="13"/><circle cx="1186" cy="96" r="9"/><circle cx="1167" cy="97" r="8"/><rect x="1174" y="98" width="3" height="13"/><circle cx="1302" cy="124" r="16"/><circle cx="1314" cy="130" r="11"/><circle cx="1291" cy="131" r="10"/><rect x="1300" y="131" width="3" height="16"/><circle cx="2128" cy="99" r="18"/><circle cx="2142" cy="106" r="12"/><circle cx="2116" cy="107" r="12"/><rect x="2126" y="108" width="3" height="18"/><circle cx="294" cy="78" r="18"/><circle cx="309" cy="85" r="13"/><circle cx="281" cy="86" r="12"/><rect x="292" y="87" width="3" height="18"/><circle cx="1022" cy="61" r="14"/><circle cx="1033" cy="67" r="10"/><circle cx="1012" cy="67" r="9"/><rect x="1020" y="68" width="3" height="14"/><circle cx="2436" cy="103" r="10"/><circle cx="2444" cy="107" r="7"/><circle cx="2429" cy="107" r="6"/><rect x="2434" y="108" width="3" height="10"/><circle cx="1162" cy="84" r="16"/><circle cx="1175" cy="91" r="11"/><circle cx="1151" cy="91" r="11"/><rect x="1160" y="92" width="3" height="16"/><circle cx="2492" cy="69" r="18"/><circle cx="2506" cy="77" r="13"/><circle cx="2479" cy="77" r="12"/><rect x="2490" y="78" width="3" height="18"/></svg>
+      <i class="grain" aria-hidden="true"></i>
+      <div class="copy">
+        <h1><span class="l enter">Sleep your way</span><span class="l turn enter" style="--i:1">to Madrid.</span></h1>
+        <p class="lede enter" style="--i:2">One train, every night. Board after dinner in Lisbon, step off for breakfast.</p>
+        <div class="acts enter" style="--i:3"><a class="btn lamp" href="#book">Book a berth</a><a class="btn ghost" href="#cabins">See the cabins</a></div>
+        <p class="risk enter" style="--i:4">From €29. Free changes until noon on the day.</p>
+      </div>
+      <div class="hud" aria-hidden="true"><output class="clock">21:40</output><p class="where">Lisboa Santa Apolónia. The bar car opens as the river slides past.</p></div>
+    </div>
+  </div>
+
+  <section id="ticket" class="pass wrap">
+    <div class="tt-col">
+      <div class="head" data-reveal><h2>The whole night, on one ticket.</h2></div>
+      <ul class="tt" data-reveal>
+        <li><b>21:40</b>Lisboa Santa Apolónia<span>The bar car opens</span></li>
+        <li><b>22:48</b>Entroncamento<span>Corridor lights go amber</span></li>
+        <li><b>01:10</b>Marvão-Beirã<span>The border, asleep</span></li>
+        <li><b>02:55</b>Cáceres<span>You won’t notice</span></li>
+        <li><b>06:05</b>Talavera de la Reina<span>Coffee comes round</span></li>
+        <li><b>08:10</b>Madrid Chamartín<span>Platform 14</span></li>
+      </ul>
+    </div>
+    <div class="tickets" role="img" aria-label="A Noturno ticket from Lisboa to Madrid for Saturday 14 November: departs 21:40, arrives 08:10, carriage 4, berth 12, shared cabin, 49 euros, stamped at Lisboa Santa Apolónia.">
+      <i class="shadow"></i><i class="under"></i>
+      <div class="ticket" aria-hidden="true">
+        <div class="t-main">
+          <p class="t-top"><i>Noturno</i><span>Bilhete · Billete · Ticket</span></p>
+          <p class="t-route">Lisboa<s></s>Madrid</p>
+          <div class="t-fields"><p>Date<b>Sat 14 Nov</b></p><p>Departs<b>21:40</b></p><p>Arrives<b>08:10</b></p><p>Carriage<b>4</b></p><p>Berth<b>12, lower</b></p></div>
+          <p class="t-code"><u></u>NT 0412 7731</p>
+        </div>
+        <div class="t-stub"><p>Cabin<b>Shared</b></p><p>Paid<b>€49.00</b></p>
+          <svg class="stamp" viewBox="0 0 120 120"><defs><filter id="ink"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="2.2"/></filter><path id="ring" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1 -88 0"/></defs>
+            <g filter="url(#ink)"><circle cx="60" cy="60" r="55" stroke-width="2.4"/><circle cx="60" cy="60" r="34" stroke-width="1.4"/>
+            <text font-size="9.6" letter-spacing="1.9"><textPath href="#ring">LISBOA · SANTA APOLÓNIA · PARTIDA ·</textPath></text>
+            <text x="60" y="59" text-anchor="middle" font-size="15">14 NOV</text><text x="60" y="74" text-anchor="middle" font-size="10.5">2026</text></g></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cabins">
+    <div class="head wrap" data-reveal><h2>Four windows. One of them is yours.</h2></div>
+    <div class="coach" data-reveal><ul class="wins wrap">
+      <li class="win"><div class="glass" role="img" aria-label="A reclining seat by the window, with a blanket and a reading light"><svg viewBox="0 0 240 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><radialGradient id="lg"><stop offset="0" stop-color="oklch(.9 .13 80)" stop-opacity=".75"/><stop offset="1" stop-color="oklch(.9 .13 80)" stop-opacity="0"/></radialGradient></defs>
+        <rect class="w" width="240" height="180"/><rect class="w2" y="132" width="240" height="48"/>
+        <rect class="sky-n" x="138" y="22" width="84" height="66" rx="12"/><circle class="st" cx="196" cy="42" r="7"/><circle class="st" cx="158" cy="38" r="1.2"/><circle class="st" cx="172" cy="62" r="1"/><circle class="st" cx="206" cy="70" r="1.2"/>
+        <circle cx="70" cy="48" r="74" fill="url(#lg)"/>
+        <g transform="rotate(-17 92 100)"><rect class="b" x="66" y="40" width="50" height="104" rx="18"/><rect class="l" x="72" y="46" width="38" height="24" rx="10"/></g>
+        <rect class="b" x="84" y="122" width="96" height="26" rx="12"/><rect class="f" x="76" y="146" width="112" height="8" rx="4"/><rect class="f" x="174" y="112" width="12" height="40" rx="5"/>
+        <path class="l2" d="M104 118h62a8 8 0 0 1 8 8v10h-70z"/><path class="b2" d="M120 118h5v18h-5zM132 118h3v18h-3z"/>
+        <rect class="br" x="40" y="14" width="26" height="5" rx="2.5"/><path d="M44 19l-16 60h58l-16-60z" fill="oklch(.92 .12 82 / .16)"/></svg></div>
+        <div class="plate"><h3>Seat</h3><span class="price">€29</span><p>A reclining seat by the window, a blanket, a reading light.</p></div></li>
+      <li class="win"><div class="glass" role="img" aria-label="A shared cabin with four berths, two on each side"><svg viewBox="0 0 240 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect class="w" width="240" height="180"/><rect class="w2" y="150" width="240" height="30"/>
+        <rect class="sky-n" x="100" y="20" width="40" height="70" rx="10"/><circle class="st" cx="120" cy="40" r="5"/><circle class="st" cx="110" cy="66" r="1"/><circle class="st" cx="130" cy="74" r="1.1"/>
+        <circle cx="120" cy="96" r="96" fill="url(#lg)" opacity=".8"/>
+        <g id="bunk"><rect class="f" x="8" y="62" width="86" height="7" rx="3"/><rect class="l" x="10" y="48" width="82" height="15" rx="6"/><rect class="b" x="38" y="46" width="54" height="17" rx="6"/><path class="b2" d="M48 46h4v17h-4z"/><rect class="l2" x="12" y="43" width="24" height="12" rx="6"/></g>
+        <use href="#bunk" y="66"/><use href="#bunk" transform="translate(240 0) scale(-1 1)"/><use href="#bunk" transform="translate(240 66) scale(-1 1)"/>
+        <path class="f" d="M112 96h3v58h-3zM125 96h3v58h-3zM112 108h16v3h-16zM112 124h16v3h-16zM112 140h16v3h-16z"/>
+        <circle class="br" cx="16" cy="36" r="3"/><circle class="br" cx="224" cy="36" r="3"/><circle class="br" cx="16" cy="102" r="3"/><circle class="br" cx="224" cy="102" r="3"/></svg></div>
+        <div class="plate"><h3>Shared cabin</h3><span class="price">€49</span><p>One of four berths, made up before you board.</p></div></li>
+      <li class="win"><div class="glass" role="img" aria-label="A cabin for two with stacked berths and breakfast on a small table"><svg viewBox="0 0 240 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect class="w" width="240" height="180"/><rect class="w2" y="150" width="240" height="30"/>
+        <rect class="sky-n" x="156" y="22" width="68" height="62" rx="12"/><circle class="st" cx="204" cy="42" r="6"/><circle class="st" cx="172" cy="38" r="1.1"/><circle class="st" cx="184" cy="64" r="1"/>
+        <circle cx="186" cy="104" r="80" fill="url(#lg)"/>
+        <g id="wide"><rect class="f" x="10" y="64" width="128" height="7" rx="3"/><rect class="l" x="12" y="49" width="124" height="16" rx="6"/><rect class="b" x="50" y="47" width="86" height="18" rx="6"/><path class="b2" d="M62 47h5v18h-5zM74 47h3v18h-3z"/><rect class="l2" x="14" y="43" width="30" height="13" rx="6.5"/></g>
+        <use href="#wide" y="68"/>
+        <rect class="f" x="160" y="116" width="62" height="5" rx="2.5"/><rect class="f" x="188" y="121" width="5" height="32"/>
+        <ellipse class="l" cx="178" cy="113" rx="13" ry="3.4"/><path class="l" d="M196 100h16v10a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6z"/><path d="M212 103h3a4 4 0 0 1 0 8h-3" fill="none" stroke="oklch(.94 .025 88)" stroke-width="2"/>
+        <path d="M200 96c-3-6 3-8 0-14M207 96c-3-6 3-8 0-14" fill="none" stroke="oklch(.95 .02 88 / .5)" stroke-width="1.6" stroke-linecap="round"/><circle class="br" cx="178" cy="111" r="6"/></svg></div>
+        <div class="plate"><h3>Cabin for two</h3><span class="price">€129</span><p>Two berths, a door that locks, breakfast brought to it.</p></div></li>
+      <li class="win"><div class="glass" role="img" aria-label="A single cabin with one bed under a wide window and a washbasin"><svg viewBox="0 0 240 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect class="w" width="240" height="180"/><rect class="w2" y="150" width="240" height="30"/>
+        <rect class="sky-n" x="14" y="20" width="150" height="62" rx="12"/><circle class="st" cx="136" cy="42" r="8"/><circle class="st" cx="34" cy="36" r="1.2"/><circle class="st" cx="62" cy="60" r="1"/><circle class="st" cx="88" cy="34" r="1.3"/><circle class="st" cx="108" cy="66" r="1"/><circle class="st" cx="46" cy="70" r="1"/>
+        <circle cx="60" cy="110" r="86" fill="url(#lg)" opacity=".85"/>
+        <rect class="f" x="10" y="132" width="156" height="8" rx="4"/><rect class="l" x="12" y="114" width="152" height="19" rx="7"/><rect class="b" x="58" y="111" width="106" height="22" rx="7"/><path class="b2" d="M72 111h6v22h-6zM86 111h3v22h-3z"/><rect class="l2" x="15" y="106" width="36" height="16" rx="8"/>
+        <rect class="f" x="182" y="104" width="48" height="50" rx="4"/><ellipse class="l" cx="206" cy="104" rx="20" ry="5"/><path d="M206 98v-10h8" fill="none" stroke="oklch(.72 .1 80)" stroke-width="2.4" stroke-linecap="round"/>
+        <circle class="sky-n" cx="206" cy="52" r="20" opacity=".5"/><circle cx="206" cy="52" r="20" fill="none" stroke="oklch(.72 .1 80)" stroke-width="2.4"/><path d="M194 44a16 16 0 0 1 12-8" fill="none" stroke="oklch(1 0 0 / .4)" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="plate"><h3>Single</h3><span class="price">€159</span><p>A cabin to yourself, a washbasin, the whole window.</p></div></li>
+    </ul></div>
+    <p class="note wrap" data-reveal>One way, per person. Children under four share a berth for nothing.</p>
+  </section>
+
+  <section id="board" class="wrap">
+    <div class="head" data-reveal><h2>What the night leaves out, and what it keeps.</h2></div>
+    <div class="tiles">
+      <div class="tile wide" data-reveal><div class="pic bar" role="img" aria-label="The bar car: bottles on a lit shelf under two hanging lamps"><svg viewBox="0 0 700 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="shelf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="oklch(.86 .14 78)" stop-opacity="0"/><stop offset=".8" stop-color="oklch(.86 .14 78)" stop-opacity=".55"/><stop offset="1" stop-color="oklch(.92 .12 82)" stop-opacity=".9"/></linearGradient>
+        <radialGradient id="pend"><stop offset="0" stop-color="oklch(.92 .13 82)" stop-opacity=".8"/><stop offset="1" stop-color="oklch(.9 .13 80)" stop-opacity="0"/></radialGradient></defs>
+        <rect x="60" y="60" width="580" height="170" fill="url(#shelf)"/><rect x="40" y="228" width="620" height="7" fill="oklch(.5 .08 60)"/>
+        <g fill="oklch(.14 .025 40)" stroke="oklch(.86 .13 78 / .55)" stroke-width="1.2"><path d="M92 228v-71q0-10 7.0-16v-36h7v36q7.0 6 7.0 16v71z"/><path d="M122 228v-61q0-10 7.5-16v-36h8v36q7.5 6 7.5 16v61z"/><path d="M154 228v-66q0-10 8.0-16v-23h9v23q8.0 6 8.0 16v66z"/><path d="M192 228v-62q0-10 8.0-16v-35h9v35q8.0 6 8.0 16v62z"/><path d="M227 228v-79q0-10 5.5-16v-28h9v28q5.5 6 5.5 16v79z"/><path d="M259 228v-64q0-10 8.0-16v-27h8v27q8.0 6 8.0 16v64z"/><path d="M291 228v-53q0-10 7.5-16v-30h8v30q7.5 6 7.5 16v53z"/><path d="M328 228v-53q0-10 8.5-16v-27h8v27q8.5 6 8.5 16v53z"/><path d="M368 228v-70q0-10 9.0-16v-23h9v23q9.0 6 9.0 16v70z"/><path d="M403 228v-58q0-10 7.0-16v-26h7v26q7.0 6 7.0 16v58z"/><path d="M435 228v-63q0-10 5.0-16v-34h8v34q5.0 6 5.0 16v63z"/><path d="M462 228v-68q0-10 8.0-16v-24h8v24q8.0 6 8.0 16v68z"/><path d="M501 228v-88q0-10 9.0-16v-33h8v33q9.0 6 9.0 16v88z"/><path d="M539 228v-69q0-10 6.0-16v-34h7v34q6.0 6 6.0 16v69z"/><path d="M567 228v-56q0-10 8.0-16v-22h8v22q8.0 6 8.0 16v56z"/></g>
+        <rect y="262" width="700" height="58" fill="oklch(.25 .045 45)"/><rect y="262" width="700" height="3" fill="oklch(.62 .09 65)"/>
+        <circle cx="210" cy="96" r="150" fill="url(#pend)" opacity=".5"/><circle cx="500" cy="96" r="150" fill="url(#pend)" opacity=".5"/>
+        <path d="M210 0v40M500 0v40" stroke="oklch(.1 .02 40)" stroke-width="2"/><path d="M186 62a24 24 0 0 1 48 0zM476 62a24 24 0 0 1 48 0z" fill="oklch(.1 .02 40)"/><ellipse cx="210" cy="63" rx="20" ry="3" fill="oklch(.95 .1 85)"/><ellipse cx="500" cy="63" rx="20" ry="3" fill="oklch(.95 .1 85)"/>
+        <path d="M338 206c0 22 9 32 22 34v20h-14v3h34v-3h-14v-20c13-2 22-12 22-34z" fill="oklch(.95 .03 90 / .16)" stroke="oklch(.96 .04 90 / .7)" stroke-width="1.4"/><path d="M342 220c3 12 9 18 18 19 9-1 15-7 18-19z" fill="oklch(.84 .13 95 / .75)"/></svg></div>
+        <p class="cap"><b>The bar car is open until midnight.</b> Vinho verde by the glass, and a window seat for it.</p></div>
+      <div class="tile" data-reveal><div class="pic"><span class="zero">0</span></div>
+        <p class="cap"><b>Airports.</b> No security queue, no middle seat, no bus from a terminal.</p></div>
+      <div class="tile" data-reveal><div class="pic wool" role="img" aria-label="A blue wool blanket with cream stripes and a sewn label"><span class="tag">Noturno</span></div>
+        <p class="cap"><b>A real blanket.</b> Wool from Covilhã, on a bed made before you board.</p></div>
+      <div class="tile wide" data-reveal><div class="pic tray" role="img" aria-label="Breakfast seen from above: coffee, a custard tart and a folded napkin on a tray"><svg viewBox="0 0 700 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect x="90" y="34" width="520" height="252" rx="26" fill="oklch(.5 .07 60)"/><rect x="104" y="48" width="492" height="224" rx="18" fill="oklch(.58 .075 62)"/>
+        <rect x="150" y="84" width="150" height="150" rx="6" fill="oklch(.95 .02 88)" transform="rotate(-8 225 159)"/><path d="M158 170l140-20" stroke="oklch(.84 .03 86)" stroke-width="2" transform="rotate(-8 225 159)"/>
+        <rect x="246" y="96" width="9" height="120" rx="4.5" fill="oklch(.8 .02 250)" transform="rotate(14 250 156)"/><ellipse cx="236" cy="92" rx="11" ry="16" fill="oklch(.8 .02 250)" transform="rotate(14 250 156)"/>
+        <circle cx="372" cy="164" r="74" fill="oklch(.96 .012 90)"/><circle cx="372" cy="164" r="56" fill="none" stroke="oklch(.86 .02 88)" stroke-width="2"/>
+        <circle cx="372" cy="164" r="40" fill="oklch(.7 .12 68)"/><circle cx="372" cy="164" r="31" fill="oklch(.88 .14 92)"/><g fill="oklch(.5 .12 55)"><ellipse cx="362" cy="154" rx="9" ry="6"/><ellipse cx="384" cy="160" rx="6" ry="8"/><ellipse cx="368" cy="178" rx="8" ry="5"/><circle cx="386" cy="178" r="3.5"/></g>
+        <circle cx="514" cy="150" r="58" fill="oklch(.96 .012 90)"/><circle cx="514" cy="150" r="38" fill="oklch(.99 .008 90)"/><circle cx="514" cy="150" r="31" fill="oklch(.3 .06 50)"/><path d="M500 146c8-10 22-8 26 2-6-4-16-4-20 6" fill="oklch(.62 .09 65)"/><rect x="558" y="140" width="28" height="18" rx="9" fill="none" stroke="oklch(.99 .008 90)" stroke-width="7"/></svg></div>
+        <p class="cap"><b>Breakfast, outside Madrid.</b> Coffee and a pastel de nata, brought to the cabin at seven.</p></div>
+    </div>
+  </section>
+
+  <div id="book" class="dawn">
+    <i class="sunup" aria-hidden="true"></i>
+    <svg class="city" viewBox="0 0 2000 250" preserveAspectRatio="xMinYMax slice" aria-hidden="true"><path d="M0 250L0 171L32 171L32 159L84 159L84 150L106 150L106 169L142 169L145 117L195 117L195 213L205 213L205 187L207 187L207 213L218 213L221 181L253 181L253 194L278 194L278 168L280 168L280 194L305 194L305 153L334 153L334 178L390 178L390 221L443 221L446 154L468 154L468 210L525 210L525 148L568 148L568 202L594 202L594 194L649 194L649 176L693 176L693 168L725 168L728 218L753 218L753 174L776 174L776 148L778 148L778 174L801 174L801 163L815 163L815 137L817 137L817 163L832 163L835 178L858 178L861 163L914 163L914 223L944 223L944 193L982 193L982 207L1004 207L1004 181L1006 181L1006 207L1005 193L1029 207L1029 110L1045 96L1062 110L1062 156L1102 156L1102 176L1134 176L1180 250L1180 20L1210 20L1210 250L1216 223L1241 223L1244 195L1302 195L1304 250L1304 40L1312 40L1312 26L1326 26L1326 40L1334 40L1334 250L1366 250L1366 24L1381 8L1396 24L1396 250L1402 187L1448 187L1451 100L1479 100L1479 74L1481 74L1481 100L1509 100L1509 157L1564 157L1564 184L1598 184L1598 167L1624 167L1627 175L1653 161L1679 175L1679 219L1704 219L1707 194L1756 194L1756 127L1783 127L1783 147L1833 147L1833 175L1885 175L1885 185L1917 185L1917 158L1974 158L1977 203L2005 203L2000 250Z"/></svg>
+    <i class="haze" aria-hidden="true"></i>
+    <div class="train" aria-hidden="true"><i class="car"></i><i class="car"></i><i class="car"></i><i class="car loco"></i></div>
+    <i class="ground" aria-hidden="true"></i>
+    <div class="wrap">
+      <h2 data-reveal>Good morning, <span class="turn">Madrid.</span></h2>
+      <div class="acts" data-reveal><a class="btn" href="#book">Book a berth</a><p class="risk">Tonight’s train has 14 berths left.</p></div>
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Noturno, Lisboa</span><a href="#ticket">Timetable</a><a href="#cabins">Conditions</a><a href="#book">Contact</a></div></footer>
+
+<script>
+  // Scroll is the night. Progress through the pinned scene becomes --p, and two numbers derived
+  // from it (--n night, --d dawn) drive every color in the scene. Text changes only when it differs.
+  const stage = document.querySelector('[data-stage]'), scene = stage.parentElement, nav = document.querySelector('.nav');
+  const clock = stage.querySelector('.clock'), where = stage.querySelector('.where');
+  const lines = [[0, 'Lisboa Santa Apolónia. The bar car opens as the river slides past.'], [50, 'Entroncamento. Last orders, and the corridor lights go amber.'],
+    [115, 'Asleep before Marvão. Nobody wakes you at the border.'], [255, 'Cáceres, somewhere outside. You won’t notice.'],
+    [425, 'First light near Talavera. Coffee is coming down the corridor.'], [560, 'Madrid Chamartín. The city is just opening.']];
+  const smooth = (x, a, b) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const still = matchMedia('(prefers-reduced-motion: reduce), (max-width: 860px)');
+  let last = '';
+  const tick = () => {
+    const r = scene.getBoundingClientRect(), p = still.matches ? 0 : Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+    const n = smooth(p, .03, .26) * (1 - smooth(p, .68, .92)), d = smooth(p, .7, 1);
+    stage.style.setProperty('--p', p.toFixed(4)); stage.style.setProperty('--n', n.toFixed(3)); stage.style.setProperty('--d', d.toFixed(3));
+    stage.toggleAttribute('data-night', p > .1); stage.toggleAttribute('data-day', d > .8);
+    nav.toggleAttribute('data-solid', r.bottom < 72 || d > .8);
+    const m = Math.round(p * 630 / 5) * 5, t = (21 * 60 + 40 + m) % 1440, s = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+    if (s !== last) { last = s; clock.textContent = s; const line = lines.findLast(([from]) => m >= from)[1]; if (where.textContent !== line) where.textContent = line; }
+  };
+  let queued = false; const ask = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; tick(); }); } };
+  addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); still.addEventListener('change', ask); tick();
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((entries) => { for (const e of entries) if (e.isIntersecting) { e.target.classList.remove('pending'); io.unobserve(e.target); } }, { rootMargin: '0px 0px -10% 0px' });
+    for (const el of document.querySelectorAll('[data-reveal]')) if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pending'); io.observe(el); }
+  }
+</script>
+</body>
+</html>
