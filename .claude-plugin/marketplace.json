@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "hyper-taste",
-  "description": "Agent skills with taste: interfaces that don't look generated, and agent instruction files that stay small.",
+  "description": "Agent skills with taste: build software, interfaces and Mac and phone apps that don't look or read generated.",
   "owner": {
     "name": "mannobeats",
     "url": "https://github.com/mannobeats"
@@ -9,9 +9,9 @@
   "plugins": [
     {
       "name": "hyper-taste",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "source": "./",
-      "description": "Every Hyper Taste skill in one install: ui-director and agents-md.",
+      "description": "Every Hyper Taste skill in one install: plan, design and build apps for the Mac, the web and phones without slop - from brief to shipped, reusing what exists.",
       "homepage": "https://github.com/mannobeats/hyper-taste",
       "license": "MIT",
       "keywords": [
@@ -19,31 +19,196 @@
         "agents",
         "ui",
         "design",
-        "agents-md",
-        "claude-md"
+        "macos",
+        "swiftui",
+        "electron",
+        "tauri",
+        "mobile",
+        "engineering",
+        "code-quality"
       ],
       "commands": [
+        "./commands/design-system",
         "./commands/ui-director"
       ]
     },
     {
-      "name": "ui-director",
-      "version": "3.0.0",
+      "name": "agents-md",
+      "version": "1.1.0",
       "source": "./",
-      "description": "Art direction for any UI: seven finished gold pages to start from (landings, dashboards, a phone app), a token system for any stack, and a check that looks at the result in a real browser at desktop, tablet and phone widths.",
+      "description": "Keep agent instruction files (AGENTS.md, CLAUDE.md, GEMINI.md) small and in sync.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/agents-md",
+      "license": "MIT",
+      "skills": [
+        "./skills/agents-md"
+      ],
+      "commands": []
+    },
+    {
+      "name": "app-icon",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "A Mac app icon made the way Apple's are - an Icon Composer file (AppIcon.icon, JSON plus SVG layers) the system turns into Liquid Glass, compiled with actool and reviewed in every look (default, dark, tinted, clear) and at 16 px. Works for SwiftUI, Electron and Tauri apps.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/app-icon",
+      "license": "MIT",
+      "skills": [
+        "./skills/app-icon"
+      ],
+      "commands": []
+    },
+    {
+      "name": "build",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "How to write code in any project so it stays one coherent system - read the code first, reuse what exists, build in thin tested slices, check the official docs, and finish every part a change touches.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/build",
+      "license": "MIT",
+      "skills": [
+        "./skills/build"
+      ],
+      "commands": []
+    },
+    {
+      "name": "clone",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Walk through an existing app (a native Mac app with computer use, a web app with a browser, a phone app from screenshots), capture every screen, menu and dialog, write a screen index, and turn it into user stories.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/clone",
+      "license": "MIT",
+      "skills": [
+        "./skills/clone"
+      ],
+      "commands": []
+    },
+    {
+      "name": "debug",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Find and fix the root cause of a bug, a failing test, a broken build or unexpected behavior, with a test that proves it stays fixed.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/debug",
+      "license": "MIT",
+      "skills": [
+        "./skills/debug"
+      ],
+      "commands": []
+    },
+    {
+      "name": "design-system",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "One small design system per product, in the project's own stack (CSS, Tailwind, SwiftUI, Compose, React Native) - tokens for color, type, space, radius and motion, a set of parts in every state, a spacing grid, and one page that says which token to use when.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/design-system",
+      "license": "MIT",
+      "skills": [
+        "./skills/design-system"
+      ],
+      "commands": [
+        "./commands/design-system"
+      ]
+    },
+    {
+      "name": "improve-loop",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Work through docs/STORIES.md one story at a time - plan, build, test, run and look, compare, fix, commit - until a milestone is done, unattended if needed.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/improve-loop",
+      "license": "MIT",
+      "skills": [
+        "./skills/improve-loop"
+      ],
+      "commands": []
+    },
+    {
+      "name": "mac-app",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Build, run and verify a desktop app for the Mac in SwiftUI, Electron or Tauri, so it behaves like a native Mac app: project setup, the native window and menu bar, system integrations (hotkeys, menu bar items, permissions), testing, snapshots and performance.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/mac-app",
+      "license": "MIT",
+      "skills": [
+        "./skills/mac-app"
+      ],
+      "commands": []
+    },
+    {
+      "name": "mac-design",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "How a desktop app looks and behaves like a real Mac app on macOS 26 and later, in SwiftUI, Electron or Tauri: Apple's principles, the window, sidebar, toolbar, menus, keyboard, type, color, Liquid Glass and dark mode.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/mac-design",
+      "license": "MIT",
+      "skills": [
+        "./skills/mac-design"
+      ],
+      "commands": []
+    },
+    {
+      "name": "product-brief",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "One-page brief (docs/BRIEF.md) for a new app or product, written before any code - what it is, who it is for, the main jobs, the data, the platform and stack, the look, what is out of scope, and how we will know it works.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/product-brief",
+      "license": "MIT",
+      "skills": [
+        "./skills/product-brief"
+      ],
+      "commands": []
+    },
+    {
+      "name": "quality-bar",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Write a project's quality bar down once (CONSTRAINTS.md) - the checks that must pass, with real commands and numbers - so agents can't quietly lower it.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/quality-bar",
+      "license": "MIT",
+      "skills": [
+        "./skills/quality-bar"
+      ],
+      "commands": []
+    },
+    {
+      "name": "research",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Research before building an app - the best apps in the category, what people love and hate about them, and how the platform lets you build it - run as parallel researcher subagents and saved to docs/research/.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/research",
+      "license": "MIT",
+      "skills": [
+        "./skills/research"
+      ],
+      "commands": []
+    },
+    {
+      "name": "review",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Review code before it merges, or audit a whole codebase - correctness, security, data safety, performance, tests, duplication and architecture - and report findings with a concrete failing case and the smallest fix.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/review",
+      "license": "MIT",
+      "skills": [
+        "./skills/review"
+      ],
+      "commands": []
+    },
+    {
+      "name": "start-here",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Start here to build software with Hyper Taste - picks the next skill for where the work is, from idea to shipped app (Mac, web or phone), and says which comes after.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/start-here",
+      "license": "MIT",
+      "skills": [
+        "./skills/start-here"
+      ],
+      "commands": []
+    },
+    {
+      "name": "ui-director",
+      "version": "4.0.0",
+      "source": "./",
+      "description": "Art direction for web and phone interfaces, from the idea to a result checked in a real browser or simulator.",
       "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/ui-director",
       "license": "MIT",
-      "keywords": [
-        "ui",
-        "ux",
-        "design",
-        "frontend",
-        "dashboard",
-        "landing-page",
-        "mobile",
-        "design-system",
-        "anti-slop"
-      ],
       "skills": [
         "./skills/ui-director"
       ],
@@ -52,22 +217,26 @@
       ]
     },
     {
-      "name": "agents-md",
-      "version": "1.1.0",
+      "name": "user-stories",
+      "version": "1.0.0",
       "source": "./",
-      "description": "Keep AGENTS.md small and every agent in sync: CLAUDE.md and GEMINI.md become symlinks (or an @AGENTS.md import), an audit flags bloat, imports and stale paths, and a clear rule for what belongs in AGENTS.md, docs/ or a skill.",
-      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/agents-md",
+      "description": "A prioritized backlog of small user stories with checkable acceptance criteria (docs/STORIES.md), grouped into milestones that each end in something usable.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/user-stories",
       "license": "MIT",
-      "keywords": [
-        "agents-md",
-        "claude-md",
-        "gemini-md",
-        "agent-instructions",
-        "context",
-        "monorepo"
-      ],
       "skills": [
-        "./skills/agents-md"
+        "./skills/user-stories"
+      ],
+      "commands": []
+    },
+    {
+      "name": "ux-design",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "The UX pass for one feature of any app (Mac, web or phone) - what things are called, the flow, where it opens (inline, popover, sheet, panel, window, alert), every state, the words, hover help and accessibility, including features that use AI.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/ux-design",
+      "license": "MIT",
+      "skills": [
+        "./skills/ux-design"
       ],
       "commands": []
     }

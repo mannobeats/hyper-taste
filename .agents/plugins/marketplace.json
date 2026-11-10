@@ -6,8 +6,8 @@
   "plugins": [
     {
       "name": "hyper-taste",
-      "version": "3.0.0",
-      "description": "Every Hyper Taste skill in one install: ui-director and agents-md.",
+      "version": "4.0.0",
+      "description": "Every Hyper Taste skill in one install: plan, design and build apps for the Mac, the web and phones without slop - from brief to shipped, reusing what exists.",
       "source": {
         "source": "local",
         "path": "./"

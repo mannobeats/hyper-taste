@@ -4,7 +4,8 @@
 
 1. Create `skills/<name>/SKILL.md`. The frontmatter `name` must equal the folder name, and the
    `description` (1,024 characters at most) says what the skill does and when to use it. Put
-   anything the agent opens on demand next to it, in `references/`, `scripts/` or `fonts/`.
+   anything the agent opens on demand in `references/`. Describe outcomes and how to judge them;
+   no check scripts or examples to copy. Before adding a rule, find the skill that owns the topic.
 2. Optional: Claude Code slash commands go in `commands/<name>/`.
 3. Optional: a README, screenshots and demos for humans go in `docs/<name>/`. Keep them out of
    the skill folder, since everything in it is installed into the user's project.

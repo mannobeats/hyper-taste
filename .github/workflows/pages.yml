@@ -4,7 +4,7 @@ name: Pages
 on:
   push:
     branches: [main]
-    paths: ['docs/**', 'skills/*/fonts/**', '.github/workflows/pages.yml']
+    paths: ['docs/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -25,12 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # The pair pages load the fonts from skills/, so the site keeps the repo's folder layout.
       - name: Assemble the site
         run: |
-          mkdir -p _site/skills/ui-director
+          mkdir -p _site
           cp -r docs _site/
-          cp -r skills/ui-director/fonts _site/skills/ui-director/
           rm -rf _site/docs/*/node_modules
           echo '<meta http-equiv="refresh" content="0; url=docs/ui-director/">' > _site/index.html
 
