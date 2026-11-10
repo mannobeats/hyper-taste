@@ -12,9 +12,7 @@ and call it cleaner. Smaller and clearer, with the same results, is the only win
 
 ## 1. Know what you are changing
 
-- Start from findings, not taste. Use a `review` audit, or run one: hot spots (files changed
-  most often, the largest files), duplicates, dead code, pass-through layers, rules that live
-  in two places, modules that do several jobs.
+- Start from findings, not taste: a `review` audit, or run one.
 - Before removing or reshaping anything, learn why it exists: its callers, what it calls, its
   edge cases, its tests, and its history (`git log -p`, blame). Code that looks odd is often a
   fix for a bug you haven't met. If you can't say why it is there, read more.
@@ -34,15 +32,15 @@ Before the first edit, make sure a change in behavior would show up:
   screenshots for UI, a timing baseline where speed matters.
 - These tests describe the current behavior, odd parts included. A suspected bug is written
   down and fixed separately with `debug`, never inside a refactor.
-- Break one pinned line for a moment and see a test fail, so you know the net works.
+- Check the net works: break one pinned line for a moment and see a test fail (`build`).
 
 ## 3. Work in this order
 
 Each one makes the next easier and safer:
 
 1. **Delete what is dead.** Unused files, exports, functions, flags, dependencies, config,
-   commented-out code. Confirm first: search the whole tree, including tests, config, scripts,
-   string and dynamic references, public APIs, and anything other repos or users may call.
+   commented-out code. Confirm first with `review`'s unused-code search, plus public APIs and anything other repos
+   or users may call.
    Then delete it, and let the build and tests confirm.
 2. **Merge duplicates.** Pick the best version, cover it with the cases of both, move every
    caller to it, then delete the others.

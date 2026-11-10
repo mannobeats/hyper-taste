@@ -9,8 +9,8 @@ disable-model-invocation: true
 Make the call now, from what you already know.
 
 - **Ready or not.** Name only problems that are real and serious: a bug, data loss, a security
-  hole, or something the user asked for that is missing. Each one needs a case you can show (a
-  failing check, `file:line`, output you saw). A risk you can't show is not a problem; drop it.
+  hole, or something the user asked for that is missing. Each needs a case you can show, by `build`'s proof rules;
+  anything else, drop.
 - **If nothing serious is left, say it's ready.** Don't add polish, extra checks or "one more
   pass" to look careful.
 - **Next steps:** at most three, in order, each one line.

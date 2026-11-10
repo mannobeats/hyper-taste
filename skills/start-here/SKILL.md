@@ -13,7 +13,7 @@ them.
 ```text
 idea -> research -> clone (optional) -> product-brief -> user-stories -> quality-bar
      -> design (ui-director / mac-design + design-system + ux-design + app-icon)
-     -> improve-loop (build, debug, review each story) -> repeat
+     -> improve-loop (build each story, review each milestone) -> repeat
 ```
 
 ## Plan

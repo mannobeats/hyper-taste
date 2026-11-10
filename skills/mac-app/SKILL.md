@@ -70,8 +70,7 @@ drop from Finder, a permission prompt.
 
 ## 5. Commit
 
-One change per commit, with a message that says what the person can now do ("Add tasks from the
-quick-add panel"), not "Update views".
+Commit as `build` says, one change per commit.
 
 ## Done when
 

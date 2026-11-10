@@ -34,7 +34,7 @@ Every screen answers: Where am I? What can I do? Where can I go?
 
 ## Design plan
 
-Before views, write in `docs/BRIEF.md` (or `docs/DESIGN.md`):
+Before views, write in `DESIGN.md` at the project root (the file `ui-director` uses too):
 
 1. **Archetype:** sidebar window, single-window document, menu bar extra, or quick-capture panel.
    Most personal apps are a sidebar window plus one quick-capture entry point.

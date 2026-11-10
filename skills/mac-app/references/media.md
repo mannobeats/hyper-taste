@@ -132,8 +132,7 @@ on the GPU and 6 ready ahead. Present from a `CADisplayLink`.
 ## SwiftUI next to a media engine
 
 - A per-frame value on a model that 74 views observe cost 36 to 39 ms per
-  frame. Move it to its own small object (see the `review`
-  skill, architecture.md).
+  frame. Move it to its own small object (`refactor`).
 - Scopes and meters: set `CALayer.contents` inside one `CATransaction`.
   Keep static parts as constant views. Refresh text at 2 Hz.
 - Never build a publisher inside `body` and pass it to `.onReceive`. It

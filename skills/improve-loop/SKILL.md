@@ -8,7 +8,7 @@ argument-hint: "[milestone, e.g. M1]"
 One pass through the loop takes one story from `todo` to `done`:
 
 ```text
-pick story -> plan -> code -> test -> run and look -> compare -> fix -> commit -> update STORIES.md
+pick story -> plan -> test and code -> run and look -> compare -> fix -> commit -> update STORIES.md
 ```
 
 Stop after the milestone the user named, or after the current milestone if
@@ -28,16 +28,17 @@ Write two to five lines: which files change, what already exists that you will r
 which data fields are new, which command and shortcut it adds, which screen shows it. A new
 stored field gets a default value, so existing data keeps loading.
 
-## 3. Code
+## 3. Test and code
 
-Follow the `build` skill, the story's `UX:` block, `CONSTRAINTS.md` and `DESIGN-SYSTEM.md` if the
+Follow the `build` skill (tests first), the story's `UX:` block, `CONSTRAINTS.md` and `DESIGN-SYSTEM.md` if the
 project has them, and the platform's skill (`mac-app` and `mac-design`, or `ui-director`). Keep
 each file small enough to read in one go.
 
 ## 4. Test, run and look
 
-Run the tests and the checks in `CONSTRAINTS.md`. If the story has logic, add a test. Run the
-app with sample data in a test store, and capture the screens the story touches, light and dark.
+Run the tests and the checks in `CONSTRAINTS.md`; a failure whose cause isn't obvious goes to
+`debug`. Run the app with sample data, and capture the screens the story touches, light and dark,
+the way the platform's skill says (`mac-app` or `ui-director`).
 
 ## 5. Compare
 
@@ -72,9 +73,7 @@ git commit -m "Complete tasks with Command-Return"
 ```
 
 Set the story to `done` in `docs/STORIES.md` and commit that with the code.
-One story per commit, so any story can be reverted on its own. M1 may
-land as one commit when its stories share one skeleton (model, pages,
-list, persistence); from M2 on, one story per commit.
+One story per commit, so any story can be reverted on its own.
 
 ## 7. Report
 
@@ -92,9 +91,8 @@ Then open the new build so the user can try it.
 
 When the last story of a milestone is `done`, call the Skill tool with `review` on the milestone's code before you start the next one. Unattended, fix its Must fix findings, and leave the rest in `docs/REVIEW.md` for the user.
 
-When a story fixes a bug, add an entry to `docs/FIXLOG.md`: symptom,
-cause, fix, and a last line `Rule: <what to always or never do>`. The fix
-log outlives squashed history, and the check-in reads it.
+A story that fixes a bug follows `debug`, including its entry in `docs/FIXLOG.md`, which the
+check-in reads.
 
 ## Running it unattended
 
