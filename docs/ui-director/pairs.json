@@ -2,81 +2,57 @@
   {
     "id": "01-edges",
     "title": "Lock every element to an edge",
-    "rule": "SKILL.md, layout: edges",
+    "rule": "SKILL.md, Defaults: Space",
     "before": "The same card, centered. Seven buttons wrap into a loose cloud, and no line runs from one block to the next.",
     "after": "The avatar and the actions share one line under the cover, and the name, the stats and the buttons all start on the same edge.",
     "layout": "split"
   },
   {
-    "id": "02-close",
-    "title": "Keep related things close",
-    "rule": "SKILL.md, craft numbers: space",
-    "before": "The same list stretched across the whole screen. Every task sits a long way from its date.",
-    "after": "At its natural width, each task and its date read as one row.",
-    "layout": "stack"
-  },
-  {
-    "id": "03-differentiate",
-    "title": "Differentiate instead of spacing out",
-    "rule": "SKILL.md, layout: differentiate",
-    "before": "Six sentences at one weight. More padding would only make the block taller.",
-    "after": "Grouped by day, with faces for people, chips for categories and the link color for links. You find any task in a second.",
-    "layout": "split"
-  },
-  {
-    "id": "04-show",
-    "title": "Show, don't tell",
-    "rule": "SKILL.md, layout: show, don't tell",
-    "before": "An info icon, a paragraph on how to read the report, a sentence per number, and a note explaining the note.",
-    "after": "The total and what drove it, then bars you compare at a glance, with the one far over its average in amber. Exact values are one hover away.",
-    "layout": "split"
-  },
-  {
-    "id": "05-icons",
+    "id": "02-icons",
     "title": "Icon-only is for universal icons",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, Show the right things, reveal the rest",
     "before": "Eight icons with no labels and no count. You learn what each one does from its tooltip.",
     "after": "A count, three labeled actions, and icons only where everyone knows them: delete and more.",
     "layout": "split"
   },
   {
-    "id": "06-emphasis",
+    "id": "03-emphasis",
     "title": "Emphasis is a difference",
-    "rule": "SKILL.md, layout: emphasis",
+    "rule": "SKILL.md, Defaults: Emphasis is a difference",
     "before": "Every value is an accent chip, and every one is the default, so the color says nothing.",
     "after": "The defaults are plain text, so the one setting someone changed is the first thing you see.",
     "layout": "split"
   },
   {
-    "id": "07-dissolve",
+    "id": "04-dissolve",
     "title": "Dissolve the cards",
-    "rule": "SKILL.md, layout: one surface",
+    "rule": "references/app-ui.md, The shell; SKILL.md, Slop",
     "before": "The inspector as boxes in boxes: a header box, four field boxes and a box of boxes, three radii and borders on borders.",
     "after": "One column with one edge, sections split by thin lines, and color only on the value that's unusual.",
     "layout": "stack"
   },
   {
-    "id": "08-landing-product",
+    "id": "05-landing-product",
     "title": "Landing page: the product plays its own week",
-    "rule": "references/landing.md, references/craft.md",
+    "rule": "references/landing.md, Stage it",
     "before": "A badge, gradient text, a paragraph of buzzwords, three buttons and three icon cards. It could be selling anything.",
     "after": "A working kitchen at the pass fills the first screen behind a two-tone claim, then breaks into halftone dots as Pantry's own week rises across it and plays as a film: basil runs out at 9 pm, its truck comes Tuesday, and at 5:02 Pantry offers to order it.",
     "layout": "stack",
     "height": 1200
   },
   {
-    "id": "09-landing-type",
+    "id": "06-landing-type",
     "title": "Landing page: type as big as the idea",
-    "rule": "references/landing.md, references/words.md",
+    "rule": "references/landing.md, Compositions: type as the image",
     "before": "A tracked-out label, half the headline in a gradient, a ticking countdown and a row of big numbers.",
     "after": "The name set huge in a light weight on Porto's sky and measured by guide lines on Archivo's real metrics, the Chapel of Souls rising beneath it and breaking into cobalt halftone dots, with the four speakers below as a specimen waterfall.",
     "layout": "stack",
     "height": 1250
   },
   {
-    "id": "10-landing-photo",
+    "id": "07-landing-photo",
     "title": "Landing page: the product as a still life",
-    "rule": "references/visuals.md, references/words.md",
+    "rule": "references/landing.md, Compositions: the photograph is the product",
     "before": "A pastel gradient, emoji in the logo, a welcome headline, a paragraph about passion and three icon cards.",
     "after": "A sourdough cut open on its floured board fills the dark first screen under a Bodoni headline, with the address, hours and action beside it; the board breaks into halftone dots, and today's shelf rises across them with how many are left and what they cost.",
     "layout": "stack",
@@ -84,9 +60,9 @@
     "dark": true
   },
   {
-    "id": "11-landing-dark",
+    "id": "08-landing-dark",
     "title": "Landing page: dark, the product's report as the film",
-    "rule": "references/landing.md, references/craft.md",
+    "rule": "references/landing.md, Stage it",
     "before": "A purple glow, a glowing pill, gradient text, glass cards and claims anyone could make.",
     "after": "A motorway at night, white trails flowing and red ones held, rushes out from behind Seam's own report and dissolves into the dark page; the report replays Friday's writes with the 38-second hole the migration punches in them.",
     "layout": "stack",
@@ -94,99 +70,99 @@
     "dark": true
   },
   {
-    "id": "12-color",
+    "id": "09-color",
     "title": "Color is for meaning",
-    "rule": "SKILL.md, craft numbers: color",
+    "rule": "SKILL.md, Defaults: Color",
     "before": "Color everywhere: a gradient card and a rainbow of tiles, so the storage bar, the only data, looks like decoration.",
     "after": "Neutral surfaces and previews drawn in the neutrals. The only color is the storage bar, where it means something.",
     "layout": "split"
   },
   {
-    "id": "13-dark",
+    "id": "10-dark",
     "title": "Dark mode is built, not inverted",
-    "rule": "references/system.md",
+    "rule": "SKILL.md, Defaults: Color; references/app-ui.md, Density and dark",
     "before": "Dark as inverted light: pure black on black, white for every word, red at full strength.",
     "after": "Built for dark: lighter surfaces for elevation, four text levels, and the one warning in amber.",
     "layout": "split",
     "dark": true
   },
   {
-    "id": "14-destructive",
+    "id": "11-destructive",
     "title": "Destructive means red, and says what it does",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, The invisible states",
     "before": "An alert icon, a vague question, no consequences, and Yes in the brand color.",
     "after": "The title names the workspace, the dialog counts what goes with it, and the red button says what it does.",
     "layout": "split"
   },
   {
-    "id": "15-table",
+    "id": "12-table",
     "title": "Let the data decide the form",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, Let the data decide the form",
     "before": "Every column is left-aligned plain text at one weight.",
     "after": "Departments become chips, numbers line up on the right in tabular figures, long emails truncate, the inactive row fades, and only the unusual status gets color. Narrow screens drop the columns that matter least.",
     "layout": "stack"
   },
   {
-    "id": "16-timeline",
+    "id": "13-timeline",
     "title": "Events over time want a timeline",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, Let the data decide the form",
     "before": "A timeline poured into a table: machine dates, a column for who, and the failure buried in a row.",
     "after": "A line with marks on it: who did what, when in words, and the quote and the reason inline.",
     "layout": "split"
   },
   {
-    "id": "17-disclosure",
+    "id": "14-disclosure",
     "title": "Show the right things, reveal the rest",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, Show the right things, reveal the rest",
     "before": "Every action on every row, all the time: four rows carry sixteen buttons.",
     "after": "Each row shows who edited it and when. Its actions appear on the row you point at, and phones keep one More button.",
     "layout": "split"
   },
   {
-    "id": "18-dashboard",
+    "id": "15-dashboard",
     "title": "The generated dashboard, and what it becomes",
-    "rule": "SKILL.md, the obvious version",
+    "rule": "SKILL.md, Slop: the dashboard template; references/app-ui.md, The first screen answers the question",
     "before": "A greeting with an emoji, a sentence about the page, tracked capitals, icons in circles and a green pill on every number.",
     "after": "The page title, the numbers in a row, the month's billing drawn day by day, and red only on the failed payments: the number, the days they happened and the three customers who need you.",
     "layout": "stack",
     "height": 800
   },
   {
-    "id": "19-phone",
+    "id": "16-phone",
     "title": "On a phone, rows stop being a table",
-    "rule": "references/app-ui.md",
+    "rule": "references/mobile.md, Anatomy and sizes",
     "before": "The desktop table at 390 wide: tiny text, cut-off columns, a sideways scroll and a hover hint.",
     "after": "Two lines per row: who and how much, then the detail and the state. Grouped by what needs attention, each group with its total.",
     "layout": "phone"
   },
   {
-    "id": "20-home",
+    "id": "17-home",
     "title": "A phone home screen answers the day's question",
-    "rule": "references/app-ui.md",
+    "rule": "references/mobile.md, The first screen answers the question",
     "before": "A greeting with an emoji, a gradient card that says conditions are perfect, four stat tiles with icon circles and green pills, a floating button over the content and five identical tab icons.",
     "after": "The answer as a headline, then the day's wind drawn hour by hour with the window you can sail lit up. One labeled action, the boats free in that window, and a tab bar with outline icons at rest and a filled one for where you are.",
     "layout": "phone"
   },
   {
-    "id": "21-failed-payment",
+    "id": "18-failed-payment",
     "title": "A failed payment gets the care of a success",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, The invisible states",
     "before": "A red alert that says \"Error!\", an error code nobody can act on and one OK button that throws the booking away.",
     "after": "A sheet over the booking that says what happened, that nothing was charged and how long the table stays held, then one way forward and two more below it.",
     "layout": "phone"
   },
   {
-    "id": "22-paywall",
+    "id": "19-paywall",
     "title": "A paywall that tells you what happens next",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, Moments",
     "before": "A gradient, three plans to compare, a BEST VALUE badge, a wall of checkmarks, a grey close button you can barely find and the price in the fine print.",
     "after": "What you get, shown. One plan, a timeline of the trial with the day you'll be reminded and the day you'll pay, and a close button you can see.",
     "layout": "phone"
   },
   {
-    "id": "23-onboarding",
+    "id": "20-onboarding",
     "title": "Onboarding asks the one question that sets the app up",
-    "rule": "references/app-ui.md",
+    "rule": "references/app-ui.md, Moments",
     "before": "The first of four slides of claims, an illustration, dots and a Skip link. Nothing you read here changes the app.",
     "after": "One question whose answer shapes the first screen, answers to tap, progress, a way back and a way to skip.",
     "layout": "phone"

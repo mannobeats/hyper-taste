@@ -1,6 +1,6 @@
 /* tokens.css: the token system behind every "after" page in docs/ui-director/pairs/, and behind
    the "before" of each teaching pair, which is the same page with one fault. The skill itself ships
-   no CSS: projects write these tokens in their own format from skills/ui-director/references/system.md.
+   no CSS: projects write these tokens in their own format from the design-system skill (skills/design-system).
 
    Sections: 1 knobs · 2 light tokens · 3 dark tokens · 4 base · 5 primitives · 6 demo stage */
 

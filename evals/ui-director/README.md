@@ -18,7 +18,7 @@ From the repo root, with [Claude Code](https://code.claude.com/docs/en/plugin-ev
 claude plugin eval . --eval-dir evals/ui-director --scaffold --allow-tools Write Edit --runs 1 -j 4 --judge-model opus
 ```
 
-Add `--case 08-landing-product` for one case. `--scaffold` is needed because each case copies its
+Add `--case 05-landing-product` for one case. `--scaffold` is needed because each case copies its
 starting page with `scaffold.sh`. A full run costs model usage on your account (roughly $0.30 to
 $1.50 per case and arm), so it isn't part of CI.
 

@@ -1,4 +1,0 @@
-schema_version: "1.1"
-name: 04-show
-context:
-  scaffold_script: scaffold.sh

@@ -5,11 +5,11 @@ designed, not generated. Calm and precise in dashboards and app screens, bold an
 landing pages, consistent everywhere.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="gallery/18-dashboard-dark.png">
-  <img src="gallery/18-dashboard.png" alt="Before and after: a generated dashboard and the same screen cleaned up" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="gallery/15-dashboard-dark.png">
+  <img src="gallery/15-dashboard.png" alt="Before and after: a generated dashboard and the same screen cleaned up" width="100%">
 </picture>
 
-**[See all 23 pairs live](https://mannobeats.github.io/hyper-taste/docs/ui-director/)**: every pair is real HTML, with a slider to compare.
+**[See all 20 pairs live](https://mannobeats.github.io/hyper-taste/docs/ui-director/)**: every pair is real HTML, with a slider to compare.
 
 AI agents fail at UI in two ways: they add too much (explanations, colors, cards, badges, all-caps
 labels, gradients, motion), or they play it safe and ship the house style every model shares,
@@ -65,22 +65,22 @@ premium", "clean up this settings screen"). You can also ask for it by name, or 
 
 | | |
 |---|---|
-| ![Before and after: a kitchen photograph that dissolves into the product playing its own week](gallery/08-landing-product.png) | ![Before and after: a landing page with the bread as a still life](gallery/10-landing-photo.png) |
-| ![Before and after: dissolving nested cards](gallery/07-dissolve.png) | ![Before and after: a table on a phone](gallery/19-phone.png) |
-| ![Before and after: a sailing club's home screen with the day's wind drawn hour by hour](gallery/20-home.png) | ![Before and after: a paywall with one plan and a timeline of the trial](gallery/22-paywall.png) |
+| ![Before and after: a kitchen photograph that dissolves into the product playing its own week](gallery/05-landing-product.png) | ![Before and after: a landing page with the bread as a still life](gallery/07-landing-photo.png) |
+| ![Before and after: dissolving nested cards](gallery/04-dissolve.png) | ![Before and after: a table on a phone](gallery/16-phone.png) |
+| ![Before and after: a sailing club's home screen with the day's wind drawn hour by hour](gallery/17-home.png) | ![Before and after: a paywall with one plan and a timeline of the trial](gallery/19-paywall.png) |
 
 ## The pairs
 
 Each pair in [`pairs/`](pairs) is two standalone pages, `before.html` and `after.html`, about one
-rule from the skill. The "after" pages share [`pairs/tokens.css`](pairs/tokens.css), one token system written as CSS. In the fourteen teaching pairs the "before" is
+rule from the skill. The "after" pages share [`pairs/tokens.css`](pairs/tokens.css), one token system written as CSS. In the eleven teaching pairs the "before" is
 the same page with the same tokens and one fault, so the pair teaches exactly one thing; the older
 landing and phone pairs keep a "before" with no system at all.
 [`pairs.json`](pairs.json) holds each pair's title, rule and captions, and feeds the live page,
 the screenshots and the [evals](../../evals/ui-director).
 
-Photographs from Unsplash: the kitchen in pair 08 by
-[Nicolas J Leclercq](https://unsplash.com/photos/KBjDo_QA1lY), the Chapel of Souls in pair 09 by
-[Aman Jhalani](https://unsplash.com/photos/ddDNOa4nsLU), the loaf in pair 10 by
-[Robert Stump](https://unsplash.com/photos/DNqwLdfo0b8), the motorway in pair 11 by
+Photographs from Unsplash: the kitchen in pair 05 by
+[Nicolas J Leclercq](https://unsplash.com/photos/KBjDo_QA1lY), the Chapel of Souls in pair 06 by
+[Aman Jhalani](https://unsplash.com/photos/ddDNOa4nsLU), the loaf in pair 07 by
+[Robert Stump](https://unsplash.com/photos/DNqwLdfo0b8), the motorway in pair 08 by
 [Robin Pierre](https://unsplash.com/photos/dPgPoiUIiXk). All names, businesses and numbers in the
 pairs are made up.
