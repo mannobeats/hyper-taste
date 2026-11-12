@@ -43,6 +43,7 @@ idea -> research -> clone (optional) -> product-brief -> user-stories -> quality
 | Write code for a feature or story | `build` |
 | Start, run, test or speed up a Mac app | `mac-app` |
 | Fix a bug, a failing test or a broken build | `debug` |
+| A Dockerfile, image, Compose stack or container build to write or speed up | `docker-optimize` |
 | Review a diff or audit a codebase | `review` |
 | Restructure, simplify or de-bloat existing code | `review` to find what to fix, then `refactor` |
 | Work through the backlog on its own | `improve-loop` |

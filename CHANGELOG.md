@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- **docker-optimize 1.0.0:** Dockerfiles, images, Compose stacks and container builds that build
+  fast on a small change, ship only what runs, run as a non-root user, report health truthfully
+  and rebuild the same image later, with numbers before and after.
+
 ## [4.0.0] - 2026-11-10
 
 Hyper Taste grows from two skills to a full set for building software with agents: plan, design

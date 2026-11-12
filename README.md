@@ -37,6 +37,7 @@ Start with `start-here` (`/hyper-taste:start-here`): it names the next skill for
 | [build](skills/build/SKILL.md) | Read first, reuse what exists, thin tested slices, official docs, finish every caller |
 | [mac-app](skills/mac-app/SKILL.md) | Set up, build, verify and speed up a Mac app in SwiftUI, Electron or Tauri |
 | [debug](skills/debug/SKILL.md) | Reproduce, find the root cause, fix it once, prove it with a test |
+| [docker-optimize](skills/docker-optimize/SKILL.md) | Dockerfiles and Compose stacks that build fast, ship small, run as non-root and are healthy for real |
 | [review](skills/review/SKILL.md) | Review a diff or audit a repo: every finding with a failing case and the smallest fix |
 | [refactor](skills/refactor/SKILL.md) | Simplify, de-bloat and restructure existing code, one proven step per commit, behavior unchanged |
 | [stop-overthinking](skills/stop-overthinking/SKILL.md) | Ask for it when work goes in circles: a short call on whether it's ready, and the next steps |

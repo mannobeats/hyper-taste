@@ -107,6 +107,18 @@
       ]
     },
     {
+      "name": "docker-optimize",
+      "version": "1.0.0",
+      "source": "./",
+      "description": "Dockerfiles, images, Compose stacks and container builds that are fast, small, repeatable and safe in production - layer order, multi-stage builds, cache reuse, non-root users, real health checks, pinned base images.",
+      "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/docker-optimize",
+      "license": "MIT",
+      "skills": [
+        "./skills/docker-optimize"
+      ],
+      "commands": []
+    },
+    {
       "name": "improve-loop",
       "version": "1.0.0",
       "source": "./",
