@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased
+## [4.1.0] - 2026-11-11
 
 - **docker-optimize 1.0.0:** Dockerfiles, images, Compose stacks and container builds that build
   fast on a small change, ship only what runs, run as a non-root user, report health truthfully
   and rebuild the same image later, with numbers before and after.
+- **start-here 1.1.0** points container work to `docker-optimize`.
 
 ## [4.0.0] - 2026-11-10
 

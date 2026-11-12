@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "hyper-taste",
-      "version": "4.0.0",
+      "version": "4.1.0",
       "source": "./",
       "description": "Every Hyper Taste skill in one install: plan, design and build apps for the Mac, the web and phones without slop - from brief to shipped, reusing what exists.",
       "homepage": "https://github.com/mannobeats/hyper-taste",
@@ -228,7 +228,7 @@
     },
     {
       "name": "start-here",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./",
       "description": "Start here to build software with Hyper Taste - picks the next skill for where the work is, from idea to shipped app (Mac, web or phone), and says which comes after.",
       "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/start-here",
