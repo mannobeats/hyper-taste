@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.2.0] - 2026-11-18
+
+Agents finish what was asked instead of parking it. Session logs showed agents cutting items
+"to keep the PR reviewable", listing what they could have done as "not done", and ending turns
+with "Should I…?" for work the user had already asked for.
+
+- **build 1.1.0:** every item the user asked for is in scope, written down in a file that
+  survives a summarized context and ticked as it is proven. Splitting a slice changes the order
+  and the commit size, never the scope. Close every gap you can before reporting; name only what
+  needs the user. Don't end a turn asking for work that was already asked for.
+- **improve-loop 1.1.0:** the three-round cap applies to look-and-feel only; missing behavior
+  from the acceptance criteria is built until it passes.
+- **refactor 1.0.1:** show the plan first only when the user didn't already ask for all of it.
+
 ## [4.1.0] - 2026-11-11
 
 - **docker-optimize 1.0.0:** Dockerfiles, images, Compose stacks and container builds that build

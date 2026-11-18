@@ -19,7 +19,8 @@ and call it cleaner. Smaller and clearer, with the same results, is the only win
 - **The deletion test** for each module: if it disappeared, would its complexity spread to
   every caller (it earns its place) or barely move (it is a pass-through, merge it away)?
 - Write a short plan: each change, why it helps, how you will prove it, in the order below.
-  For anything beyond a small cleanup, show the plan and let the user pick before you start.
+  For anything beyond a small cleanup the user didn't already ask for in full, show the plan and
+  let the user pick before you start. When they asked for all of it, do all of it.
   "This code is fine" is a valid result.
 
 ## 2. Pin today's behavior first
