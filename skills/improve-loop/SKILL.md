@@ -61,9 +61,12 @@ acceptance lines and the design skill's rules (`mac-design` or `ui-director`) in
 
 Capture only the screens a story touches, and every screen at the end of each milestone.
 
-Fix, rebuild, and compare again. Three rounds per story at most. If it still
-does not match, set the story to `todo` again with a note that says what is
-blocking, and move on.
+Fix, rebuild, and compare again. The cap is for look-and-feel: after three
+rounds on layout, hierarchy, spacing or color, write down what still differs
+and move on. Missing or wrong behavior from the acceptance criteria is never
+capped: keep building until it passes. Set a story back to `todo` as blocked
+only when it needs something you can't do yourself (a credential, a device, a
+decision only the user can make), with a note that says what.
 
 ## 6. Commit and record
 

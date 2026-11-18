@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "hyper-taste",
-      "version": "4.1.0",
+      "version": "4.2.0",
       "source": "./",
       "description": "Every Hyper Taste skill in one install: plan, design and build apps for the Mac, the web and phones without slop - from brief to shipped, reusing what exists.",
       "homepage": "https://github.com/mannobeats/hyper-taste",
@@ -58,7 +58,7 @@
     },
     {
       "name": "build",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./",
       "description": "How to write code in any project so it stays one coherent system - read the code first, reuse what exists, build in thin tested slices, check the official docs, and finish every part a change touches.",
       "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/build",
@@ -120,7 +120,7 @@
     },
     {
       "name": "improve-loop",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./",
       "description": "Work through docs/STORIES.md one story at a time - plan, build, test, run and look, compare, fix, commit - until a milestone is done, unattended if needed.",
       "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/improve-loop",
@@ -192,7 +192,7 @@
     },
     {
       "name": "refactor",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./",
       "description": "Restructure, simplify and de-bloat an existing codebase without changing what it does - pin today's behavior, then delete, merge, simplify and reshape one proven step per commit.",
       "homepage": "https://github.com/mannobeats/hyper-taste/tree/main/skills/refactor",

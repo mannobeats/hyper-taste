@@ -18,6 +18,10 @@ and call it done because it compiles.
   over your habits.
 - List every place the change must reach: callers, tests, fixtures, types, config, exports, docs.
   That list is the scope. Features nobody asked for are not.
+- Every item the user asked for is in scope too, all of them, not the first few. When a request
+  has more than a couple of items, write them down in the user's words, in a file that outlives
+  the session's context (the story, a plan doc, or a checklist under `tmp/`), and tick each one
+  as it is done and proven. Re-read it after the context is summarized and before you report.
 
 ## 2. Reuse before you add
 
@@ -67,7 +71,8 @@ Each slice goes through every layer it needs (data, logic, UI) and works on its 
 5. Commit with a message that says what someone can now do.
 
 Never leave the codebase broken between slices. If a slice grows past what you can verify in one
-go, split it.
+go, split it into smaller slices and build every one of them now. Splitting changes the order of
+the work and the size of each commit or PR, never the scope: nothing moves to "later".
 
 ## 5. Ground it in the docs
 
@@ -87,8 +92,10 @@ and then report "done" or "this works" are the most expensive failure there is.
 - **About a library or platform:** the official docs or the installed version's source, named.
 - **Real problems only:** a risk you can't show with a case, a failing check or a source is not
   a problem; don't add work for it. When the change is ready, say so.
-- **Unknown stays unknown:** "I didn't run the migration", "not checked on a real phone". A gap
-  you name is fine; a gap you hide is a bug.
+- **Close every gap you can:** if you can run it, test it, open it or build it with the tools you
+  have, do it before you report. Name only what you truly can't do yourself, and say what it
+  needs: "needs your sign-in", "needs a real phone". A gap you could have closed is unfinished
+  work, not a caveat; a gap you hide is a bug.
 - **Before "done":** re-read the diff end to end, and re-run what proves it after the last edit,
   not before it.
 
@@ -108,15 +115,25 @@ break). Expect callers to depend on everything observable, not only what you doc
 - **Never cut:** validation at trust boundaries, error handling that prevents data loss,
   security, accessibility, anything the user asked for.
 - **A known limit** gets a one-line comment: `limit: <what>, <when to revisit>`.
+- **The whole request:** never defer, trim or park an item the user asked for because the work
+  got large, to keep a PR small, or to report sooner. If an item truly can't be done now, ask
+  before dropping it, and never call the work done while it is missing.
+- **Don't stop to ask for what was already asked.** When the user asked for the work, do it; don't
+  end the turn with "Should I…?" or a menu of options. Stop and ask only for what is theirs to
+  decide: a real product choice the request doesn't settle, a credential or sign-in, or an
+  irreversible or outward step they haven't authorized (when they said "ship", that is
+  authorized).
 
 Restructuring or cleaning up code that already works is `refactor`.
 
 ## Done when
 
+- Every item the user asked for is done and proven, or blocked on something only the user can
+  give, named with what you need from them.
 - You searched before writing, and nothing new duplicates something that existed.
 - Every place on the scope list is updated, and the tests, types and linter pass.
 - Each new test failed before the code and passes after; the full suite, types and linter pass.
 - The change was seen working (tests, and the running app for anything visible).
 - Your report cites the evidence (`file:line`, command output, screenshots) for every claim,
-  and names what you did not check.
-- Each slice is its own commit, and anything you couldn't check is named in your report.
+  and names only what you could not check yourself, with what it needs.
+- Each slice is its own commit.
